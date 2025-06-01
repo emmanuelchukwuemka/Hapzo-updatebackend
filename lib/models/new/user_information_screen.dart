@@ -1,0 +1,86 @@
+// import 'dart:io';
+// import 'package:flutter/material.dart';
+//
+// class UserInformationScreen extends ConsumerStatefulWidget {
+//   static const String routeName = '/user-information';
+//   const UserInformationScreen({Key? key}) : super(key: key);
+//
+//   @override
+//   ConsumerState<UserInformationScreen> createState() => _UserInformationScreenState();
+// }
+//
+// class _UserInformationScreenState extends ConsumerState<UserInformationScreen> {
+//   final TextEditingController nameController = TextEditingController();
+//   File? image;
+//
+//   @override
+//   void dispose() {
+//     super.dispose();
+//     nameController.dispose();
+//   }
+//
+//   void selectImage() async {
+//     image = await pickImageFromGallery(context);
+//     setState(() {});
+//   }
+//
+//   // void storeUserData() async {
+//   //   String name = nameController.text.trim();
+//   //
+//   //   if(name.isNotEmpty) {
+//   //     ref.read(authControllerProvider).saveUserDataToFirebase(name, profilePic, email);
+//   //
+//   //   }
+//   // }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final size = MediaQuery.of(context).size;
+//     return Scaffold(
+//       body: SafeArea(
+//         child: Center(
+//           child: Column(
+//             children: [
+//               Stack(
+//                 children: [
+//                   image == null
+//                       ? CircleAvatar(
+//                     backgroundImage: AssetImage('assets/images/asta.jpg'),
+//                     radius: 65,
+//                   )
+//                       : CircleAvatar(backgroundImage: FileImage(image!), radius: 65,),
+//                   Positioned(
+//                     bottom: -10,
+//                     left: 80,
+//                     child: IconButton(
+//                       onPressed: () {},
+//                       icon: const Icon(Icons.add_a_photo),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//               Row(
+//                 children: [
+//                   Container(
+//                     width: size.width * 0.85,
+//                     padding: const EdgeInsets.all(20),
+//                     child: TextField(
+//                       controller: nameController,
+//                       decoration: const InputDecoration(
+//                         hintText: 'Enter your name',
+//                       ),
+//                     ),
+//                   ),
+//                   IconButton(
+//                     onPressed: () {},
+//                     icon: Icon(Icons.done, color: context.theme.buttonColor,),
+//                   ),
+//                 ],
+//               )
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
