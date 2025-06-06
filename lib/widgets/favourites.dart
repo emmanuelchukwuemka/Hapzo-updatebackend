@@ -10,7 +10,7 @@ class FavouriteContacts extends StatelessWidget {
       child: Column(
         children: [
           // Container(
-          //   color: Colors.orange.withOpacity(.20),
+          //   color: Colors.orange   .withValues(alpha:.20),
           //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
           //   child: Row(
           //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -29,52 +29,55 @@ class FavouriteContacts extends StatelessWidget {
           Container(
             color: Colors.blueGrey[800],
             child: ExpansionTile(
-              collapsedIconColor: const Color(0xFFFFEED9),
-              iconColor: const Color(0xFFFFEED9),
-              title: const Text(
-                'Pinned  Contacts',
-                style: TextStyle(color: Color(0xFFFFEED9), fontWeight: FontWeight.w500),
-              ),
-              children: [
-                Container(
-                color: Color(0xFFFFEED9),
-                height: 100,
-                child: ListView.builder(
-                  padding: const EdgeInsets.only(left: 5.0),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: favorites.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen(user: favorites[index])));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          children: [
-                            CircleAvatar(
-                              radius: 28.0,
-                              backgroundImage: AssetImage(favorites[index].imgUrl),
-                            ),
-                            SizedBox(height: 5.0),
-                            Text(
-                              favorites[index].name,
-                              style: const TextStyle(
-                                color: Colors.blueGrey,
-                                fontSize: 13.0,
-                                fontWeight: FontWeight.w500
+                collapsedIconColor: const Color(0xFFFFEED9),
+                iconColor: const Color(0xFFFFEED9),
+                title: const Text(
+                  'Pinned  Contacts',
+                  style: TextStyle(
+                      color: Color(0xFFFFEED9), fontWeight: FontWeight.w500),
+                ),
+                children: [
+                  Container(
+                    color: const Color(0xFFFFEED9),
+                    height: 100,
+                    child: ListView.builder(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: favorites.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          ChatScreen(user: favorites[index])));
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 28.0,
+                                    backgroundImage:
+                                        AssetImage(favorites[index].imgUrl),
+                                  ),
+                                  const SizedBox(height: 5.0),
+                                  Text(
+                                    favorites[index].name,
+                                    style: const TextStyle(
+                                        color: Colors.blueGrey,
+                                        fontSize: 13.0,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                ),
-              ),
-                SizedBox.shrink(),
-              ]
-            ),
+                          );
+                        }),
+                  ),
+                  const SizedBox.shrink(),
+                ]),
           )
         ],
       ),

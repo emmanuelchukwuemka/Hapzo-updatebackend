@@ -22,22 +22,22 @@ class Coloors {
   static const Color lightText = Color(0xFF000000);
 
   static const Color darkTitleText = Color(0xFFFD6104);
-  static Color? lightTitleText = Color(0xFFFD8502);
+  static Color? lightTitleText = const Color(0xFFFD8502);
 
   static const Color darkChatTitleText = Colors.blueGrey;
   static Color? lightChatTitleText = Colors.blueGrey[300];
 
-  static Color? darkReadMessage = Colors.orange.withOpacity(.65);
-  static Color? lightReadMessage = Colors.orange.withOpacity(.10);
+  static Color? darkReadMessage = Colors.orange.withValues(alpha: .65);
+  static Color? lightReadMessage = Colors.orange.withValues(alpha: .10);
 
-  static Color darkUnreadMessage = Colors.orange.withOpacity(.45);
+  static Color darkUnreadMessage = Colors.orange.withValues(alpha: .45);
   static const Color lightUnreadMessage = Color(0xFFFFEFEE);
 
-  static Color darkUserChatBox = Colors.orange.withOpacity(.45);
-  static Color lightUserChatBox = Colors.orange.withOpacity(.15);
+  static Color darkUserChatBox = Colors.orange.withValues(alpha: .45);
+  static Color lightUserChatBox = Colors.orange.withValues(alpha: .15);
 
-  static Color darkFriendChatBox = Colors.blueGrey.withOpacity(.45);
-  static Color lightFriendChatBox = Colors.blueGrey.withOpacity(.15);
+  static Color darkFriendChatBox = Colors.blueGrey.withValues(alpha: .45);
+  static Color lightFriendChatBox = Colors.blueGrey.withValues(alpha: .15);
 }
 
 // EXTRA COLORS

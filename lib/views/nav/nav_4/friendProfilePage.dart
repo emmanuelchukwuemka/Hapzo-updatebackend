@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/views/nav/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 
@@ -16,23 +16,21 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
       backgroundColor: context.theme.bgColor,
       appBar: AppBar(
         iconTheme: IconThemeData(
-            color: context.theme.primaryColor,
+          color: context.theme.primaryColor,
         ),
         backgroundColor: context.theme.appBarColor,
         title: Text(
           '@Roman Fortune',
           style: TextStyle(
-            color: context.theme.titleTextColor,
-            fontWeight: FontWeight.bold
-          ),
+              color: context.theme.titleTextColor, fontWeight: FontWeight.bold),
         ),
         elevation: 0,
       ),
       body: ListView(
         children: [
-          PictureContainer(),
+          const PictureContainer(),
           Padding(
-            padding: EdgeInsets.only(left: 10),
+            padding: const EdgeInsets.only(left: 10),
             child: Text(
               'Roman Fortune',
               style: TextStyle(
@@ -103,56 +101,58 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
               ),
             ],
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.only(left: 10),
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  width: 100,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: context.theme.greyColor,
-                    borderRadius: BorderRadius.circular(5)
-                  ),
-                  child: Row(
-                    children: [
-                      SizedBox(width: 3),
-                      Icon(Icons.library_add, color: Colors.white,),
-                      SizedBox(width: 4),
-                      Text(
-                        'Follow',
-                        style: TextStyle(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    width: 100,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        color: context.theme.greyColor,
+                        borderRadius: BorderRadius.circular(5)),
+                    child: const Row(
+                      children: [
+                        SizedBox(width: 3),
+                        Icon(
+                          Icons.library_add,
                           color: Colors.white,
                         ),
-                      ),
-                    ],
-                  )
-                ),
-                SizedBox(width: 10),
+                        SizedBox(width: 4),
+                        Text(
+                          'Follow',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    )),
+                const SizedBox(width: 10),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  width: 120,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: context.theme.primaryColor,
-                    borderRadius: BorderRadius.circular(5)
-                  ),
-                  child: Row(
-                    children: [
-                      SizedBox(width: 3),
-                      Icon(Icons.chat, color: Colors.white,),
-                      SizedBox(width: 4),
-                      Text(
-                        'Message',
-                        style: TextStyle(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    width: 120,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        color: context.theme.primaryColor,
+                        borderRadius: BorderRadius.circular(5)),
+                    child: const Row(
+                      children: [
+                        SizedBox(width: 3),
+                        Icon(
+                          Icons.chat,
                           color: Colors.white,
                         ),
-                      ),
-                    ],
-                  )
-                ),
+                        SizedBox(width: 4),
+                        Text(
+                          'Message',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    )),
               ],
             ),
           ),
@@ -168,8 +168,13 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Name', style: TextStyle(color: context.theme.greyColor, fontWeight: FontWeight.w500)),
-                      Text('Roman Fortune Combo', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
+                      Text('Name',
+                          style: TextStyle(
+                              color: context.theme.greyColor,
+                              fontWeight: FontWeight.w500)),
+                      const Text('Roman Fortune Combo',
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.w500)),
                     ],
                   ),
                 ),
@@ -180,8 +185,13 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Tag Name', style: TextStyle(color: context.theme.greyColor, fontWeight: FontWeight.w500)),
-                      Text('@hapzz', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
+                      Text('Tag Name',
+                          style: TextStyle(
+                              color: context.theme.greyColor,
+                              fontWeight: FontWeight.w500)),
+                      const Text('@hapzz',
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.w500)),
                     ],
                   ),
                 ),
@@ -192,8 +202,17 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Birthday', style: TextStyle(color: context.theme.greyColor, fontWeight: FontWeight.w500),),
-                      Text('01/01/0001', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),),
+                      Text(
+                        'Birthday',
+                        style: TextStyle(
+                            color: context.theme.greyColor,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      const Text(
+                        '01/01/0001',
+                        style: TextStyle(
+                            color: Colors.grey, fontWeight: FontWeight.w500),
+                      ),
                     ],
                   ),
                 ),
@@ -204,8 +223,13 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Occupation', style: TextStyle(color: context.theme.greyColor, fontWeight: FontWeight.w500)),
-                      Text('Hapztext CEO', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
+                      Text('Occupation',
+                          style: TextStyle(
+                              color: context.theme.greyColor,
+                              fontWeight: FontWeight.w500)),
+                      const Text('Hapztext CEO',
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.w500)),
                     ],
                   ),
                 ),
@@ -216,8 +240,13 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Height', style: TextStyle(color: context.theme.greyColor, fontWeight: FontWeight.w500)),
-                      Text('1.76m', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
+                      Text('Height',
+                          style: TextStyle(
+                              color: context.theme.greyColor,
+                              fontWeight: FontWeight.w500)),
+                      const Text('1.76m',
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.w500)),
                     ],
                   ),
                 ),
@@ -228,8 +257,13 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Ethnicity', style: TextStyle(color: context.theme.greyColor, fontWeight: FontWeight.w500)),
-                      Text('Christianity', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
+                      Text('Ethnicity',
+                          style: TextStyle(
+                              color: context.theme.greyColor,
+                              fontWeight: FontWeight.w500)),
+                      const Text('Christianity',
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.w500)),
                     ],
                   ),
                 ),
@@ -240,8 +274,17 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Relationship status', style: TextStyle(color: context.theme.greyColor, fontWeight: FontWeight.w500),),
-                      Text('Single', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),),
+                      Text(
+                        'Relationship status',
+                        style: TextStyle(
+                            color: context.theme.greyColor,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      const Text(
+                        'Single',
+                        style: TextStyle(
+                            color: Colors.grey, fontWeight: FontWeight.w500),
+                      ),
                     ],
                   ),
                 ),
@@ -252,8 +295,13 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Looking for', style: TextStyle(color: context.theme.greyColor, fontWeight: FontWeight.w500)),
-                      Text('Anime, Football', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
+                      Text('Looking for',
+                          style: TextStyle(
+                              color: context.theme.greyColor,
+                              fontWeight: FontWeight.w500)),
+                      const Text('Anime, Football',
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.w500)),
                     ],
                   ),
                 ),
@@ -264,8 +312,13 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Current location', style: TextStyle(color: context.theme.greyColor, fontWeight: FontWeight.w500)),
-                      Text('Abuja, Nigeria', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
+                      Text('Current location',
+                          style: TextStyle(
+                              color: context.theme.greyColor,
+                              fontWeight: FontWeight.w500)),
+                      const Text('Abuja, Nigeria',
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.w500)),
                     ],
                   ),
                 ),

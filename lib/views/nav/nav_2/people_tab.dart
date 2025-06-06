@@ -10,7 +10,7 @@ class PeopleTab extends StatefulWidget {
 class _PeopleTabState extends State<PeopleTab> {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text('PEOPLE'),
     );
   }

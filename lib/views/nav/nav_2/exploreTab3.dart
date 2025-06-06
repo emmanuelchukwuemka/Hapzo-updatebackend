@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
-// import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:haptext_api/common/theme/custom_theme_extension.dart';
+ 
+
+import 'package:haptext_api/exports.dart';
 
 class XploreTab3 extends StatelessWidget {
-  XploreTab3({Key? key}) : super(key: key);
+  const XploreTab3({Key? key}) : super(key: key);
 
   // final TextEditingController _searchController = TextEditingController();
 
@@ -26,86 +25,89 @@ class XploreTab3 extends StatelessWidget {
             flex: 1,
             child: Container(
               color: Colors.black54,
-              child: Stack(
-                  children: [
-                    const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 50,
-                            backgroundImage: AssetImage(
-                              'assets/images/asta.jpg',),
-                          ),
-                          Text(
-                            'Connecting . . .',
-                            style: TextStyle(color: Colors.white,),
-                          ),
-                        ],
+              child: Stack(children: [
+                const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: AssetImage(
+                          'assets/images/asta.jpg',
+                        ),
                       ),
-                    ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Container(
-                          margin: const EdgeInsets.only(top: 25.0, right: 25.0),
-                          child: const Icon(
-                            // FontAwesomeIcons.expand,
-                            Icons.add, color: Colors.white, size: 22.0,)
+                      Text(
+                        'Connecting . . .',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Container(
-                          margin: EdgeInsets.only(top: 25.0, left: 25.0),
-                          child: Icon(
-                            Icons.flag, color: Colors.green, size: 30,)
-                      ),
-                    ),
-                  ]
-              ),
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                      margin: const EdgeInsets.only(top: 25.0, right: 25.0),
+                      child: const Icon(
+                        // FontAwesomeIcons.expand,
+                        Icons.add, color: Colors.white, size: 22.0,
+                      )),
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Container(
+                      margin: const EdgeInsets.only(top: 25.0, left: 25.0),
+                      child: const Icon(
+                        Icons.flag,
+                        color: Colors.green,
+                        size: 30,
+                      )),
+                ),
+              ]),
             ),
           ),
-          SizedBox(height: 1.0),
+          const SizedBox(height: 1.0),
           Expanded(
             flex: 1,
             child: Container(
               color: Colors.black54,
-              child: const Stack(
-                children: [
-                  Center(
-                    child: CircleAvatar(
-                      radius: 55.0,
-                      backgroundImage: AssetImage('assets/images/yuno.jpg',),
+              child: const Stack(children: [
+                Center(
+                  child: CircleAvatar(
+                    radius: 55.0,
+                    backgroundImage: AssetImage(
+                      'assets/images/yuno.jpg',
                     ),
                   ),
-                  // Align(
-                  //   alignment: Alignment.bottomRight,
-                  //   child: Container(
-                  //     margin: EdgeInsets.only(bottom: 25.0, right: 25.0),
-                  //     height: 50,
-                  //     width: 50,
-                  //     decoration: BoxDecoration(
-                  //       color: Colors.white,
-                  //       borderRadius: BorderRadius.circular(25),
-                  //       boxShadow: [BoxShadow(
-                  //         blurRadius: 2.0,
-                  //         offset: Offset(1.0, 1.0),
-                  //         color: Colors.black87,
-                  //       )],
-                  //     ),
-                  //     child: Center(
-                  //       child: IconButton(
-                  //         onPressed: () {
-                  //           print('Video call menu button clicked');
-                  //         },
-                  //         icon: Icon(Icons.add, color: Colors.orange,
-                  //           size: 30,),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                ]
-              ),
+                ),
+                // Align(
+                //   alignment: Alignment.bottomRight,
+                //   child: Container(
+                //     margin: EdgeInsets.only(bottom: 25.0, right: 25.0),
+                //     height: 50,
+                //     width: 50,
+                //     decoration: BoxDecoration(
+                //       color: Colors.white,
+                //       borderRadius: BorderRadius.circular(25),
+                //       boxShadow: [BoxShadow(
+                //         blurRadius: 2.0,
+                //         offset: Offset(1.0, 1.0),
+                //         color: Colors.black87,
+                //       )],
+                //     ),
+                //     child: Center(
+                //       child: IconButton(
+                //         onPressed: () {
+                //           print('Video call menu button clicked');
+                //         },
+                //         icon: Icon(Icons.add, color: Colors.orange,
+                //           size: 30,),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+              ]),
             ),
           ),
           // Container(
@@ -292,7 +294,7 @@ class XploreTab3 extends StatelessWidget {
           // ),
         ],
       ),
-        // floatingActionButton: SpeedDial(
+      // floatingActionButton: SpeedDial(
       //   animatedIcon: AnimatedIcons.menu_close,
       //   animationDuration: Duration(milliseconds: 400),
       //   backgroundColor: context.theme.primaryColor,

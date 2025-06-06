@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 
 class ConfirmAudioUpload extends StatefulWidget {
+  const ConfirmAudioUpload({super.key});
+
   @override
-  _ConfirmAudioUploadState createState() => _ConfirmAudioUploadState();
+  ConfirmAudioUploadState createState() => ConfirmAudioUploadState();
 }
 
-class _ConfirmAudioUploadState extends State<ConfirmAudioUpload> {
+class ConfirmAudioUploadState extends State<ConfirmAudioUpload> {
   File? _selectedAudio;
   String? _audioUrl;
   // AudioPlayer audioPlayer = AudioPlayer();
@@ -16,7 +18,8 @@ class _ConfirmAudioUploadState extends State<ConfirmAudioUpload> {
   Duration position = Duration.zero;
 
   Future<void> _uploadAudio() async {
-    final audioPicker = await FilePicker.platform.pickFiles(type: FileType.audio);
+    final audioPicker =
+        await FilePicker.platform.pickFiles(type: FileType.audio);
     if (audioPicker != null) {
       debugPrint('Audio Selected');
       setState(() {
@@ -50,31 +53,34 @@ class _ConfirmAudioUploadState extends State<ConfirmAudioUpload> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Audio Upload')),
+      appBar: AppBar(title: const Text('Audio Upload')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             _selectedAudio != null
-              ? ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  '',
-                  width: double.infinity,
-                  height: 350,
-                  fit: BoxFit.cover,
-                ),
-              ) : Container(
-                height: 100,
-                width: double.infinity,
-                child: const Center(
-                  child: Text(
-                    '00:00:00',
-                    style: TextStyle(fontSize: 25.0,),
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(
+                      '',
+                      width: double.infinity,
+                      height: 350,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : const SizedBox(
+                    height: 100,
+                    width: double.infinity,
+                    child: Center(
+                      child: Text(
+                        '00:00:00',
+                        style: TextStyle(
+                          fontSize: 25.0,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
             const SizedBox(
               height: 20,
             ),
@@ -94,14 +100,14 @@ class _ConfirmAudioUploadState extends State<ConfirmAudioUpload> {
                     'Audio',
                     // style: TextStyle(fontSize: 20, color: context.theme.primaryColor,),
                   ),
-                  SizedBox(height: 15.0),
+                  const SizedBox(height: 15.0),
                   Slider(
                     min: 0,
                     max: duration.inSeconds.toDouble(),
                     value: position.inSeconds.toDouble(),
                     onChanged: (value) async {},
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 70),
                     child: AudioPlayerButton(
@@ -112,26 +118,27 @@ class _ConfirmAudioUploadState extends State<ConfirmAudioUpload> {
                   ),
                 ],
               ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _selectedAudio != null
-              ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: AudioPlayerButton(
-                  onPressed: () {},
-                  // _uploadToFirebase,
-                  icon: Icons.cloud_upload,
-                  label: 'Upload File',
-                ),
-              ) : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: AudioPlayerButton(
-                  onPressed: () {},
-                  // _uploadToFirebase,
-                  icon: Icons.fiber_manual_record,
-                  label: 'Record',
-                ),
-              ),
-            SizedBox(height: 20),
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                    child: AudioPlayerButton(
+                      onPressed: () {},
+                      // _uploadToFirebase,
+                      icon: Icons.cloud_upload,
+                      label: 'Upload File',
+                    ),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                    child: AudioPlayerButton(
+                      onPressed: () {},
+                      // _uploadToFirebase,
+                      icon: Icons.fiber_manual_record,
+                      label: 'Record',
+                    ),
+                  ),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: AudioPlayerButton(
@@ -153,6 +160,7 @@ class AudioPlayerButton extends StatelessWidget {
   final String label;
 
   const AudioPlayerButton({
+    super.key,
     required this.onPressed,
     required this.icon,
     required this.label,

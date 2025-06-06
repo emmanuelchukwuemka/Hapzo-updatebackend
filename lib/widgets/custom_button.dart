@@ -1,21 +1,56 @@
-import 'package:flutter/material.dart';
+import 'package:haptext_api/exports.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 // import 'package:haptext_api/exports.dart';
 
-class CustomButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-  const CustomButton({Key? key, required this.text, required this.onPressed}) : super(key: key);
+class Appbutton extends StatelessWidget {
+  const Appbutton(
+      {super.key,
+      this.buttonColor,
+      this.child,
+      this.label,
+      this.onTap,
+      this.width,
+      this.height,
+      this.labelColor,
+      this.isLoading = false,
+      this.gradient = false,
+      this.borderColor,
+      this.border,
+      this.labelSize,
+      this.labelWeight});
+
+  final Color? buttonColor, borderColor, labelColor;
+  final Widget? child;
+  final String? label;
+  final Function()? onTap;
+  final double? width, height, labelSize;
+  final bool isLoading, gradient;
+  final bool? border;
+  final FontWeight? labelWeight;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Colors.orange,
-        ),
-      ),
-    );
+    final size = MediaQuery.sizeOf(context);
+    return AppshadowContainer(
+        onTap: onTap,
+        shadowcolour: Colors.transparent,
+        width: width ?? size.width,
+        border: border ?? false,
+        borderColor: borderColor ?? Colors.transparent,
+        height: height ?? size.height * 0.065,
+        radius: size.width * 0.02,
+        
+        color: buttonColor ??Colors.orange,
+        child: isLoading
+            ? LoadingAnimationWidget.flickr(
+                rightDotColor:Colors.white,
+                leftDotColor: Colors.blueAccent,
+                size: 30.sp)
+            : child ??
+                AppText(
+                    text: label ?? '',
+                    color: labelColor ??Colors.white,
+                    fontSize: labelSize ?? 16,
+                    fontWeight: labelWeight ?? FontWeight.bold));
   }
 }

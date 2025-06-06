@@ -11,11 +11,11 @@ class Navigation extends StatefulWidget {
 
 class _NavigationState extends State<Navigation> {
   final List<Widget> screens = [
-    HomePage(),
+    const HomePage(),
     Explore(),
-    Posts(),
-    FollowingPage(),
-    ProfilePage(),
+    const Posts(),
+    const FollowingPage(),
+    const ProfilePage(),
   ];
   int _selectedIndex = 0;
   void onClick(int index) {
@@ -36,7 +36,8 @@ class _NavigationState extends State<Navigation> {
         currentIndex: _selectedIndex,
         selectedItemColor: context.theme.primaryColor,
         unselectedItemColor: context.theme.greyColor,
-        selectedLabelStyle: TextStyle(fontSize: 12, color: context.theme.primaryColor),
+        selectedLabelStyle:
+            TextStyle(fontSize: 12, color: context.theme.primaryColor),
         unselectedLabelStyle: TextStyle(color: context.theme.greyColor),
         showUnselectedLabels: true,
         showSelectedLabels: true,
@@ -45,11 +46,26 @@ class _NavigationState extends State<Navigation> {
         // selectedFontSize: 0,
         // unselectedFontSize: 0,
         items: [
-          BottomNavigationBarItem(label: 'Home', icon: Icon(Icons.home),),
-          BottomNavigationBarItem(label: 'Explore', icon: Icon(Icons.directions_walk),),
-          BottomNavigationBarItem(label: 'Post', icon: CustomIcon(Icons.add, 2),),
-          BottomNavigationBarItem(label: 'People', icon: Icon(Icons.people_alt),),
-          BottomNavigationBarItem(label: 'Profile', icon: Icon(Icons.person),),
+          const BottomNavigationBarItem(
+            label: 'Home',
+            icon: Icon(Icons.home),
+          ),
+          const BottomNavigationBarItem(
+            label: 'Explore',
+            icon: Icon(Icons.directions_walk),
+          ),
+          BottomNavigationBarItem(
+            label: 'Post',
+            icon: CustomIcon(Icons.add, 2),
+          ),
+          const BottomNavigationBarItem(
+            label: 'People',
+            icon: Icon(Icons.people_alt),
+          ),
+          const BottomNavigationBarItem(
+            label: 'Profile',
+            icon: Icon(Icons.person),
+          ),
         ],
       ),
     );
@@ -76,15 +92,17 @@ class _NavigationState extends State<Navigation> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         gradient: const LinearGradient(
-          colors: [Color(0xFFFD6104), Color(0xFFFD8502), Color(0xFFFFC203)],
-          begin: Alignment.bottomRight,
-          end: Alignment.topLeft,
-          tileMode: TileMode.clamp
-        ),
+            colors: [Color(0xFFFD6104), Color(0xFFFD8502), Color(0xFFFFC203)],
+            begin: Alignment.bottomRight,
+            end: Alignment.topLeft,
+            tileMode: TileMode.clamp),
       ),
       child: Center(
         child: IconButton(
-          icon: Icon(icon, size: 18,),
+          icon: Icon(
+            icon,
+            size: 18,
+          ),
           onPressed: () {
             setState(() {
               _selectedIndex = index;

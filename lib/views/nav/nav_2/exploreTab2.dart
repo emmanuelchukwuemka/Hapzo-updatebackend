@@ -1,16 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:haptext_api/views/nav/exports.dart';
+ 
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
+import 'package:haptext_api/exports.dart';
 
 class XploreTab2 extends StatefulWidget {
-  XploreTab2({Key? key}) : super(key: key);
+  const XploreTab2({Key? key}) : super(key: key);
 
   @override
   State<XploreTab2> createState() => _XploreTab2State();
 }
 
 class _XploreTab2State extends State<XploreTab2> {
-
   late final int index;
 
   @override
@@ -20,7 +19,7 @@ class _XploreTab2State extends State<XploreTab2> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 7.50),
+          const SizedBox(height: 7.50),
           Container(
             width: size.width,
             height: size.height * .705,
@@ -34,7 +33,7 @@ class _XploreTab2State extends State<XploreTab2> {
                 Center(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child: Image(
+                    child: const Image(
                       height: double.infinity,
                       width: double.infinity,
                       image: AssetImage('assets/images/landscape1.jpg'),
@@ -43,7 +42,8 @@ class _XploreTab2State extends State<XploreTab2> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -52,23 +52,31 @@ class _XploreTab2State extends State<XploreTab2> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Row(
+                          const Row(
                             children: [
                               CircleAvatar(
                                 radius: 20,
-                                backgroundImage: AssetImage('assets/images/sasuke.jpg'),
+                                backgroundImage:
+                                    AssetImage('assets/images/sasuke.jpg'),
                               ),
-                              const SizedBox(width: 10.0),
+                              SizedBox(width: 10.0),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Fortune',
-                                    style: TextStyle(color: Color(0xFFFD6104),
+                                  Text(
+                                    'Fortune',
+                                    style: TextStyle(
+                                      color: Color(0xFFFD6104),
                                       fontSize: 15,
-                                      fontWeight: FontWeight.bold,),
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                  Text('52 mins ago',
-                                    style: TextStyle(color: Color(0xFFFD6104), fontSize: 12,),
+                                  Text(
+                                    '52 mins ago',
+                                    style: TextStyle(
+                                      color: Color(0xFFFD6104),
+                                      fontSize: 12,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -76,18 +84,21 @@ class _XploreTab2State extends State<XploreTab2> {
                           ),
                           InkWell(
                             onTap: () {
-                              print('Follow button clicked');
+                             
                             },
-                            child: Text(
+                            child: const Text(
                               'Follow',
-                              style: TextStyle(color: Color(0xFFFD6104), fontWeight: FontWeight.w500,),
+                              style: TextStyle(
+                                color: Color(0xFFFD6104),
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ],
                       ),
                       Column(
                         children: [
-                          Container(
+                          SizedBox(
                             height: 50,
                             width: double.infinity,
                             // color: Colors.white70,
@@ -98,10 +109,11 @@ class _XploreTab2State extends State<XploreTab2> {
                                   Container(
                                     height: 30,
                                     width: 120,
-                                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 7.5),
                                     margin: const EdgeInsets.only(right: 25.0),
                                     decoration: BoxDecoration(
-                                      border: Border(
+                                      border: const Border(
                                         top: BorderSide(
                                           style: BorderStyle.solid,
                                           width: 3.0,
@@ -138,83 +150,100 @@ class _XploreTab2State extends State<XploreTab2> {
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.thumb_up, color: Color(0xFFFD6104),
+                                        Icons.thumb_up,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.favorite_outlined, color: Color(0xFFFD6104),
+                                        Icons.favorite_outlined,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.face, color: Color(0xFFFD6104),
+                                        Icons.face,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.image_rounded, color: Color(0xFFFD6104),
+                                        Icons.image_rounded,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.audiotrack, color: Color(0xFFFD6104),
+                                        Icons.audiotrack,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.video_library_outlined, color: Color(0xFFFD6104),
+                                        Icons.video_library_outlined,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.person, color: Color(0xFFFD6104),
+                                        Icons.person,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
-                                ]
-                            ),
+                                ]),
                           ),
-                          SizedBox(height: 15.0),
+                          const SizedBox(height: 15.0),
                           Container(
                             height: 1.5,
                             width: double.infinity,
                             color: Colors.white,
                           ),
-                          Row(
+                          const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('00:00', style: TextStyle(color: Colors.white, fontSize: 12,),),
-                                Text('2:05:19', style: TextStyle(color: Colors.white, fontSize: 12,),)
-                              ]
-                          ),
+                                Text(
+                                  '00:00',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                Text(
+                                  '2:05:19',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                )
+                              ]),
                         ],
                       ),
                     ],
@@ -223,7 +252,7 @@ class _XploreTab2State extends State<XploreTab2> {
               ],
             ),
           ),
-          SizedBox(height: 7.50),
+          const SizedBox(height: 7.50),
           Container(
             width: size.width,
             height: size.height * .705,
@@ -237,7 +266,7 @@ class _XploreTab2State extends State<XploreTab2> {
                 Center(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child: Image(
+                    child: const Image(
                       height: double.infinity,
                       width: double.infinity,
                       image: AssetImage('assets/images/landscape2.jpg'),
@@ -246,7 +275,8 @@ class _XploreTab2State extends State<XploreTab2> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -255,23 +285,31 @@ class _XploreTab2State extends State<XploreTab2> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Row(
+                          const Row(
                             children: [
                               CircleAvatar(
                                 radius: 20,
-                                backgroundImage: AssetImage('assets/images/sasuke.jpg'),
+                                backgroundImage:
+                                    AssetImage('assets/images/sasuke.jpg'),
                               ),
-                              const SizedBox(width: 10.0),
+                              SizedBox(width: 10.0),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Fortune',
-                                    style: TextStyle(color: Color(0xFFFD6104),
+                                  Text(
+                                    'Fortune',
+                                    style: TextStyle(
+                                      color: Color(0xFFFD6104),
                                       fontSize: 15,
-                                      fontWeight: FontWeight.bold,),
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                  Text('52 mins ago',
-                                    style: TextStyle(color: Color(0xFFFD6104), fontSize: 12,),
+                                  Text(
+                                    '52 mins ago',
+                                    style: TextStyle(
+                                      color: Color(0xFFFD6104),
+                                      fontSize: 12,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -279,18 +317,21 @@ class _XploreTab2State extends State<XploreTab2> {
                           ),
                           InkWell(
                             onTap: () {
-                              print('Follow button clicked');
+                            
                             },
-                            child: Text(
+                            child: const Text(
                               'Follow',
-                              style: TextStyle(color: Color(0xFFFD6104), fontWeight: FontWeight.w500,),
+                              style: TextStyle(
+                                color: Color(0xFFFD6104),
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ],
                       ),
                       Column(
                         children: [
-                          Container(
+                          SizedBox(
                             height: 50,
                             width: double.infinity,
                             // color: Colors.white70,
@@ -301,10 +342,11 @@ class _XploreTab2State extends State<XploreTab2> {
                                   Container(
                                     height: 30,
                                     width: 120,
-                                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 7.5),
                                     margin: const EdgeInsets.only(right: 25.0),
                                     decoration: BoxDecoration(
-                                      border: Border(
+                                      border: const Border(
                                         top: BorderSide(
                                           style: BorderStyle.solid,
                                           width: 3.0,
@@ -341,83 +383,100 @@ class _XploreTab2State extends State<XploreTab2> {
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.thumb_up, color: Color(0xFFFD6104),
+                                        Icons.thumb_up,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.favorite_outlined, color: Color(0xFFFD6104),
+                                        Icons.favorite_outlined,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.face, color: Color(0xFFFD6104),
+                                        Icons.face,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.image_rounded, color: Color(0xFFFD6104),
+                                        Icons.image_rounded,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.audiotrack, color: Color(0xFFFD6104),
+                                        Icons.audiotrack,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.video_library_outlined, color: Color(0xFFFD6104),
+                                        Icons.video_library_outlined,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.person, color: Color(0xFFFD6104),
+                                        Icons.person,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
-                                ]
-                            ),
+                                ]),
                           ),
-                          SizedBox(height: 15.0),
+                          const SizedBox(height: 15.0),
                           Container(
                             height: 1.5,
                             width: double.infinity,
                             color: Colors.white,
                           ),
-                          Row(
+                          const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('00:00', style: TextStyle(color: Colors.white, fontSize: 12,),),
-                                Text('2:05:19', style: TextStyle(color: Colors.white, fontSize: 12,),)
-                              ]
-                          ),
+                                Text(
+                                  '00:00',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                Text(
+                                  '2:05:19',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                )
+                              ]),
                         ],
                       ),
                     ],
@@ -426,7 +485,7 @@ class _XploreTab2State extends State<XploreTab2> {
               ],
             ),
           ),
-          SizedBox(height: 7.50),
+          const SizedBox(height: 7.50),
           Container(
             width: size.width,
             height: size.height * .705,
@@ -440,7 +499,7 @@ class _XploreTab2State extends State<XploreTab2> {
                 Center(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child: Image(
+                    child: const Image(
                       height: double.infinity,
                       width: double.infinity,
                       image: AssetImage('assets/images/landscape4.jpg'),
@@ -449,7 +508,8 @@ class _XploreTab2State extends State<XploreTab2> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -458,23 +518,31 @@ class _XploreTab2State extends State<XploreTab2> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Row(
+                          const Row(
                             children: [
                               CircleAvatar(
                                 radius: 20,
-                                backgroundImage: AssetImage('assets/images/sasuke.jpg'),
+                                backgroundImage:
+                                    AssetImage('assets/images/sasuke.jpg'),
                               ),
-                              const SizedBox(width: 10.0),
+                              SizedBox(width: 10.0),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Fortune',
-                                    style: TextStyle(color: Color(0xFFFD6104),
+                                  Text(
+                                    'Fortune',
+                                    style: TextStyle(
+                                      color: Color(0xFFFD6104),
                                       fontSize: 15,
-                                      fontWeight: FontWeight.bold,),
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                  Text('52 mins ago',
-                                    style: TextStyle(color: Color(0xFFFD6104), fontSize: 12,),
+                                  Text(
+                                    '52 mins ago',
+                                    style: TextStyle(
+                                      color: Color(0xFFFD6104),
+                                      fontSize: 12,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -482,18 +550,21 @@ class _XploreTab2State extends State<XploreTab2> {
                           ),
                           InkWell(
                             onTap: () {
-                              print('Follow button clicked');
+                             
                             },
-                            child: Text(
+                            child: const Text(
                               'Follow',
-                              style: TextStyle(color: Color(0xFFFD6104), fontWeight: FontWeight.w500,),
+                              style: TextStyle(
+                                color: Color(0xFFFD6104),
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ],
                       ),
                       Column(
                         children: [
-                          Container(
+                          SizedBox(
                             height: 50,
                             width: double.infinity,
                             // color: Colors.white70,
@@ -504,10 +575,11 @@ class _XploreTab2State extends State<XploreTab2> {
                                   Container(
                                     height: 30,
                                     width: 120,
-                                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 7.5),
                                     margin: const EdgeInsets.only(right: 25.0),
                                     decoration: BoxDecoration(
-                                      border: Border(
+                                      border: const Border(
                                         top: BorderSide(
                                           style: BorderStyle.solid,
                                           width: 3.0,
@@ -544,83 +616,100 @@ class _XploreTab2State extends State<XploreTab2> {
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.thumb_up, color: Color(0xFFFD6104),
+                                        Icons.thumb_up,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.favorite_outlined, color: Color(0xFFFD6104),
+                                        Icons.favorite_outlined,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.face, color: Color(0xFFFD6104),
+                                        Icons.face,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.image_rounded, color: Color(0xFFFD6104),
+                                        Icons.image_rounded,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.audiotrack, color: Color(0xFFFD6104),
+                                        Icons.audiotrack,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.video_library_outlined, color: Color(0xFFFD6104),
+                                        Icons.video_library_outlined,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.person, color: Color(0xFFFD6104),
+                                        Icons.person,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
-                                ]
-                            ),
+                                ]),
                           ),
-                          SizedBox(height: 15.0),
+                          const SizedBox(height: 15.0),
                           Container(
                             height: 1.5,
                             width: double.infinity,
                             color: Colors.white,
                           ),
-                          Row(
+                          const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('00:00', style: TextStyle(color: Colors.white, fontSize: 12,),),
-                                Text('2:05:19', style: TextStyle(color: Colors.white, fontSize: 12,),)
-                              ]
-                          ),
+                                Text(
+                                  '00:00',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                Text(
+                                  '2:05:19',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                )
+                              ]),
                         ],
                       ),
                     ],
@@ -629,7 +718,7 @@ class _XploreTab2State extends State<XploreTab2> {
               ],
             ),
           ),
-          SizedBox(height: 7.50),
+          const SizedBox(height: 7.50),
           Container(
             width: size.width,
             height: size.height * .705,
@@ -643,7 +732,7 @@ class _XploreTab2State extends State<XploreTab2> {
                 Center(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child: Image(
+                    child: const Image(
                       height: double.infinity,
                       width: double.infinity,
                       image: AssetImage('assets/images/landscape3.jpg'),
@@ -652,7 +741,8 @@ class _XploreTab2State extends State<XploreTab2> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -661,23 +751,31 @@ class _XploreTab2State extends State<XploreTab2> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Row(
+                          const Row(
                             children: [
                               CircleAvatar(
                                 radius: 20,
-                                backgroundImage: AssetImage('assets/images/sasuke.jpg'),
+                                backgroundImage:
+                                    AssetImage('assets/images/sasuke.jpg'),
                               ),
-                              const SizedBox(width: 10.0),
+                              SizedBox(width: 10.0),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Fortune',
-                                    style: TextStyle(color: Color(0xFFFD6104),
+                                  Text(
+                                    'Fortune',
+                                    style: TextStyle(
+                                      color: Color(0xFFFD6104),
                                       fontSize: 15,
-                                      fontWeight: FontWeight.bold,),
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                  Text('52 mins ago',
-                                    style: TextStyle(color: Color(0xFFFD6104), fontSize: 12,),
+                                  Text(
+                                    '52 mins ago',
+                                    style: TextStyle(
+                                      color: Color(0xFFFD6104),
+                                      fontSize: 12,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -685,18 +783,21 @@ class _XploreTab2State extends State<XploreTab2> {
                           ),
                           InkWell(
                             onTap: () {
-                              print('Follow button clicked');
+                            
                             },
-                            child: Text(
+                            child: const Text(
                               'Follow',
-                              style: TextStyle(color: Color(0xFFFD6104), fontWeight: FontWeight.w500,),
+                              style: TextStyle(
+                                color: Color(0xFFFD6104),
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ],
                       ),
                       Column(
                         children: [
-                          Container(
+                          SizedBox(
                             height: 50,
                             width: double.infinity,
                             // color: Colors.white70,
@@ -707,10 +808,11 @@ class _XploreTab2State extends State<XploreTab2> {
                                   Container(
                                     height: 30,
                                     width: 120,
-                                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 7.5),
                                     margin: const EdgeInsets.only(right: 25.0),
                                     decoration: BoxDecoration(
-                                      border: Border(
+                                      border: const Border(
                                         top: BorderSide(
                                           style: BorderStyle.solid,
                                           width: 3.0,
@@ -747,83 +849,100 @@ class _XploreTab2State extends State<XploreTab2> {
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.thumb_up, color: Color(0xFFFD6104),
+                                        Icons.thumb_up,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.favorite_outlined, color: Color(0xFFFD6104),
+                                        Icons.favorite_outlined,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.face, color: Color(0xFFFD6104),
+                                        Icons.face,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.image_rounded, color: Color(0xFFFD6104),
+                                        Icons.image_rounded,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.audiotrack, color: Color(0xFFFD6104),
+                                        Icons.audiotrack,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.video_library_outlined, color: Color(0xFFFD6104),
+                                        Icons.video_library_outlined,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 25.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 25.0),
                                       child: Icon(
-                                        Icons.person, color: Color(0xFFFD6104),
+                                        Icons.person,
+                                        color: Color(0xFFFD6104),
                                       ),
                                     ),
                                   ),
-                                ]
-                            ),
+                                ]),
                           ),
-                          SizedBox(height: 15.0),
+                          const SizedBox(height: 15.0),
                           Container(
                             height: 1.5,
                             width: double.infinity,
                             color: Colors.white,
                           ),
-                          Row(
+                          const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('00:00', style: TextStyle(color: Colors.white, fontSize: 12,),),
-                                Text('2:05:19', style: TextStyle(color: Colors.white, fontSize: 12,),)
-                              ]
-                          ),
+                                Text(
+                                  '00:00',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                Text(
+                                  '2:05:19',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                )
+                              ]),
                         ],
                       ),
                     ],

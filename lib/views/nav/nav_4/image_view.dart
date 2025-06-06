@@ -14,55 +14,54 @@ class _ImageViewState extends State<ImageView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.theme.bgColor,
-      body: PageView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          Center(
-            child: Image(
-              image: AssetImage('assets/images/asta.jpg'),
-              fit: BoxFit.contain,
-            ),
+      body: PageView(scrollDirection: Axis.horizontal, children: [
+        const Center(
+          child: Image(
+            image: AssetImage('assets/images/asta.jpg'),
+            fit: BoxFit.contain,
           ),
-          Center(
-            child: Image(
-              image: AssetImage('assets/images/me.jpg'),
-              fit: BoxFit.contain,
-            ),
+        ),
+        const Center(
+          child: Image(
+            image: AssetImage('assets/images/me.jpg'),
+            fit: BoxFit.contain,
           ),
-          Center(
-            child: Image(
-              image: AssetImage('assets/images/vegeta.jpg'),
-              fit: BoxFit.contain,
-            ),
+        ),
+        const Center(
+          child: Image(
+            image: AssetImage('assets/images/vegeta.jpg'),
+            fit: BoxFit.contain,
           ),
-          Center(
-            child: Image(
-              image: AssetImage('assets/images/sasuke.jpg'),
-              fit: BoxFit.contain,
-            ),
+        ),
+        const Center(
+          child: Image(
+            image: AssetImage('assets/images/sasuke.jpg'),
+            fit: BoxFit.contain,
           ),
-          Center(
-            child: Image(
-              image: AssetImage('assets/images/yuno.jpg'),
-              fit: BoxFit.contain,
-            ),
+        ),
+        const Center(
+          child: Image(
+            image: AssetImage('assets/images/yuno.jpg'),
+            fit: BoxFit.contain,
           ),
-          Center(
+        ),
+        Center(
             child: InkWell(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => SeeAll()),);
-              },
-              child: Text(
-                'See all posts',
-                style: TextStyle(
-                  color: context.theme.titleTextColor,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            )
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SeeAll()),
+            );
+          },
+          child: Text(
+            'See all posts',
+            style: TextStyle(
+              color: context.theme.titleTextColor,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ]
-      ),
+        )),
+      ]),
     );
   }
 }

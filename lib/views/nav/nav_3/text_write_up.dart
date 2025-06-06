@@ -10,7 +10,7 @@ class _WriteTextState extends State<WriteText> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         // padding: EdgeInsets.symmetric(horizontal: 15, vertical: 35),
         height: double.infinity,
         width: double.infinity,
@@ -26,8 +26,8 @@ class _WriteTextState extends State<WriteText> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.max,
@@ -46,27 +46,32 @@ class _WriteTextState extends State<WriteText> {
                   ),
                   Text(
                     'Done',
-                    style: TextStyle(color: Colors.white, fontSize: 15,),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                    ),
                   ),
                 ],
               ),
             ),
-            Align(
+            const Align(
               alignment: Alignment.centerRight,
               child: Padding(
-                padding: const EdgeInsets.only(right: 10),
+                padding: EdgeInsets.only(right: 10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Icon(Icons.emoji_emotions_outlined, color: Colors.white, size: 22),
+                    Icon(Icons.emoji_emotions_outlined,
+                        color: Colors.white, size: 22),
                     SizedBox(height: 10),
                     Text(
                       'Emoji',
                       style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                     SizedBox(height: 20),
-                    Icon(Icons.access_alarms_rounded, color: Colors.white, size: 22),
+                    Icon(Icons.access_alarms_rounded,
+                        color: Colors.white, size: 22),
                     SizedBox(height: 10),
                     Text(
                       'Schedule\nTime',
@@ -82,7 +87,8 @@ class _WriteTextState extends State<WriteText> {
                       style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                     SizedBox(height: 20),
-                    Icon(Icons.star_half_rounded, color: Colors.white, size: 22),
+                    Icon(Icons.star_half_rounded,
+                        color: Colors.white, size: 22),
                     SizedBox(height: 10),
                     Text(
                       'Background',

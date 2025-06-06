@@ -10,7 +10,6 @@ class Trending extends StatefulWidget {
 }
 
 class _TrendingState extends State<Trending> {
-
   List<String> imgs = [
     'assets/images/sasuke.jpg',
     'assets/images/me.jpg',
@@ -103,14 +102,29 @@ class _TrendingState extends State<Trending> {
         iconTheme: IconThemeData(
           color: context.theme.primaryColor,
         ),
-        title: Text('  Trending', style: TextStyle(color: context.theme.primaryColor, fontWeight: FontWeight.bold,),),
+        title: Text(
+          '  Trending',
+          style: TextStyle(
+            color: context.theme.primaryColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: GridView.builder(
         padding: const EdgeInsets.all(5),
         // physics: FixedExtentScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, crossAxisSpacing: 2.5, mainAxisSpacing: 2.5,),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 2.5,
+          mainAxisSpacing: 2.5,
+        ),
         itemCount: imgs.length,
-        itemBuilder: (context, index) => ExploreItem(size: size, imgPath: imgs[index], fileType: type[index], category: icn[index],),
+        itemBuilder: (context, index) => ExploreItem(
+          size: size,
+          imgPath: imgs[index],
+          fileType: type[index],
+          category: icn[index],
+        ),
       ),
       // PageView(
       //     scrollDirection: Axis.vertical,
@@ -1237,7 +1251,7 @@ class _TrendingState extends State<Trending> {
       //               height: 50,
       //               color: Colors.white,
       //               child: Expanded(
-      //                   child: Container(color: Colors.orange.withOpacity(.20))
+      //                   child: Container(color: Colors.orange   .withValues(alpha:.20))
       //               ),
       //             ),
       //             SizedBox(height: 2),

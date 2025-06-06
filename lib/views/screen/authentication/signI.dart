@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:haptext_api/exports.dart';
-import 'package:haptext_api/views/nav/exports.dart';
-import 'package:haptext_api/services/base_client.dart';
 
 class SignI extends StatefulWidget {
   const SignI({super.key});
@@ -14,8 +10,8 @@ class SignI extends StatefulWidget {
 class _SignIState extends State<SignI> {
   bool hidePassword = true;
 
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -29,7 +25,7 @@ class _SignIState extends State<SignI> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       // backgroundColor: context.theme.bgColor,
-      body: Container(
+      body: SizedBox(
         height: MediaQuery.of(context).size.height,
         child: Center(
           child: SingleChildScrollView(
@@ -54,8 +50,8 @@ class _SignIState extends State<SignI> {
                   padding: const EdgeInsets.symmetric(horizontal: 35.0),
                   child: Column(children: [
                     InputField(
-                      labelText: 'Email',
-                      icon: Icon(Icons.mail),
+                      // labelText: 'Email',
+                      // icon: const Icon(Icons.mail),
                       controller: _emailController,
                     ),
                     TextFormField(
@@ -78,7 +74,7 @@ class _SignIState extends State<SignI> {
                               hidePassword = !hidePassword;
                             });
                           },
-                          color: Colors.grey.withOpacity(0.65),
+                          color: Colors.grey.withValues(alpha: 0.65),
                           icon: Icon(
                             hidePassword
                                 ? Icons.visibility_off
@@ -96,50 +92,16 @@ class _SignIState extends State<SignI> {
                     const SizedBox(height: 40.0),
                     SizedBox(
                       width: size.width * 0.75,
-                      child: CustomButton(
-                        onPressed: () async {
-                          // authController.loginUser(_emailController.text, _passwordController.text,);
-                          print('Log in button pressed');
-                          try {
-                            const apiUrl = 'https://test-backend-1ok0.onrender.com/social_backend/user/login';
-                            // const apiUrl = 'https://test-backend-0dhd.onrender.com/social_backend/user/login';
-                            var response2 = await http.post(
-                              Uri.parse(apiUrl),
-                              body: {
-                                'email': _emailController.text,
-                                'password': _passwordController.text,
-                              },
-                            );
-
-                            if (response2.statusCode == 200) {
-                              debugPrint('Login successful');
-                              Navigator.push(context, MaterialPageRoute(builder: (_) => ProfilePage()));
-                            } else {
-                              // Login failed
-                              print('Login failed');
-                              print(response2.body);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Login failed. Please try again.')),
-                              );
-                            }
-                          } catch (error) {
-                            print('Error during login: $error');
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('An error occurred during login. Please try again later.')),
-                            );
-                          }
-                        },
-                        text: 'Log in',
+                      child: Appbutton(
+                        onTap: () async {},
+                        label: 'Log in',
                       ),
                     ),
                     const SizedBox(height: 20.0),
                     GestureDetector(
                       onTap: () {
-                        print('Forgot password button clicked');
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => SignI())
-                        );
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => const SignI()));
                       },
                       child: const Text(
                         'Forgot Password?',
@@ -152,21 +114,9 @@ class _SignIState extends State<SignI> {
                     const SizedBox(height: 20.0),
                     SizedBox(
                       width: size.width * 0.75,
-                      child: CustomButton(
-                        onPressed: () async {
-                          print("Test api button clicked");
-                          var response2 = await BaseClient().get('https://jsonplaceholder.typicode.com/posts').catchError((err) {});
-
-                          if (response2.statusCode == null) {
-                            debugPrint('Null data');
-                          }
-                          debugPrint('Successful');
-
-                          var posts = postsFromJson(response2);
-                          debugPrint('Posts count: ${posts.length}');
-                          // debugPrint('Posts count: ' + posts.length.toString());
-                        },
-                        text: 'Test api',
+                      child: Appbutton(
+                        onTap: () async {},
+                        label: 'Test api',
                       ),
                     ),
                   ]),
@@ -182,10 +132,10 @@ class _SignIState extends State<SignI> {
                         // color: context.theme.buttonColor,
                       ),
                     ),
-                    SizedBox(width: 55.0),
+                    const SizedBox(width: 55.0),
                     GestureDetector(
-                      onTap: () => Navigator.push(
-                          context, MaterialPageRoute(builder: (_) => SignUp())),
+                      // onTap: () => Navigator.push(context,
+                      //     MaterialPageRoute(builder: (_) => const SignUp())),
                       // navigateToSignUpScreen(context),
                       child: const Text(
                         'Join Now',

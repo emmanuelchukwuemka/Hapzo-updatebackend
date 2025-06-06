@@ -14,7 +14,8 @@ class _PictureContainerState extends State<PictureContainer> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: size.width * .01, vertical: size.width * .015),
+      padding: EdgeInsets.symmetric(
+          horizontal: size.width * .01, vertical: size.width * .015),
       height: size.width * 1.15,
       width: size.width,
       child: Column(
@@ -24,22 +25,23 @@ class _PictureContainerState extends State<PictureContainer> {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ImageView()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ImageView()));
                 },
                 child: Container(
                   height: size.width * .67,
                   width: size.width * .65,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    image: const DecorationImage(
-                      image: AssetImage('assets/images/asta.jpg'),
-                      fit: BoxFit.cover
-                    )
-                  ),
+                      borderRadius: BorderRadius.circular(15),
+                      image: const DecorationImage(
+                          image: AssetImage('assets/images/asta.jpg'),
+                          fit: BoxFit.cover)),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: Container(
-                      color: Colors.orange.withOpacity(.35),
+                      color: Colors.orange.withValues(alpha: .35),
                     ),
                   ),
                 ),
@@ -51,17 +53,15 @@ class _PictureContainerState extends State<PictureContainer> {
                     height: size.width * .33,
                     width: size.width * .32,
                     decoration: BoxDecoration(
-                      color: Colors.greenAccent,
-                      borderRadius: BorderRadius.circular(15),
+                        color: Colors.greenAccent,
+                        borderRadius: BorderRadius.circular(15),
                         image: const DecorationImage(
-                          image: AssetImage('assets/images/me.jpg'),
-                          fit: BoxFit.cover
-                        )
-                    ),
+                            image: AssetImage('assets/images/me.jpg'),
+                            fit: BoxFit.cover)),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15),
                       child: Container(
-                        color: Colors.red.withOpacity(.4),
+                        color: Colors.red.withValues(alpha: .4),
                       ),
                     ),
                   ),
@@ -70,16 +70,14 @@ class _PictureContainerState extends State<PictureContainer> {
                     height: size.width * .33,
                     width: size.width * .32,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/vegeta.jpg'),
-                          fit: BoxFit.cover
-                        )
-                    ),
+                        borderRadius: BorderRadius.circular(15),
+                        image: const DecorationImage(
+                            image: AssetImage('assets/images/vegeta.jpg'),
+                            fit: BoxFit.cover)),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15),
                       child: Container(
-                        color: Colors.green.withOpacity(.35),
+                        color: Colors.green.withValues(alpha: .35),
                       ),
                     ),
                   ),
@@ -94,16 +92,14 @@ class _PictureContainerState extends State<PictureContainer> {
                 height: size.width * .33,
                 width: size.width * .32,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  image: const DecorationImage(
-                  image: AssetImage('assets/images/sasuke.jpg'),
-                      fit: BoxFit.cover
-                  )
-                ),
+                    borderRadius: BorderRadius.circular(15),
+                    image: const DecorationImage(
+                        image: AssetImage('assets/images/sasuke.jpg'),
+                        fit: BoxFit.cover)),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: Container(
-                    color: Colors.pink.withOpacity(.5),
+                    color: Colors.pink.withValues(alpha: .5),
                   ),
                 ),
               ),
@@ -115,13 +111,11 @@ class _PictureContainerState extends State<PictureContainer> {
                     borderRadius: BorderRadius.circular(15),
                     image: const DecorationImage(
                         image: AssetImage('assets/images/yuno.jpg'),
-                        fit: BoxFit.cover
-                    )
-                ),
+                        fit: BoxFit.cover)),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: Container(
-                    color: Colors.purple.withOpacity(.4),
+                    color: Colors.purple.withValues(alpha: .4),
                   ),
                 ),
               ),
@@ -130,9 +124,8 @@ class _PictureContainerState extends State<PictureContainer> {
                 height: size.width * .33,
                 width: size.width * .32,
                 decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: BorderRadius.circular(15)
-                ),
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.circular(15)),
               ),
             ],
           ),
@@ -140,11 +133,19 @@ class _PictureContainerState extends State<PictureContainer> {
             alignment: Alignment.bottomRight,
             child: GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => SeeAll()),);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SeeAll()),
+                );
               },
               child: Padding(
-                padding: EdgeInsets.only(top: 10.0, right: 10.0),
-                child: Text('See all posts', style: TextStyle(color: context.theme.primaryColor,),),
+                padding: const EdgeInsets.only(top: 10.0, right: 10.0),
+                child: Text(
+                  'See all posts',
+                  style: TextStyle(
+                    color: context.theme.primaryColor,
+                  ),
+                ),
               ),
             ),
           )

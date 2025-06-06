@@ -1,16 +1,9 @@
 import 'dart:io';
-import 'dart:js';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:haptext_api/views/nav/exports.dart';
-import 'package:image_compression/image_compression.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 
-import '../../../models/new/posts_data.dart';
-import 'confirm_screen.dart';
 
 Future selectPhoto() async {
   try {
@@ -21,18 +14,18 @@ Future selectPhoto() async {
       final compressedImage = await compressImage(pickedFile as File);
 
       // Validate image dimensions/format
-      if (await validateImageDimensions(compressedImage)) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => ConfirmImageUpload(
-            imageFile: compressedImage,
-            imagePath: compressedImage.path,
-            pickedFile: compressedImage,
-          )),
-        );
-      } else {
-        debugPrint('Invalid image dimensions');
-      }
+      // if (await validateImageDimensions(compressedImage)) {
+      //   // Navigator.push(
+      //   //   context,
+      //   //   MaterialPageRoute(builder: (_) => ConfirmImageUpload(
+      //   //     imageFile: compressedImage,
+      //   //     imagePath: compressedImage.path,
+      //   //     pickedFile: compressedImage,
+      //   //   )),
+      //   // );
+      // } else {
+      //   debugPrint('Invalid image dimensions');
+      // }
     } else {
       debugPrint('Image selecting cancelled');
     }
@@ -45,9 +38,7 @@ Future selectPhoto() async {
 Future<XFile?> compressImage(File image) async {
   final compressedImage = await FlutterImageCompress.compressAndGetFile(
     image.path,
-    '${DateTime
-        .now()
-        .millisecondsSinceEpoch}.jpg', // output path
+    '${DateTime.now().millisecondsSinceEpoch}.jpg', // output path
     quality: 80, // 0-100
     minHeight: 600,
     minWidth: 600,
@@ -74,14 +65,14 @@ Future<List<File>?> selectMultipleImages() async {
 
 // DIMENSION/FORMAT VALIDATION
 Future<bool> validateImageDimensions(File image) async {
-  final img.Image? decodedImage = img.decodeImage(await image.readAsBytes());
-  if (decodedImage != null) {
-    final width = decodedImage.width;
-    final height = decodedImage.height;
-    // Validate dimensions (e.g., 600x600)
-    if (width >= 600 && height >= 600) {
-      return true;
-    }
-  }
+  // final img.Image? decodedImage = img.decodeImage(await image.readAsBytes());
+  // if (decodedImage != null) {
+  //   final width = decodedImage.width;
+  //   final height = decodedImage.height;
+  //   // Validate dimensions (e.g., 600x600)
+  //   if (width >= 600 && height >= 600) {
+  //     return true;
+  //   }
+  // }
   return false;
 }

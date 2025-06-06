@@ -50,7 +50,8 @@ class _PicsChangeState extends State<PicsChange> {
             ),
           ),
         ],
-      ),);
+      ),
+    );
   }
 
   @override
@@ -68,42 +69,50 @@ class _PicsChangeState extends State<PicsChange> {
               height: 80,
               width: 80,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  image: const DecorationImage(
-                      image: AssetImage('assets/images/me.jpg'),
-                      fit: BoxFit.cover,),),
+                borderRadius: BorderRadius.circular(50),
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/me.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(40),
                 child: Container(
                   color: Colors.black45,
                   child: Center(
-                    child: Icon(Icons.camera_alt_outlined,
-                        color: Colors.grey[300],),
+                    child: Icon(
+                      Icons.camera_alt_outlined,
+                      color: Colors.grey[300],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-          SizedBox(width: 70),
+          const SizedBox(width: 70),
           InkWell(
             onTap: () {
-              return showOptionsDialog(context);
+                showOptionsDialog(context);
             },
             child: Container(
               height: 80,
               width: 80,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  image: const DecorationImage(
-                      image: AssetImage('assets/images/landscape3.jpg'),
-                      fit: BoxFit.cover,),),
+                borderRadius: BorderRadius.circular(50),
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/landscape3.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(40),
                 child: Container(
                   color: Colors.black45,
                   child: Center(
-                    child: Icon(Icons.camera_alt_outlined,
-                        color: Colors.grey[300],),
+                    child: Icon(
+                      Icons.camera_alt_outlined,
+                      color: Colors.grey[300],
+                    ),
                   ),
                 ),
               ),

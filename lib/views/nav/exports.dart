@@ -38,7 +38,7 @@ export 'package:haptext_api/views/nav/nav_4/friendProfilePage.dart';
 // PROFILE
 export 'package:haptext_api/views/nav/nav_5/profile_info.dart';
 export 'package:haptext_api/views/nav/nav_5/profile_tab_widget.dart';
-export 'package:haptext_api/views/nav/nav_5/profilePage.dart';
+export 'package:haptext_api/views/nav/nav_5/profile_page.dart';
 export 'package:haptext_api/views/nav/nav_5/profileTab1.dart';
 export 'package:haptext_api/views/nav/nav_5/profileTab2.dart';
 export 'package:haptext_api/views/nav/nav_5/profileTab3.dart';

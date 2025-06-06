@@ -4,7 +4,7 @@ import 'package:haptext_api/views/nav/exports.dart';
 FriendCardWidget (context, String text, String img) {
   return GestureDetector(
     onTap: () {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => FriendProfilePage()),);
+      Navigator.push(context, MaterialPageRoute(builder: (_) => const FriendProfilePage()),);
     },
     child: Container(
       // height: 250,
@@ -33,8 +33,8 @@ FriendCardWidget (context, String text, String img) {
                   // fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(height: 3),
-              Text(text, style: TextStyle(color: Color(0xFFFD6104), fontWeight: FontWeight.w400),)
+              const SizedBox(height: 3),
+              Text(text, style: const TextStyle(color: Color(0xFFFD6104), fontWeight: FontWeight.w400),)
             ],
           ),
           Align(
@@ -44,7 +44,7 @@ FriendCardWidget (context, String text, String img) {
               width: 15,
               margin: const EdgeInsets.only(right: 8.5, bottom: 6.0),
               decoration: BoxDecoration(
-                color: Color(0xFFFD6104),
+                color: const Color(0xFFFD6104),
                 borderRadius: BorderRadius.circular(7.5),
               ),
               child: const Center(

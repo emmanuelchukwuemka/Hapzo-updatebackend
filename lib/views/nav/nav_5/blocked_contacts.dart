@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:haptext_api/exports.dart';
 
 class Blocked extends StatefulWidget {
@@ -16,14 +15,14 @@ class _BlockedState extends State<Blocked> {
       appBar: AppBar(
         // backgroundColor: context.theme.appBarColor,
         iconTheme: const IconThemeData(
-          // color: context.theme.primaryColor,
-        ),
+            // color: context.theme.primaryColor,
+            ),
         title: const Text(
           'Blocked',
           style: TextStyle(
-            // color: context.theme.titleTextColor,
-            // fontWeight: FontWeight.bold,
-          ),
+              // color: context.theme.titleTextColor,
+              // fontWeight: FontWeight.bold,
+              ),
         ),
         elevation: 0.0,
       ),
@@ -43,72 +42,71 @@ class _BlockedState extends State<Blocked> {
             // ),
             // ),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 27.0,
-                      backgroundImage: AssetImage(chat.sender.imgUrl),
-                    ),
-                    SizedBox(width: 15),
-                    Container(
-                      width: MediaQuery.of(context).size.width * .5,
-                      child: InkWell(
-                        onTap: () {
-                          // Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen(user: chat.sender),),);
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              chat.sender.name,
-                              style: TextStyle(
-                                fontSize: 15,
-                                // color: context.theme.textColor,
-                                fontWeight: FontWeight.bold,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 27.0,
+                        backgroundImage: AssetImage(chat.sender.imgUrl),
+                      ),
+                      const SizedBox(width: 15),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * .5,
+                        child: InkWell(
+                          onTap: () {
+                            // Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen(user: chat.sender),),);
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                chat.sender.name,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  // color: context.theme.textColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            Text(
-                              chat.time,
-                              style: TextStyle(
-                                fontSize: 12,
-                                // color: context.theme.textColor,
-                                fontWeight: FontWeight.w400,
+                              Text(
+                                chat.time,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  // color: context.theme.textColor,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () {
-                    print('Unblocked button clicked');
-                    showDialog(
-                      context: context,
-                      builder:  (_) => CustomDialog()
-                    );
-                  },
-                  child: Text(
-                    'Unblock',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      // color: context.theme.textColor,
+                    ],
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                   
+                      showDialog(
+                          context: context,
+                          builder: (_) => const CustomDialog());
+                    },
+                    child: const Text(
+                      'Unblock',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        // color: context.theme.textColor,
+                      ),
                     ),
                   ),
-                ),
-              ]
-            ),
+                ]),
           );
         },
       ),
     );
   }
 }
+
 class CustomDialog extends StatelessWidget {
   const CustomDialog({Key? key}) : super(key: key);
 
@@ -121,12 +119,12 @@ class CustomDialog extends StatelessWidget {
         padding: const EdgeInsets.only(top: 15, bottom: 5.0),
         decoration: BoxDecoration(
           // color: Color(0xFFAA303E),
-          color: Color(0xFF2A303E),
+          color: const Color(0xFF2A303E),
           borderRadius: BorderRadius.circular(15),
         ),
         child: Column(
           children: [
-            Container(
+            SizedBox(
               height: MediaQuery.of(context).size.height * .10,
               child: const Center(
                 child: Text(
@@ -140,36 +138,34 @@ class CustomDialog extends StatelessWidget {
                 ),
               ),
             ),
-            const Row(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      'YES',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
+            const Row(children: [
+              Expanded(
+                child: Center(
+                  child: Text(
+                    'YES',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-                Divider(
-                  height: 15.0,
-                  color: Color(0xFFFFEED9),
-                ),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      'NO',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
+              ),
+              Divider(
+                height: 15.0,
+                color: Color(0xFFFFEED9),
+              ),
+              Expanded(
+                child: Center(
+                  child: Text(
+                    'NO',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-              ]
-            ),
+              ),
+            ]),
           ],
         ),
       ),

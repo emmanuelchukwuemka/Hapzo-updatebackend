@@ -70,7 +70,7 @@
 // }
 
 import 'dart:io';
-import 'package:get/get.dart';
+
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 // import 'package:main_hapztext/controllers/exports.dart';
@@ -79,7 +79,9 @@ class ConfirmScreen extends StatefulWidget {
   final File videoFile;
   final String videoPath;
 
-  const ConfirmScreen({Key? key, required this.videoFile, required this.videoPath}) : super(key: key);
+  const ConfirmScreen(
+      {Key? key, required this.videoFile, required this.videoPath})
+      : super(key: key);
 
   @override
   State<ConfirmScreen> createState() => _ConfirmScreenState();
@@ -90,7 +92,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _captionController = TextEditingController();
   // UploadVideoController uploadVideoController = Get.put(UploadVideoController());
-  
+
   @override
   void initState() {
     super.initState();
@@ -102,12 +104,13 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     controller.setVolume(1);
     controller.setLooping(false);
   }
+
   @override
   void dispose() {
     super.dispose();
     controller.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

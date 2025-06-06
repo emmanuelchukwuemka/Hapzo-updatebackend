@@ -1,165 +1,131 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
+import 'package:haptext_api/config/page_route/route_name.dart';
 import 'package:haptext_api/exports.dart';
-import 'package:haptext_api/views/nav/exports.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:haptext_api/utils/extensions.dart';
 
-class SignUp extends StatefulWidget {
+class Register extends StatefulWidget {
   static const routeName = '/register-screen';
-
-  SignUp({Key? key}) : super(key: key);
+  const Register({super.key});
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _SignUpState extends State<SignUp> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class _RegisterState extends State<Register> {
+  final _formKey = GlobalKey<FormState>();
 
-  bool hidePassword = true;
+  bool hidePassword1 = true;
+  bool hidePassword2 = true;
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return Scaffold(
-      // backgroundColor: context.theme.bgColor,
-      body: Container(
-        height: size.height,
-        child: Center(
-          child: SingleChildScrollView(
+    final watchAuth = context.watch<AuthCubit>();
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthRegisterState) {
+          context.go(RouteName.otpScreen.path);
+        }
+      },
+      child: AbsorbPointer(
+        absorbing: watchAuth.state is AuthLoadingState,
+        child: Scaffold(
+          body: SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(height: 30.0),
                 const Image(
                   image: AssetImage("assets/images/hapz_logo.png"),
                   width: 125,
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 30.0),
                 const Text(
-                  'Create an Account',
+                  'Welcome Back!',
                   style: TextStyle(
                     // color: context.theme.titleTextColor,
                     fontSize: 26.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 15.0),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Column(
-                    children: [
-                      InputField(
-                        labelText: 'Username',
-                        icon: Icon(Icons.person),
-                        controller: _usernameController,
-                      ),
-                      InputField(
-                        labelText: 'First Name',
-                        icon: Icon(Icons.switch_account),
-                        controller: _firstNameController,
-                      ),
-                      InputField(
-                        labelText: 'Last Name',
-                        icon: const Icon(Icons.switch_account),
-                        controller: _lastNameController,
-                      ),
-                      // InputField(
-                      //   labelText: 'Email address',
-                      //   icon: Icon(Icons.mail),
-                      //   controller: _emailController,
-                      // ),
-                      TextFormField(
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        // onSaved: ,
-                        validator: (input) =>
-                        input!.contains("@") ? "Email should be valid" : null,
-                        decoration: InputDecoration(
-                          hintText: 'Email Address',
-                          prefixIcon: Icon(
-                            Icons.email,
-                            color: Colors.grey[750],
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        InputField(
+                          controller: watchAuth.usernameController,
+                          keyboardType: TextInputType.text,
+                          hintText: 'Username',
+                          prefix:
+                              const Icon(Icons.person, color: Colors.orange),
+                        ),
+                        const SizedBox(height: 20),
+                        InputField(
+                            controller: watchAuth.emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            validator: (input) => input?.validateEmail(),
+                            hintText: 'Email Address',
+                            prefix:
+                                const Icon(Icons.email, color: Colors.orange)),
+                        const SizedBox(height: 20),
+                        InputField(
+                          controller: watchAuth.passwordController,
+                          keyboardType: TextInputType.text,
+                          validator: (input) => input?.validatePassword(),
+                          isPassword: hidePassword1,
+                          hintText: 'Password',
+                          prefix: const Icon(
+                            Icons.lock,
+                            color: Colors.orange,
                           ),
                         ),
-                      ),
-                      TextFormField(
-                        controller: _passwordController,
-                        keyboardType: TextInputType.text,
-                        // onSaved: ,
-                        validator: (input) => input!.length < 6
-                            ? "Password should be more than 6 characters"
-                            : null,
-                        obscureText: hidePassword,
-                        decoration: InputDecoration(
-                            hintText: 'Password',
-                            prefixIcon: Icon(
-                              Icons.lock,
-                              color: Colors.grey[750],
-                            ),
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  hidePassword = !hidePassword;
-                                });
-                              },
-                              color: Colors.grey.withOpacity(0.5),
-                              icon: Icon(
-                                hidePassword
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                              ),
-                            )),
-                      ),
-                      // InputField(
-                      //   labelText: 'Password',
-                      //   icon: Icon(Icons.lock),
-                      //   controller: _passwordController,
-                      //   isObscure: true,
-                      // ),
-                      const SizedBox(height: 35.0),
-                      SizedBox(
-                        width: size.width * 0.75,
-                        child: CustomButton(
-                          onPressed: () {
-                            print('Create account button clicked');
-                            submitData();
-                          },
-                          text: 'Create Account',
+                        const SizedBox(height: 20),
+                        InputField(
+                          controller: watchAuth.passwordConfirmController,
+                          keyboardType: TextInputType.text,
+                          // onSaved: ,
+
+                          validator: (input) =>
+                              input! != watchAuth.passwordController.text
+                                  ? "Password Mismatch"
+                                  : null,
+                          isPassword: hidePassword2,
+
+                          prefix: const Icon(Icons.lock, color: Colors.orange),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 30.0),
+                        Appbutton(
+                          label: "Sign up",
+                          isLoading: watchAuth.state is AuthLoadingState,
+                          onTap: () {
+                            context.read<AuthCubit>().registerUser();
+                          },
+                        ),
+                        const SizedBox(height: 30.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const AppText(
+                                text: 'Already have an Account? ',
+                                color: Colors.white),
+                            GestureDetector(
+                                onTap: () => context.push(RouteName.login.path),
+                                child: const AppText(
+                                    text: 'Sign In', color: Colors.white)),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 20.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Already have an Account?',
-                      style: TextStyle(
-                        fontSize: 12,
-                        // color: context.theme.primaryColor,
-                      ),
-                    ),
-                    SizedBox(width: 60.0),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => SignIn()));
-                      },
-                      child: const Text(
-                        'Sign In',
-                        style: TextStyle(
-                          fontSize: 12,
-                          // color: context.theme.primaryColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
               ],
             ),
           ),
@@ -167,44 +133,4 @@ class _SignUpState extends State<SignUp> {
       ),
     );
   }
-
-  submitData() async {
-    try {
-      const apiUrl = 'https://test-backend-1ok0.onrender.com/social_backend/user/register';
-      // const apiUrl = 'https://test-backend-0dhd.onrender.com/social_backend/user/register';
-      var response = await http.post(
-        Uri.parse(apiUrl),
-        body: {
-          'userName': _usernameController.text,
-          'firstName': _firstNameController.text,
-          'lastName': _lastNameController.text,
-          'email': _emailController.text,
-          'password': _passwordController.text,
-        },
-      );
-      print(response.body);
-
-      if (response.statusCode == 200) {
-        print('Registration successful');
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ProfilePage()));
-      } else {
-        print('Registration failed');
-        print(response.body);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Registration failed. Please try again.'),
-          ),
-        );
-      }
-    } catch (error) {
-      print('Error during registration: $error');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('An error occurred during registration. Please try again later.'),
-        ),
-      );
-    }
-  }
 }
-
-// https://restapi.adequateshop.com/api   https://fiverr-shahadapp.000webhostapp.com/api/register

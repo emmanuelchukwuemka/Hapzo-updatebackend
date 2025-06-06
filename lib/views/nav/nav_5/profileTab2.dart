@@ -8,7 +8,6 @@ class Tab2 extends StatefulWidget {
 }
 
 class _Tab2State extends State<Tab2> {
-
   List<String> myPictures = [
     'assets/images/me.jpg',
     'assets/images/asta.jpg',
@@ -43,11 +42,11 @@ class _Tab2State extends State<Tab2> {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 1,
-          crossAxisSpacing: 1.2,
-          mainAxisSpacing: 1.2,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 1,
+        crossAxisSpacing: 1.2,
+        mainAxisSpacing: 1.2,
       ),
       itemCount: myPictures.length,
       itemBuilder: (BuildContext context, int index) => Container(

@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:haptext_api/exports.dart';
-import 'package:haptext_api/services/remote_services.dart';
+ 
+import 'package:haptext_api/exports.dart'; 
 
 class PostTest extends StatefulWidget {
   const PostTest({super.key});
@@ -23,7 +22,7 @@ class _PostTestState extends State<PostTest> {
   }
 
   getData() async {
-    posts = await RemoteService().getPosts();
+   
     if (posts != null) {
       setState(() {
         isLoaded = true;

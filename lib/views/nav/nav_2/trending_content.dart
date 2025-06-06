@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:haptext_api/views/nav/exports.dart';
+import 'package:flutter/material.dart'; 
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 
 class TrendingContent extends StatefulWidget {
@@ -10,7 +9,6 @@ class TrendingContent extends StatefulWidget {
 }
 
 class _TrendingContentState extends State<TrendingContent> {
-
   List<String> names = [
     'Sakura',
     'Naruto Uzumaki',
@@ -181,7 +179,7 @@ class _TrendingContentState extends State<TrendingContent> {
       body: PageView.builder(
         scrollDirection: Axis.vertical,
         itemCount: imgs.length,
-        itemBuilder: (BuildContext context, int index) => Container(
+        itemBuilder: (BuildContext context, int index) => SizedBox(
           width: size.width,
           height: size.height,
           child: Stack(
@@ -193,7 +191,8 @@ class _TrendingContentState extends State<TrendingContent> {
                 fit: BoxFit.fitWidth,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -206,7 +205,7 @@ class _TrendingContentState extends State<TrendingContent> {
                         fontSize: 18.0,
                       ),
                     ),
-                    SizedBox(height: 2.5),
+                    const SizedBox(height: 2.5),
                     Text(
                       '1 hour ago',
                       style: TextStyle(
@@ -215,7 +214,7 @@ class _TrendingContentState extends State<TrendingContent> {
                         fontSize: 12.0,
                       ),
                     ),
-                    Container(
+                    const SizedBox(
                       height: 50,
                       width: double.infinity,
                       // color: Colors.white10,
@@ -236,42 +235,45 @@ class _TrendingContentState extends State<TrendingContent> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
+                                SizedBox(
                                   height: 45.0,
                                   width: double.infinity,
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       CircleAvatar(
                                         radius: 21,
                                         backgroundColor: type[index],
                                         child: CircleAvatar(
                                           radius: 20,
-                                          backgroundImage: AssetImage(profilePics[index],),
+                                          backgroundImage: AssetImage(
+                                            profilePics[index],
+                                          ),
                                         ),
                                       ),
-                                      SizedBox(width: 10),
+                                      const SizedBox(width: 10),
                                       Container(
                                         width: 100,
                                         height: 35.0,
                                         decoration: BoxDecoration(
                                           color: type[index],
-                                          borderRadius: BorderRadius.circular(7.5),
+                                          borderRadius:
+                                              BorderRadius.circular(7.5),
                                         ),
                                         child: Center(
-                                          child: Text(
-                                            category[index],
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 11,
-                                            ),
-                                          )
-                                        ),
+                                            child: Text(
+                                          category[index],
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 11,
+                                          ),
+                                        )),
                                       ),
                                     ],
                                   ),
                                 ),
-                                SizedBox(height: 5),
+                                const SizedBox(height: 5),
                                 Expanded(
                                   child: Text(
                                     'I just need some time, I\'m tryin think straight, I just need a moment in my own space.. ask me how I\'m doin I\'ll say "OK" Yeah, cos that\'s just what we all say. Sometimes I think back to the old days, in a pointless conversation with the old me, back when my mama used to hold me, I wish somebody would have told me...',
@@ -305,7 +307,7 @@ class _TrendingContentState extends State<TrendingContent> {
                               ],
                             ),
                           ),
-                          Container(
+                          SizedBox(
                             width: 85.0,
                             // margin: EdgeInsets.only(bottom: size.height * .025),
                             // color: Colors.black12,
@@ -313,16 +315,21 @@ class _TrendingContentState extends State<TrendingContent> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 // buildProfile(data.profilePhoto),
-                                SizedBox(height: 25),
+                                const SizedBox(height: 25),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Column(
                                       children: [
                                         InkWell(
                                           onTap: () {},
                                           // => videoController.likeVideo(data.id),
-                                          child: Icon(Icons.favorite, size: 30, color: context.theme.primaryColor,),
+                                          child: Icon(
+                                            Icons.favorite,
+                                            size: 30,
+                                            color: context.theme.primaryColor,
+                                          ),
                                         ),
                                         // Text(
                                         //   // data.likes.length.toString(),
@@ -334,7 +341,14 @@ class _TrendingContentState extends State<TrendingContent> {
                                     // SizedBox(width: 20),
                                     Column(
                                       children: [
-                                        InkWell(onTap: () {}, child: Icon(Icons.mode_comment_rounded, size: 30, color: context.theme.primaryColor,),),
+                                        InkWell(
+                                          onTap: () {},
+                                          child: Icon(
+                                            Icons.mode_comment_rounded,
+                                            size: 30,
+                                            color: context.theme.primaryColor,
+                                          ),
+                                        ),
                                         // Text(
                                         //   // data.commentCount.toString(),
                                         //   '29',
@@ -344,15 +358,20 @@ class _TrendingContentState extends State<TrendingContent> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 25),
+                                const SizedBox(height: 25),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Column(
                                       children: [
                                         InkWell(
                                           onTap: () {},
-                                          child: Icon(Icons.reply, size: 30, color: context.theme.primaryColor,),
+                                          child: Icon(
+                                            Icons.reply,
+                                            size: 30,
+                                            color: context.theme.primaryColor,
+                                          ),
                                         ),
                                         // Text(
                                         //   // data.shareCount.toString(),
@@ -365,7 +384,11 @@ class _TrendingContentState extends State<TrendingContent> {
                                       children: [
                                         InkWell(
                                           onTap: () {},
-                                          child: Icon(Icons.download, size: 30, color: context.theme.primaryColor,),
+                                          child: Icon(
+                                            Icons.download,
+                                            size: 30,
+                                            color: context.theme.primaryColor,
+                                          ),
                                         ),
                                         // Text(
                                         //   // data.shareCount.toString(),
@@ -375,7 +398,7 @@ class _TrendingContentState extends State<TrendingContent> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                               ],
                             ),
                           ),
