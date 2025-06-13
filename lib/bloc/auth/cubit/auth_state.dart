@@ -13,6 +13,10 @@ final class AuthLoginState extends AuthState {}
 
 final class AuthRegisterState extends AuthState {}
 
+final class AuthResetPasswordSucess extends AuthState {}
+
+final class AuthResetPasswordOtpState extends AuthState {}
+
 final class AuthEmailVerifiedState extends AuthState {}
 
 final class AuthErrorState extends AuthState {}

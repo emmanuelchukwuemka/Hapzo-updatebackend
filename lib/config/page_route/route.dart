@@ -3,8 +3,10 @@ import 'package:haptext_api/config/page_route/route_name.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/main.dart';
 import 'package:haptext_api/views/navigation.dart';
-import 'package:haptext_api/views/screen/authentication/sign_in.dart';
-import 'package:haptext_api/views/screen/authentication/sign_up.dart';
+import 'package:haptext_api/views/screen/authentication/forget_password.dart';
+import 'package:haptext_api/views/screen/authentication/reset_password.dart';
+import 'package:haptext_api/views/screen/authentication/reset_password_otp.dart';
+import 'package:haptext_api/views/screen/authentication/reset_password_success.dart';
 
 class AppRoute {
   // GoRouter configuration
@@ -32,30 +34,26 @@ class AppRoute {
           builder: (context, state) {
             return const Navigation();
           }),
-      // GoRoute(
-      //     path: RouteName.blitzSuccessScreen.path,
-      //     builder: (context, state) {
-      //       return BlitzSuccessPage();
-      //     }),
-
-      // /////////////////////////
-      // ///mini games navigation//
-      // /////////////////////////
-      // GoRoute(
-      //     path: RouteName.miniGamesHome.path,
-      //     builder: (context, state) {
-      //       return MiniGamesHomePage();
-      //     }),
-      // GoRoute(
-      //     path: RouteName.logicNinjaMenu.path,
-      //     builder: (context, state) {
-      //       return LogicNinjaMenu();
-      //     }),
-      // GoRoute(
-      //     path: RouteName.addProduct.path,
-      //     builder: (context, state) {
-      //       return AddProduct();
-      //     }),
+      GoRoute(
+          path: RouteName.forgetPassword.path,
+          builder: (context, state) {
+            return const ForgetPasswordPage();
+          }),
+      GoRoute(
+          path: RouteName.resetPasswordPage.path,
+          builder: (context, state) {
+            return   ResetPasswordPage();
+          }),
+      GoRoute(
+          path: RouteName.resetPasswordOtpPage.path,
+          builder: (context, state) {
+            return const ResetPasswordOtpPage();
+          }),
+      GoRoute(
+          path: RouteName.resetPaswordSuccess.path,
+          builder: (context, state) {
+            return const ResetPasswordSuccessPage();
+          }),
       // GoRoute(
       //     path: RouteName.botomNav.path,
       //     builder: (context, state) {

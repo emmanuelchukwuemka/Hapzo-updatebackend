@@ -81,4 +81,47 @@ class AuthCubit extends Cubit<AuthState> {
       log("verify otp $e");
     }
   }
+
+  requestPasswordReset() async {
+    emit(AuthLoadingState());
+    try {
+      final response =
+          await authRepo.requestPasswordReset(email: emailController.text);
+      log(response.body);
+      final body = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        ToastMessage.showSuccessToast(message: body["message"]);
+        emit(AuthResetPasswordOtpState());
+      } else {
+        ToastMessage.showErrorToast(message: body["message"]);
+        emit(AuthErrorState());
+      }
+    } catch (e) {
+      emit(AuthErrorState());
+      log("verify otp $e");
+    }
+  }
+
+  final confirmPasword = TextEditingController();
+  resetPassword() async {
+    emit(AuthLoadingState());
+    try {
+      final response = await authRepo.resetPassword(
+          newPassword: passwordController.text,
+          confirmNewPassword: confirmPasword.text,
+          otp: otpController.text,
+          email: emailController.text);
+      log(response.body);
+      final body = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        emit(AuthResetPasswordSucess());
+      } else {
+        ToastMessage.showErrorToast(message: body["message"]);
+        emit(AuthErrorState());
+      }
+    } catch (e) {
+      emit(AuthErrorState());
+      log("confirm reset Password $e");
+    }
+  }
 }

@@ -34,4 +34,28 @@ class AuthRepo {
         body: {"email": email, "password": password},
         headers: ApiHeaders.unaunthenticatedHeader);
   }
+
+  Future<Response> requestPasswordReset(
+      {required String email }) async {
+    return await ApiMethods.postMethod(
+        url: ApiConstants.requestPasswordReset,
+        body: {"email": email},
+        headers: ApiHeaders.unaunthenticatedHeader);
+  }
+
+  Future<Response> resetPassword(
+      {required String email,
+      required String newPassword,
+      required String otp,
+      required String confirmNewPassword}) async {
+    return await ApiMethods.postMethod(
+        url: ApiConstants.verifyPasswordReset,
+        body: {
+          "email": email,
+          "code": otp,
+          "new_password": newPassword,
+          "new_password_confirm": confirmNewPassword
+        },
+        headers: ApiHeaders.unaunthenticatedHeader);
+  }
 }

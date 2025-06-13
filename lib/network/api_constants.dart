@@ -11,7 +11,7 @@ class ApiConstants {
   static const String login = "$authBaseUrl/login/";
   static const String register = "$authBaseUrl/register/";
   static const String requestPasswordReset = "$authBaseUrl/password-reset/";
-  static const String verifyPasswordReset = "$requestPasswordReset/confirm/";
+  static const String verifyPasswordReset = "${requestPasswordReset}confirm/";
   static const String verifyEmailUrl = "$authBaseUrl/verify-email/";
 }
 

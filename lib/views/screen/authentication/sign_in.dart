@@ -1,7 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
-import 'package:haptext_api/config/page_route/route_name.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/utils/extensions.dart';
 
@@ -36,9 +33,8 @@ class _SignInState extends State<SignIn> {
               children: [
                 const SizedBox(height: 50.0),
                 const Image(
-                  image: AssetImage("assets/images/hapz_logo.png"),
-                  width: 125,
-                ),
+                    image: AssetImage("assets/images/hapz_logo.png"),
+                    width: 125),
                 const SizedBox(height: 30.0),
                 const AppText(
                     text: 'Welcome Back!',
@@ -71,21 +67,17 @@ class _SignInState extends State<SignIn> {
                         InputField(
                           controller: watchAuth.passwordController,
                           keyboardType: TextInputType.text,
-
                           validator: (input) =>
                               input!.isEmpty ? "Invalid password" : null,
                           isPassword: hidePassword,
                           hintText: 'Password',
-                          prefix: const Icon(Icons.lock, color: Colors.orange),
-                          //  Icon(
-                          //     hidePassword
-                          //         ? Icons.visibility_off
-                          //         : Icons.visibility,
-                          //   ),
+                          prefix: const Icon(Icons.lock, color: Colors.orange)
                         ),
                         const SizedBox(height: 20.0),
                         GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              context.push(RouteName.forgetPassword.path);
+                            },
                             child: const Align(
                                 alignment: Alignment.bottomRight,
                                 child: AppText(

@@ -30,3 +30,6 @@ export 'package:haptext_api/models/user_model.dart';
 export 'package:haptext_api/models/postsModel.dart';
 export 'package:haptext_api/models/profileModel.dart';
  
+export 'package:flutter_bloc/flutter_bloc.dart';
+export 'package:go_router/go_router.dart'; 
+export 'package:haptext_api/config/page_route/route_name.dart';

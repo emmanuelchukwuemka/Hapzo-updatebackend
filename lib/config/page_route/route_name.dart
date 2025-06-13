@@ -3,12 +3,10 @@ enum RouteName {
   signUp('/sign_up'),
   otpScreen('/otp_screen'),
   bottomNav('/bottom_nav'),
-  blitzSuccessScreen('/blitz_success_screen'),
-  //////////////////////////////////////////
-  ///Mini Games//////////////////////////
-  miniGamesHome('/mini_game_home'),
-  logicNinjaMenu('/logic_ninja_menu'),
-  addProduct('/add_product'),
+  resetPasswordPage('/reset_password_page'),
+  resetPaswordSuccess('/reset_password_success'),
+  resetPasswordOtpPage('/logic_ninja_menu'),
+  forgetPassword('/forget_password'),
   arView('/ar_view'),
   productDetail('/produt_detail');
 
