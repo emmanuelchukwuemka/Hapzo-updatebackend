@@ -49,7 +49,7 @@ def hapz_exception_handler(exc: Exception, context: Dict[str, Any]) -> Response 
     response_data = {
         "success": False,
         "message": "An error occurred.",
-        "error": {},
+        "errors": {},
         "status_code": None,
     }
 
