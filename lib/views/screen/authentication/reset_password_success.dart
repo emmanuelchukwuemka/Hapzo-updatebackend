@@ -16,24 +16,32 @@ class ResetPasswordSuccessPage extends StatelessWidget {
           children: [
             Stack(alignment: Alignment.center, children: [
               AppshadowContainer(
-                  width: size.width * 0.2,
-                  height: size.width * 0.2,
+                  width: size.width * 0.3,
+                  height: size.width * 0.3,
                   radius: 200.r,
                   color: Colors.greenAccent.withAlpha(50)),
               AppshadowContainer(
-                  width: size.width * 0.15,
-                  height: size.width * 0.15,
+                  width: size.width * 0.25,
+                  height: size.width * 0.25,
+                  radius: 200.r,
+                  color: Colors.greenAccent.withAlpha(150)),
+              AppshadowContainer(
+                  width: size.width * 0.2,
+                  height: size.width * 0.2,
                   radius: 200.r,
                   color: Colors.greenAccent,
                   child: Icon(Icons.done, size: 40.sp, color: Colors.white))
             ]),
+            40.verticalSpace,
             const AppText(
                 text:
-                    "Your password has been updated successfully. Login to continue."),
+                    "Your password has been updated successfully. Login to continue.",
+                maxLines: 3,
+                color: Colors.white),
             30.verticalSpace,
             Appbutton(
               onTap: () => context.go(RouteName.login.path),
-              label: "Login",
+              label: "Login"
             )
           ],
         ),

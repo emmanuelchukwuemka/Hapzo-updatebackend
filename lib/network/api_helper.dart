@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io'; 
+import 'dart:io';
 import 'package:haptext_api/utils/toast_helper.dart';
 import 'package:http/http.dart';
 
@@ -43,7 +43,7 @@ class ApiMethods {
 
       return response;
     } on SocketException {
-      ToastMessage.showErrorToast(message: 'no_internet');
+      ToastMessage.showErrorToast(message: 'No Internet check Connection 🌐');
       rethrow;
     } on FormatException {
       ToastMessage.showErrorToast(message: 'Unable to process request');

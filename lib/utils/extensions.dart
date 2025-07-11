@@ -119,6 +119,9 @@ extension ValidatingExtensions on String {
     if (!RegExp(r'[a-z]').hasMatch(this)) {
       return 'Password must contain at least one lowercase letter';
     }
+    if (!RegExp(r'[0-9]').hasMatch(this)) {
+      return 'Password must include at least one number';
+    }
 
     if (length < 8) {
       return 'Password has to be longer than 6 characters';

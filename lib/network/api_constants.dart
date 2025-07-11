@@ -13,6 +13,9 @@ class ApiConstants {
   static const String requestPasswordReset = "$authBaseUrl/password-reset/";
   static const String verifyPasswordReset = "${requestPasswordReset}confirm/";
   static const String verifyEmailUrl = "$authBaseUrl/verify-email/";
+  static const String postBaseUrl = "$baseUrl/posts/";
+  static String fetchPostUrl({required page, required pageSize}) =>
+      "${postBaseUrl}list/page=$page/page_size=$pageSize/";
 }
 
 class ApiHeaders {

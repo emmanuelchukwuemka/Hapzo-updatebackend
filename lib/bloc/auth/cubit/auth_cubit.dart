@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/models/user_infor_model.dart';
 import 'package:haptext_api/network/api_constants.dart';
 import 'package:haptext_api/repository/auth_repo/auth_repo.dart';
-import 'package:meta/meta.dart';
 
 part 'auth_state.dart';
 
@@ -32,7 +30,8 @@ class AuthCubit extends Cubit<AuthState> {
       if (response.statusCode == 201) {
         emit(AuthRegisterState());
       } else {
-        ToastMessage.showErrorToast(message: body["message"]);
+        ToastMessage.showErrorToast(
+            message: body["errors"]["detail"].toString());
         emit(AuthErrorState());
       }
     } catch (e) {
@@ -51,7 +50,8 @@ class AuthCubit extends Cubit<AuthState> {
       if (response.statusCode == 200) {
         emit(AuthEmailVerifiedState());
       } else {
-        ToastMessage.showErrorToast(message: body["error"]);
+        ToastMessage.showErrorToast(
+            message: body["errors"]["detail"].toString());
         emit(AuthErrorState());
       }
     } catch (e) {
@@ -66,19 +66,19 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       final response = await authRepo.userLogin(
           password: passwordController.text, email: emailController.text);
-      log(response.body);
       final body = jsonDecode(response.body);
       if (response.statusCode == 200) {
         useInfo = UserInfoModel.fromJson(body);
         bearerToken = useInfo.token ?? '';
         emit(AuthLoginState());
       } else {
-        ToastMessage.showErrorToast(message: body["error"]);
+        ToastMessage.showErrorToast(
+            message: body["error"]["detail"].toString());
         emit(AuthErrorState());
       }
     } catch (e) {
       emit(AuthErrorState());
-      log("verify otp $e");
+      log("Login $e");
     }
   }
 
@@ -93,7 +93,8 @@ class AuthCubit extends Cubit<AuthState> {
         ToastMessage.showSuccessToast(message: body["message"]);
         emit(AuthResetPasswordOtpState());
       } else {
-        ToastMessage.showErrorToast(message: body["message"]);
+        ToastMessage.showErrorToast(
+            message: body["errors"]["detail"].toString());
         emit(AuthErrorState());
       }
     } catch (e) {
@@ -116,7 +117,8 @@ class AuthCubit extends Cubit<AuthState> {
       if (response.statusCode == 200) {
         emit(AuthResetPasswordSucess());
       } else {
-        ToastMessage.showErrorToast(message: body["message"]);
+        ToastMessage.showErrorToast(
+            message: body["errors"]["detail"].toString());
         emit(AuthErrorState());
       }
     } catch (e) {

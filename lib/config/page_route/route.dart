@@ -42,7 +42,7 @@ class AppRoute {
       GoRoute(
           path: RouteName.resetPasswordPage.path,
           builder: (context, state) {
-            return   ResetPasswordPage();
+            return const ResetPasswordPage();
           }),
       GoRoute(
           path: RouteName.resetPasswordOtpPage.path,

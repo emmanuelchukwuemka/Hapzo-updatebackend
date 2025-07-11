@@ -105,7 +105,9 @@ class _RegisterState extends State<Register> {
                           label: "Sign up",
                           isLoading: watchAuth.state is AuthLoadingState,
                           onTap: () {
-                            context.read<AuthCubit>().registerUser();
+                            if (_formKey.currentState?.validate() ?? false) {
+                              watchAuth.registerUser();
+                            }
                           },
                         ),
                         const SizedBox(height: 30.0),
