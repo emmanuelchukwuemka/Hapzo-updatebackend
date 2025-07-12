@@ -1,6 +1,7 @@
 from datetime import UTC, datetime, timedelta
 from functools import partial
 
+import pyotp
 from django.conf import settings
 from django.db import models
 from nanoid import generate
@@ -9,6 +10,10 @@ from ..domain.enums import OTPCodePurpose
 
 
 class OTPCode(models.Model):
+    @staticmethod
+    def generate_otp_code():
+        return pyotp.TOTP(pyotp.random_base32(), digits=6).now()
+
     id = models.CharField(
         max_length=21,
         primary_key=True,
@@ -38,6 +43,11 @@ class OTPCode(models.Model):
 
     def __str__(self) -> str:
         return f"OTP for {str(self.user)} - {str(self.purpose)}"
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = OTPCode.generate_otp_code()
+        super().save(*args, **kwargs)
 
     def is_valid(self) -> bool:
         return self.expires_at > datetime.now(tz=UTC)

@@ -15,7 +15,6 @@ class PostDetailDTO:
     previous_post_id: str | None = None
 
 
-
 @dataclass
 class PostResponseDTO(PostDetailDTO):
     id: str = None

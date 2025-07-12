@@ -72,7 +72,9 @@ class EmailOTPRequestRule:
         Purpose(dto.purpose)
 
         if self.otp_code_repository.has_valid_code(user.id, dto.purpose):
-            raise ValueError("Valid OTPCode for this user already exists.")
+            raise ValueError(
+                "Valid OTPCode for this user already exists. Check your email or try again in 10 minutes"
+            )
 
         otp_code = OTPCode(user_id=user.id, purpose=dto.purpose)
 
@@ -103,7 +105,7 @@ class VerifyEmailRule:
 
         updated_user = self.user_repository.update(user, is_email_verified=True)
 
-        user.otp_code.delete()
+        self.otp_code_repository.delete_by_code(dto.otp_code)
 
         return UserResponseDTO(
             id=updated_user.id,
@@ -179,6 +181,6 @@ class ResetPasswordRule:
         self.password_service.validate(dto.new_password, dto.new_password_confirm)
         hashed_password = self.password_service.hash(dto.new_password)
 
-        user.otp_code.delete()
+        self.otp_code_repository.delete_by_code(dto.otp_code)
 
         self.user_repository.update(user, password=hashed_password)

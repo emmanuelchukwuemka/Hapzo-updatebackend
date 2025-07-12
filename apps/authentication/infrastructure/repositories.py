@@ -37,8 +37,13 @@ class DjangoOTPCodeRepository(OTPCodeRepositoryInterface):
         return {
             "user_id": domain_otp_code.user_id,
             "purpose": domain_otp_code.purpose,
-            "code": domain_otp_code.code,
         }
+
+    def delete_by_code(self, code: str) -> None:
+        try:
+            OTPCode.objects.get(code=code).delete()
+        except OTPCode.DoesNotExist:
+            pass
 
     def _to_domain_otp_code_data(self, django_otp_code: OTPCode) -> DomainOTPCode:
         return DomainOTPCode(

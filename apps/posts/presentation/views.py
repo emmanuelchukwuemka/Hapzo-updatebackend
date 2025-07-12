@@ -42,7 +42,9 @@ def create_post(request: Request) -> StandardResponse:
     post_repository = DjangoPostRepository()
     create_post_rule = CreatePostRule(post_repository=post_repository)
 
-    serializer = PostCreateSerializer(data=request.data, context={"sender_id": request.user.id})
+    serializer = PostCreateSerializer(
+        data=request.data, context={"sender_id": request.user.id}
+    )
     serializer.is_valid(raise_exception=True)
 
     post = create_post_rule.execute(PostDetailDTO(**serializer.validated_data))
@@ -76,4 +78,4 @@ def fetch_posts_list(request: Request, page: int, page_size: int) -> StandardRes
 
     return StandardResponse.success(
         data=asdict(posts_data), message="Posts fetched successfully."
-    ) 
+    )

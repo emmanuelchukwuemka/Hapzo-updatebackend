@@ -10,7 +10,7 @@ from ..infrastructure.models import Post
 class DjangoPostRepository(PostRepositoryInterface):
     def create(self, post: DomainPost) -> DomainPost:
         django_post = self._to_django_post_data(post)
-        
+
         created_post = Post.objects.create(**django_post)
         return self._to_domain_post_data(created_post)
 
@@ -25,12 +25,15 @@ class DjangoPostRepository(PostRepositoryInterface):
 
         previous_link = None
         if page > 1:
-            previous_link = reverse("fetch-posts-list", kwargs={"page": page - 1, "page_size": page_size})
+            previous_link = reverse(
+                "fetch-posts-list", kwargs={"page": page - 1, "page_size": page_size}
+            )
 
         next_link = None
         if end < total_posts:
-            next_link = reverse("fetch-posts-list", kwargs={"page": page + 1, "page_size": page_size})
-
+            next_link = reverse(
+                "fetch-posts-list", kwargs={"page": page + 1, "page_size": page_size}
+            )
 
         return profiles, previous_link, next_link
 
@@ -51,9 +54,15 @@ class DjangoPostRepository(PostRepositoryInterface):
             sender_id=django_post.sender_id,
             post_format=django_post.post_format,
             text_content=django_post.text_content,
-            image_content=django_post.image_content.name if django_post.image_content else None,
-            audio_content=django_post.audio_content.name if django_post.audio_content else None,
-            video_content=django_post.video_content.name if django_post.video_content else None,
+            image_content=django_post.image_content.name
+            if django_post.image_content
+            else None,
+            audio_content=django_post.audio_content.name
+            if django_post.audio_content
+            else None,
+            video_content=django_post.video_content.name
+            if django_post.video_content
+            else None,
             is_reply=django_post.is_reply,
             previous_post_id=django_post.previous_post_id,
             id=django_post.id,

@@ -1,6 +1,7 @@
 from dataclasses import asdict
 
-from ..domain.entities import UserFollowing, UserProfile
+from ..domain.entities import UserFollowing as DomainUserFollowing
+from ..domain.entities import UserProfile as DomainUserProfile
 from .dtos import (
     FollowUserDTO,
     PaginatedUserProfileListResponseDTO,
@@ -78,7 +79,7 @@ class CreateUserProfileRule:
                 f"Profile for user with id '{dto.user_id}' already exists."
             )
 
-        user_profile = UserProfile(**asdict(dto))
+        user_profile = DomainUserProfile(**asdict(dto))
 
         created_profile = self.user_profile_repository.create(user_profile)
 
@@ -101,7 +102,9 @@ class FetchUserProfileRule:
     def execute(self, dto: UserProfileDetailDTO) -> UserResponseDTO:
         user_profile = self.user_profile_repository.find_by_user(dto.user_id)
         if not user_profile:
-            raise ValueError(f"Profile for user with id '{dto.user_id}' does not exist.")
+            raise ValueError(
+                f"Profile for user with id '{dto.user_id}' does not exist."
+            )
 
         return UserProfileResponseDTO(
             **{
@@ -184,7 +187,7 @@ class FollowUserRule:
                 "Following relationship cannot be created for an invalid user."
             )
 
-        user_following = UserFollowing(**asdict(dto))
+        user_following = DomainUserFollowing(**asdict(dto))
 
         created_following = self.user_following_repository.create(user_following)
 

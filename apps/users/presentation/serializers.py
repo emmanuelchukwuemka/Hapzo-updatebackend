@@ -6,7 +6,7 @@ from ..domain.enums import Ethnicity, RelationshipStatus
 class UserDetailSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     username = serializers.CharField(required=False)
-    
+
     def validate(self, attrs):
         attrs["id"] = self.context.get("id")
         return attrs
@@ -32,22 +32,21 @@ class UserProfileDetailSerializer(serializers.Serializer):
     def validate(self, attrs):
         attrs["user_id"] = self.context.get("user_id")
         return attrs
-    
-    
-    
+
+
 class UserProfileListSerializer(serializers.Serializer):
     page = serializers.IntegerField(required=True)
     page_size = serializers.IntegerField(required=True)
-    
-    
+
+
 class FollowUserSerializer(serializers.Serializer):
     follower_id = serializers.CharField(read_only=True)
     following_id = serializers.CharField(required=True)
-    
+
     def validate(self, attrs):
         attrs["follower_id"] = self.context.get("follower_id")
-        
+
         if attrs["following_id"] == attrs["follower_id"]:
             raise serializers.ValidationError("Users cannot follow themselves.")
-        
+
         return attrs

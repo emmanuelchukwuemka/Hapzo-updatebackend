@@ -1,7 +1,9 @@
 from typing import Any, Dict, List, Tuple
 
-from django.urls import reverse
 from django.db import IntegrityError
+from django.urls import reverse
+
+from core.infrastructure.exceptions import ConflictError
 
 from ..application.ports import (
     UserFollowingRepositoryInterface,
@@ -12,8 +14,6 @@ from ..domain.entities import User as DomainUser
 from ..domain.entities import UserFollowing as DomainUserFollowing
 from ..domain.entities import UserProfile as DomainUserProfile
 from ..infrastructure.models import User, UserFollowing, UserProfile
-
-from core.infrastructure.exceptions import ConflictError
 
 
 class DjangoUserRepository(UserRepositoryInterface):
@@ -111,15 +111,21 @@ class DjangoUserProfileRepository(UserProfileRepositoryInterface):
         offset = (page - 1) * page_size
         end = offset + page_size
 
-        profiles = [self._to_domain_user_profile_data(qs) for qs in list(queryset[offset:end])]
+        profiles = [
+            self._to_domain_user_profile_data(qs) for qs in list(queryset[offset:end])
+        ]
 
         previous_link = None
         if page > 1:
-            previous_link = reverse("fetch-profiles-list", kwargs={"page": page - 1, "page_size": page_size})
+            previous_link = reverse(
+                "fetch-profiles-list", kwargs={"page": page - 1, "page_size": page_size}
+            )
 
         next_link = None
         if end < total_profiles:
-            next_link = reverse("fetch-profiles-list", kwargs={"page": page + 1, "page_size": page_size})
+            next_link = reverse(
+                "fetch-profiles-list", kwargs={"page": page + 1, "page_size": page_size}
+            )
 
         return profiles, previous_link, next_link
 
@@ -171,26 +177,36 @@ class DjangoUserFollowingRepository(UserFollowingRepositoryInterface):
         django_user_following = self._to_django_user_following_data(user_following)
 
         try:
-            created_user_following = UserFollowing.objects.create(**django_user_following)
+            created_user_following = UserFollowing.objects.create(
+                **django_user_following
+            )
         except IntegrityError as e:
-            if "UNIQUE constraint failed: user_following.follower_id, user_following.following_id" in str(e):
+            if (
+                "UNIQUE constraint failed: user_following.follower_id, user_following.following_id"
+                in str(e)
+            ):
                 raise ConflictError("You already follow this user.")
-            
+
         return self._to_domain_user_following_data(created_user_following)
-    
+
     def _to_django_user_following_data(
         self, domain_user_following: DomainUserFollowing
     ) -> Dict[str, Any]:
         try:
-            follower_profile = UserProfile.objects.get(user_id=domain_user_following.follower_id)
-            following_profile = UserProfile.objects.get(user_id=domain_user_following.following_id)
+            follower_profile = UserProfile.objects.get(
+                user_id=domain_user_following.follower_id
+            )
+            following_profile = UserProfile.objects.get(
+                user_id=domain_user_following.following_id
+            )
             return {
                 "follower": follower_profile,
                 "following": following_profile,
             }
         except UserProfile.DoesNotExist:
-            raise ValueError("Following relationship cannot be created for a user without a profile.")
-
+            raise ValueError(
+                "Following relationship cannot be created for a user without a profile."
+            )
 
     def _to_domain_user_following_data(
         self, django_user_following: UserFollowing

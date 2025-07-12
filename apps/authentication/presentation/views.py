@@ -14,7 +14,6 @@ from core.presentation.serializers import (
 )
 
 from ...users.application.dtos import CreateUserDTO
-from ...users.infrastructure.repositories import DjangoUserRepository
 from ..application.dtos import (
     EmailOTPRequestDTO,
     LoginDTO,
@@ -22,22 +21,17 @@ from ..application.dtos import (
     ResetPasswordDTO,
     VerifyEmailDTO,
 )
-from ..application.rules import (
-    EmailOTPRequestRule,
-    LoginRule,
-    LogoutRule,
-    RegisterRule,
-    ResetPasswordRule,
-    VerifyEmailRule,
-)
-from ..infrastructure.repositories import DjangoOTPCodeRepository
-from ..infrastructure.services import (
-    DjangoEmailServiceAdapter,
-    DjangoPasswordServiceAdapter,
-    KnoxAuthenticationServiceAdapter,
+from ..infrastructure.factory import (
+    get_email_otp_request_rule,
+    get_login_rule,
+    get_logout_rule,
+    get_register_rule,
+    get_reset_password_rule,
+    get_verify_email_rule,
 )
 from .serializers import (
     CreateUserSerializer,
+    EmailVerificationRequestSerializer,
     LoginSerializer,
     LogoutSerializer,
     PasswordResetConfirmSerializer,
@@ -61,24 +55,13 @@ from .serializers import (
 @throttle_classes([AnonRateThrottle])
 @transaction.atomic
 def register_user(request: Request) -> StandardResponse:
-    user_repository = DjangoUserRepository()
-    password_service = DjangoPasswordServiceAdapter()
-    register_rule = RegisterRule(
-        user_repository=user_repository, password_service=password_service
-    )
-
     serializer = CreateUserSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
+    register_rule = get_register_rule()
     user = register_rule.execute(CreateUserDTO(**serializer.validated_data))
 
-    otp_code_repository = DjangoOTPCodeRepository()
-    email_service = DjangoEmailServiceAdapter()
-    verification_request_rule = EmailOTPRequestRule(
-        user_repository=user_repository,
-        otp_code_repository=otp_code_repository,
-        email_service=email_service,
-    )
+    verification_request_rule = get_email_otp_request_rule()
     verification_request_rule.execute(
         EmailOTPRequestDTO(user.email, "email_verification", user)
     )
@@ -86,6 +69,30 @@ def register_user(request: Request) -> StandardResponse:
     return StandardResponse.created(
         data=asdict(user),
         message="Registration successful. An OTP code has been sent to your email for verification.",
+    )
+
+
+@extend_schema(
+    request=EmailVerificationRequestSerializer,
+    responses={
+        200: SuccessResponseExampleSerializer,
+        400: ErrorResponseExampleSerializer,
+        500: ErrorResponseExampleSerializer,
+    },
+    description="Request email verification for an unverified user.",
+    tags=["Authentication"],
+)
+@api_view(["POST"])
+@permission_classes([AllowAny])
+@throttle_classes([AnonRateThrottle])
+def request_email_verification(request: Request):
+    serializer = EmailVerificationRequestSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    verification_request_rule = get_email_otp_request_rule()
+    verification_request_rule.execute(EmailOTPRequestDTO(**serializer.validated_data))
+    return StandardResponse.success(
+        message="Email verification OTP code sent successfully."
     )
 
 
@@ -103,15 +110,10 @@ def register_user(request: Request) -> StandardResponse:
 @permission_classes([AllowAny])
 @throttle_classes([AnonRateThrottle])
 def verify_email(request: Request):
-    user_repository = DjangoUserRepository()
-    otp_code_repository = DjangoOTPCodeRepository()
-    verify_email_rule = VerifyEmailRule(
-        user_repository=user_repository, otp_code_repository=otp_code_repository
-    )
-
     serializer = VerifyEmailSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
+    verify_email_rule = get_verify_email_rule()
     verify_email_rule.execute(VerifyEmailDTO(**serializer.validated_data))
 
     return StandardResponse.success(message="Email verification successful.")
@@ -131,18 +133,10 @@ def verify_email(request: Request):
 @permission_classes([AllowAny])
 @throttle_classes([AnonRateThrottle])
 def login_user(request: Request):
-    user_repository = DjangoUserRepository()
-    password_service = DjangoPasswordServiceAdapter()
-    authentication_service = KnoxAuthenticationServiceAdapter()
-    login_rule = LoginRule(
-        user_repository=user_repository,
-        password_service=password_service,
-        authentication_service=authentication_service,
-    )
-
     serializer = LoginSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
+    login_rule = get_login_rule()
     login_data = login_rule.execute(LoginDTO(**serializer.validated_data))
 
     return StandardResponse.success(
@@ -164,12 +158,10 @@ def login_user(request: Request):
 @permission_classes([IsAuthenticated])
 @throttle_classes([UserRateThrottle])
 def logout_user(request: Request):
-    authentication_service = KnoxAuthenticationServiceAdapter()
-    logout_rule = LogoutRule(authentication_service=authentication_service)
-
     serializer = LogoutSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
+    logout_rule = get_logout_rule()
     logout_rule.execute(LogoutDTO(request=request, **serializer.validated_data))
 
     return StandardResponse.deleted(message="Logout successful.")
@@ -189,18 +181,10 @@ def logout_user(request: Request):
 @permission_classes([AllowAny])
 @throttle_classes([AnonRateThrottle])
 def request_password_reset(request: Request):
-    user_repository = DjangoUserRepository()
-    otp_code_repository = DjangoOTPCodeRepository()
-    email_service = DjangoEmailServiceAdapter()
-    reset_request_rule = EmailOTPRequestRule(
-        user_repository=user_repository,
-        otp_code_repository=otp_code_repository,
-        email_service=email_service,
-    )
-
     serializer = PasswordResetRequestSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
+    reset_request_rule = get_email_otp_request_rule()
     reset_request_rule.execute(EmailOTPRequestDTO(**serializer.validated_data))
 
     return StandardResponse.success(
@@ -222,18 +206,10 @@ def request_password_reset(request: Request):
 @permission_classes([AllowAny])
 @throttle_classes([AnonRateThrottle])
 def reset_password(request: Request):
-    otp_code_repository = DjangoOTPCodeRepository()
-    user_repository = DjangoUserRepository()
-    password_service = DjangoPasswordServiceAdapter()
-    reset_rule = ResetPasswordRule(
-        user_repository=user_repository,
-        otp_code_repository=otp_code_repository,
-        password_service=password_service,
-    )
-
     serializer = PasswordResetConfirmSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
+    reset_rule = get_reset_password_rule()
     reset_rule.execute(ResetPasswordDTO(**serializer.validated_data))
 
     return StandardResponse.success(message="Password reset successful.")

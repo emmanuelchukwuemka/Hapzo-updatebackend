@@ -67,7 +67,7 @@ def hapz_exception_handler(exc: Exception, context: Dict[str, Any]) -> Response 
             f"Truly unhandled exception after DRF handler -> {exc_type}: {exc_msg}\n{location}. This should be investigated."
         )
 
-        response_data["error"] = {"detail": "Internal server error"}
+        response_data["errors"] = {"detail": "Internal server error"}
         response_data["status_code"] = status.HTTP_500_INTERNAL_SERVER_ERROR
 
         return Response(data=response_data, status=response_data["status_code"])
@@ -76,29 +76,29 @@ def hapz_exception_handler(exc: Exception, context: Dict[str, Any]) -> Response 
 
     if isinstance(exc, ValidationError):
         response_data["message"] = "Validation error"
-        response_data["error"] = {"detail": normalize_error_detail(response.data)}
+        response_data["errors"] = {"detail": normalize_error_detail(response.data)}
     elif isinstance(exc, AuthenticationFailed):
         response_data["message"] = "Authentication failed"
-        response_data["error"] = {"detail": str(exc.detail)}
+        response_data["errors"] = {"detail": str(exc.detail)}
     elif isinstance(exc, NotAuthenticated):
         response_data["message"] = "Authentication required"
-        response_data["error"] = {"detail": str(exc)}
+        response_data["errors"] = {"detail": str(exc)}
     elif isinstance(exc, MethodNotAllowed):
         response_data["message"] = "Method not allowed"
-        response_data["error"] = {"detail": str(exc)}
+        response_data["errors"] = {"detail": str(exc)}
     elif isinstance(exc, NotFound):
         response_data["message"] = "Not found"
-        response_data["error"] = {"detail": str(exc.detail)}
+        response_data["errors"] = {"detail": str(exc.detail)}
     elif isinstance(exc, Throttled):
         response_data["message"] = "Rate limit exceeded"
-        response_data["error"] = {
+        response_data["errors"] = {
             "detail": f"Rate limit exceeded. Try again in {exc.wait} seconds."
         }
     else:
         if hasattr(exc, "detail"):
-            response_data["error"] = {"detail": str(exc.detail)}
+            response_data["errors"] = {"detail": str(exc.detail)}
         else:
-            response_data["error"] = {
+            response_data["errors"] = {
                 "detail": "An unknown error occurred. Try again later."
             }
 
@@ -115,15 +115,17 @@ def normalize_error_detail(detail: Any) -> str | List[str] | Dict[str, Any]:
         return detail
 
     if isinstance(detail, dict):
-        normalized = {}
+        normalized = ""
         for key, value in detail.items():
             if hasattr(value, "__iter__") and not isinstance(value, str):
                 if len(value) == 1 and hasattr(value[0], "message"):
-                    normalized[key] = str(value[0].message)
+                    normalized = str(value[0].message)
                 else:
                     values_list = list(value)
-                    normalized[key] = (
-                        str(values_list[0])
+                    normalized = (
+                        str(values_list[0]).replace(
+                            "This field", f"{key.title()} field"
+                        )
                         if len(values_list) == 1
                         else [
                             str(v.message) if hasattr(v, "message") else str(v)
@@ -131,7 +133,7 @@ def normalize_error_detail(detail: Any) -> str | List[str] | Dict[str, Any]:
                         ]
                     )
             else:
-                normalized[key] = str(value)
+                normalized = str(value)
         return normalized
 
     if hasattr(detail, "__iter__"):

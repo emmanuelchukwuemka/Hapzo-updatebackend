@@ -32,6 +32,10 @@ class OTPCodeRepositoryInterface(ABC):
     def has_valid_code(self, user_id: str, purpose: OTPCodePurpose) -> bool:
         pass
 
+    @abstractmethod
+    def delete_by_code(self, code: str) -> None:
+        pass
+
 
 class EmailServiceInterface(ABC):
     @abstractmethod

@@ -54,6 +54,15 @@ class PasswordResetRequestSerializer(serializers.Serializer):
         return value
 
 
+class EmailVerificationRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    purpose = serializers.CharField(required=False, default="email_verification")
+
+    def validate_purpose(self, value) -> str:
+        value = "email_verification"
+        return value
+
+
 class PasswordResetConfirmSerializer(serializers.Serializer):
     new_password = serializers.CharField(required=True)
     new_password_confirm = serializers.CharField(required=False)

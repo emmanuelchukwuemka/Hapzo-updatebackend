@@ -41,8 +41,6 @@ class UserProfileDetailDTO:
     weight: float | None = None
 
 
-
-
 @dataclass
 class UserProfileResponseDTO(UserProfileDetailDTO):
     id: str = None

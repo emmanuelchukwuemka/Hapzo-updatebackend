@@ -19,29 +19,24 @@ from core.presentation.serializers import (
 )
 
 from ...users.application.dtos import (
+    FollowUserDTO,
     UserDetailDTO,
     UserProfileDetailDTO,
     UserProfileListDTO,
-    FollowUserDTO
 )
-from ...users.application.rules import (
-    CreateUserProfileRule,
-    FetchUserProfileRule,
-    FetchUserRule,
-    UpdateUserRule,
-    UserProfileListRule,
-    FollowUserRule
-)
-from ...users.infrastructure.repositories import (
-    DjangoUserProfileRepository,
-    DjangoUserRepository,
-    DjangoUserFollowingRepository
+from ...users.infrastructure.factory import (
+    create_user_profile_rule,
+    fetch_user_profile_rule,
+    fetch_user_rule,
+    follow_user_rule,
+    update_user_rule,
+    user_profile_list_rule,
 )
 from ...users.presentation.serializers import (
+    FollowUserSerializer,
     UserDetailSerializer,
     UserProfileDetailSerializer,
     UserProfileListSerializer,
-    FollowUserSerializer
 )
 
 
@@ -59,10 +54,8 @@ from ...users.presentation.serializers import (
 @permission_classes([IsAuthenticated])
 @throttle_classes([UserRateThrottle])
 def fetch_user(request: Request) -> StandardResponse:
-    user_repository = DjangoUserRepository()
-    fetch_user_rule = FetchUserRule(user_repository=user_repository)
-
-    user = fetch_user_rule.execute(UserDetailDTO(id=request.user.id))
+    user_rule = fetch_user_rule()
+    user = user_rule.execute(UserDetailDTO(id=request.user.id))
 
     return StandardResponse.success(
         data=asdict(user), message="User fetched successfully."
@@ -83,13 +76,13 @@ def fetch_user(request: Request) -> StandardResponse:
 @permission_classes([IsAuthenticated])
 @throttle_classes([UserRateThrottle])
 def update_user(request: Request) -> StandardResponse:
-    user_repository = DjangoUserRepository()
-    update_user_rule = UpdateUserRule(user_repository=user_repository)
-
-    serializer = UserDetailSerializer(data=request.data, context={"id": request.user.id})
+    serializer = UserDetailSerializer(
+        data=request.data, context={"id": request.user.id}
+    )
     serializer.is_valid(raise_exception=True)
 
-    user = update_user_rule.execute(UserDetailDTO(**serializer.validated_data))
+    update_rule = update_user_rule()
+    user = update_rule.execute(UserDetailDTO(**serializer.validated_data))
 
     return StandardResponse.updated(
         data=asdict(user), message="User update successful."
@@ -111,15 +104,13 @@ def update_user(request: Request) -> StandardResponse:
 @throttle_classes([UserRateThrottle])
 @parser_classes([MultiPartParser, JSONParser])
 def create_user_profile(request: Request) -> StandardResponse:
-    user_profile_repository = DjangoUserProfileRepository()
-    create_user_profile_rule = CreateUserProfileRule(
-        user_profile_repository=user_profile_repository
+    serializer = UserProfileDetailSerializer(
+        data=request.data, context={"user_id": request.user.id}
     )
-
-    serializer = UserProfileDetailSerializer(data=request.data, context={"user_id": request.user.id})
     serializer.is_valid(raise_exception=True)
 
-    user_profile = create_user_profile_rule.execute(
+    create_profile_rule = create_user_profile_rule()
+    user_profile = create_profile_rule.execute(
         UserProfileDetailDTO(**serializer.validated_data)
     )
 
@@ -142,15 +133,11 @@ def create_user_profile(request: Request) -> StandardResponse:
 @permission_classes([IsAuthenticated])
 @throttle_classes([UserRateThrottle])
 def fetch_user_profile(request: Request, user_id: str) -> StandardResponse:
-    user_profile_repository = DjangoUserProfileRepository()
-    fetch_user_profile_rule = FetchUserProfileRule(
-        user_profile_repository=user_profile_repository
-    )
-
     serializer = UserProfileDetailSerializer(data={"user_id": user_id})
     serializer.is_valid(raise_exception=True)
 
-    user_profile = fetch_user_profile_rule.execute(
+    fetch_profile_rule = fetch_user_profile_rule()
+    user_profile = fetch_profile_rule.execute(
         UserProfileDetailDTO(**serializer.validated_data)
     )
 
@@ -172,22 +159,22 @@ def fetch_user_profile(request: Request, user_id: str) -> StandardResponse:
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 @throttle_classes([UserRateThrottle])
-def fetch_profiles_list(request: Request, page: int, page_size: int) -> StandardResponse:
-    user_profile_repository = DjangoUserProfileRepository()
-    fetch_profiles_rule = UserProfileListRule(
-        user_profile_repository=user_profile_repository
-    )
-
+def fetch_profiles_list(
+    request: Request, page: int, page_size: int
+) -> StandardResponse:
     serializer = UserProfileListSerializer(data={"page": page, "page_size": page_size})
     serializer.is_valid(raise_exception=True)
-    
-    profiles_data = fetch_profiles_rule.execute(UserProfileListDTO(**serializer.validated_data))
-    
+
+    fetch_profiles_rule = user_profile_list_rule()
+    profiles_data = fetch_profiles_rule.execute(
+        UserProfileListDTO(**serializer.validated_data)
+    )
+
     return StandardResponse.success(
         data=asdict(profiles_data), message="User profiles fetched successfully."
     )
-    
-    
+
+
 @extend_schema(
     request=FollowUserSerializer,
     responses={
@@ -202,18 +189,14 @@ def fetch_profiles_list(request: Request, page: int, page_size: int) -> Standard
 @permission_classes([IsAuthenticated])
 @throttle_classes([UserRateThrottle])
 def follow_user(request: Request, user_id: str) -> StandardResponse:
-    user_profile_repository = DjangoUserProfileRepository()
-    user_following_repository = DjangoUserFollowingRepository()
-    follow_user_rule = FollowUserRule(
-        user_profile_repository=user_profile_repository,
-        user_following_repository=user_following_repository
+    serializer = FollowUserSerializer(
+        data={"following_id": user_id}, context={"follower_id": request.user.id}
     )
-
-    serializer = FollowUserSerializer(data={"following_id": user_id}, context={"follower_id": request.user.id})
     serializer.is_valid(raise_exception=True)
-    
-    follow_data = follow_user_rule.execute(FollowUserDTO(**serializer.validated_data))
-    
+
+    follow_rule = follow_user_rule()
+    follow_data = follow_rule.execute(FollowUserDTO(**serializer.validated_data))
+
     return StandardResponse.success(
         data=asdict(follow_data), message="User followed successfully."
     )

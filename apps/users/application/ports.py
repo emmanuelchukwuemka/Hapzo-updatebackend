@@ -1,38 +1,40 @@
 from abc import ABC, abstractmethod
 from typing import Any, List, Tuple
 
-from ..domain.entities import User, UserFollowing, UserProfile
+from ..domain.entities import User as DomainUser
+from ..domain.entities import UserFollowing as DomainUserFollowing
+from ..domain.entities import UserProfile as DomainUserProfile
 
 
 class UserRepositoryInterface(ABC):
     @abstractmethod
-    def create(self, user: User) -> User:
+    def create(self, user: DomainUser) -> DomainUser:
         pass
 
     @abstractmethod
-    def update(self, user: Any, **kwargs) -> Any:
+    def update(self, user: DomainUser, **kwargs) -> DomainUser:
         pass
 
     @abstractmethod
-    def find_by_email(self, email: str, raw: bool = False) -> Any:
+    def find_by_email(self, email: str, raw: bool = False) -> DomainUser:
         pass
 
     @abstractmethod
-    def find_by_id(self, id: str, raw: bool = False) -> Any:
+    def find_by_id(self, id: str, raw: bool = False) -> DomainUser:
         pass
 
 
 class UserProfileRepositoryInterface(ABC):
     @abstractmethod
-    def create(self, user_profile: UserProfile) -> UserProfile:
+    def create(self, user_profile: DomainUserProfile) -> DomainUserProfile:
         pass
 
     @abstractmethod
-    def update(self, user_profile: Any, **kwargs) -> Any:
+    def update(self, user_profile: DomainUserProfile, **kwargs) -> DomainUserProfile:
         pass
 
     @abstractmethod
-    def find_by_user(self, user_id: str, raw: bool = False) -> Any:
+    def find_by_user(self, user_id: str, raw: bool = False) -> DomainUserProfile:
         pass
 
     @abstractmethod
@@ -42,5 +44,5 @@ class UserProfileRepositoryInterface(ABC):
 
 class UserFollowingRepositoryInterface(ABC):
     @abstractmethod
-    def create(self, user_following: UserFollowing) -> UserFollowing:
+    def create(self, user_following: DomainUserFollowing) -> DomainUserFollowing:
         pass
