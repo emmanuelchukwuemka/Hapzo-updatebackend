@@ -7,7 +7,7 @@ enum RouteName {
   resetPaswordSuccess('/reset_password_success'),
   resetPasswordOtpPage('/logic_ninja_menu'),
   forgetPassword('/forget_password'),
-  arView('/ar_view'),
+  createTextPostPage('/create_text_post_page'),
   productDetail('/produt_detail');
 
   final String path;

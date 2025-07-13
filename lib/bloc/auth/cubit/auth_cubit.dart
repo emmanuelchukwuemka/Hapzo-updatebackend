@@ -88,8 +88,9 @@ class AuthCubit extends Cubit<AuthState> {
           password: passwordController.text, email: emailController.text);
       final body = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        useInfo = UserInfoModel.fromJson(body);
-        bearerToken = useInfo.token ?? '';
+        log("message${body['data']}");
+        useInfo = UserInfoModel.fromJson(body["data"]);
+        bearerToken = useInfo.tokens?.auth ?? '';
         emit(AuthLoginState());
       } else {
         if (body["errors"]["detail"].toString().contains("is not verified")) {

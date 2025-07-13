@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/repository/home_repo/home_repo.dart';
-import 'package:meta/meta.dart';
 
 part 'home_state.dart';
 
@@ -12,14 +10,15 @@ class HomeCubit extends Cubit<HomeState> {
   HomeRepo homeRepo;
   HomeCubit(this.homeRepo) : super(HomeInitial());
 
-  int page = 0;
+  int page = 1;
+  PostModel posts = PostModel();
   fetchPosts() async {
     emit(HomeLoading());
     try {
       final response = await homeRepo.fetchPost(page: page);
-
       final body = jsonDecode(response.body);
       if (response.statusCode == 200) {
+        posts = PostModel.fromJson(body['data']);
         emit(HomeLoaded());
       } else {
         ToastMessage.showErrorToast(
@@ -28,17 +27,21 @@ class HomeCubit extends Cubit<HomeState> {
       }
     } catch (e) {
       emit(HomeError());
-      log("register $e");
+      log("fetch post $e");
     }
   }
-  createPost() async {
+
+  createPost({String? postFormat, String? textContent}) async {
     emit(HomeLoading());
     try {
-      final response = await homeRepo.createPost();
-
+      final response = await homeRepo.createPost(
+          postFormat: postFormat ?? '', textContent: textContent ?? "");
       final body = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        emit(HomeLoaded());
+      if (response.statusCode == 201) {
+        emit(HomePostCreated());
+        await Future.delayed(const Duration(seconds: 2));
+
+        fetchPosts();
       } else {
         ToastMessage.showErrorToast(
             message: body["errors"]["detail"].toString());

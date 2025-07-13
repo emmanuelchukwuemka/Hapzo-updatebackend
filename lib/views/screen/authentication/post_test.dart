@@ -1,5 +1,4 @@
- 
-import 'package:haptext_api/exports.dart'; 
+import 'package:haptext_api/exports.dart';
 
 class PostTest extends StatefulWidget {
   const PostTest({super.key});
@@ -9,7 +8,7 @@ class PostTest extends StatefulWidget {
 }
 
 class _PostTestState extends State<PostTest> {
-  List<Posts>? posts;
+  List<ResultModel>? posts;
   var isLoaded = false;
 
   @override
@@ -22,7 +21,6 @@ class _PostTestState extends State<PostTest> {
   }
 
   getData() async {
-   
     if (posts != null) {
       setState(() {
         isLoaded = true;
@@ -48,7 +46,8 @@ class _PostTestState extends State<PostTest> {
             itemCount: posts?.length,
             itemBuilder: (context, index) {
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
                 child: Row(
                   children: [
                     Container(
@@ -59,13 +58,15 @@ class _PostTestState extends State<PostTest> {
                         color: Colors.grey,
                       ),
                     ),
-                    const SizedBox(width: 12.0,),
+                    const SizedBox(
+                      width: 12.0,
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           child: Text(
-                            posts![index].title,
+                            posts![index].textContent ?? '',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
@@ -76,7 +77,7 @@ class _PostTestState extends State<PostTest> {
                         ),
                         SizedBox(
                           child: Text(
-                            posts![index].body ?? '',
+                            posts![index].textContent ?? '',
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           ),

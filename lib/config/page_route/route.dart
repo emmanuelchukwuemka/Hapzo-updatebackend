@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:haptext_api/config/page_route/route_name.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/main.dart';
+import 'package:haptext_api/views/nav/nav_3/text_write_up.dart';
 import 'package:haptext_api/views/navigation.dart';
 import 'package:haptext_api/views/screen/authentication/forget_password.dart';
 import 'package:haptext_api/views/screen/authentication/reset_password.dart';
@@ -54,11 +55,11 @@ class AppRoute {
           builder: (context, state) {
             return const ResetPasswordSuccessPage();
           }),
-      // GoRoute(
-      //     path: RouteName.botomNav.path,
-      //     builder: (context, state) {
-      //       return HomePage();
-      //     }),
+      GoRoute(
+          path: RouteName.createTextPostPage.path,
+          builder: (context, state) {
+            return WriteText();
+          }),
       // GoRoute(
       //     path: RouteName.productDetail.path,
       //     builder: (context, state) {

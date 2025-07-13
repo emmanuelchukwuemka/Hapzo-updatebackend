@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 
@@ -12,10 +12,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   buildProfile(String profilePhoto) {
     return SizedBox(
-      width: 60,
-      height: 60,
-      child: Stack(
-        children: [
+        width: 60,
+        height: 60,
+        child: Stack(children: [
           Positioned(
             left: 5,
             child: Container(
@@ -27,59 +26,49 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(25),
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: Image(
-                    image: NetworkImage(profilePhoto),
-                    fit: BoxFit.cover,
-                  ),
-                )),
-          ),
-        ],
-      ),
-    );
+                    borderRadius: BorderRadius.circular(25),
+                    child: Image(
+                        image: NetworkImage(profilePhoto), fit: BoxFit.cover))),
+          )
+        ]));
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      // backgroundColor: context.theme.bgColor,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(40),
         child: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text(
-            '  HapzText',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
+          title: const AppText(
+              text: '  HapzText',
+              color: Colors.white,
+              fontWeight: FontWeight.bold),
           // backgroundColor: context.theme.appBarColor,
           elevation: 0,
           actions: [
             IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const Home()),
-                );
-              },
-              icon: const Icon(Icons.chat),
-              iconSize: 22,
-              color: context.theme.primaryColor,
-            ),
+                onPressed: () {
+                  //  context.read<HomeCubit>()
+                  context.push(RouteName.bottomNav.path);
+                },
+                icon: const Icon(Icons.chat),
+                iconSize: 22,
+                color: context.theme.primaryColor),
             const SizedBox(width: 3),
             IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const Notifications(),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.notifications),
-              iconSize: 22,
-              // color: context.theme.primaryColor,
-            ),
+                onPressed: () {
+                  context.read<HomeCubit>().fetchPosts();
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (_) => const Notifications(),
+                  //   ),
+                  // );
+                },
+                icon: const Icon(Icons.notifications),
+                iconSize: 22),
             const SizedBox(width: 5),
           ],
           flexibleSpace: ClipPath(
@@ -443,11 +432,14 @@ class _HomePageState extends State<HomePage> {
                                           color: Colors.white12,
                                         ),
                                       ),
-                                      // Text(
-                                      //   // data.commentCount.toString(),
-                                      //   '29',
-                                      //   style: TextStyle(fontSize: 15, color: Colors.grey[100],),
-                                      // ),
+                                      Text(
+                                        // data.commentCount.toString(),
+                                        '29',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.grey[100],
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ],

@@ -27,7 +27,7 @@ export 'package:haptext_api/utils/toast_helper.dart';
 export  'package:flutter/material.dart';
 // MODELS
 export 'package:haptext_api/models/user_model.dart';
-export 'package:haptext_api/models/postsModel.dart';
+export 'package:haptext_api/models/posts_model.dart';
 export 'package:haptext_api/models/profileModel.dart';
  
 export 'package:flutter_bloc/flutter_bloc.dart';

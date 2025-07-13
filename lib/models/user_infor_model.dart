@@ -1,36 +1,25 @@
 class UserInfoModel {
   String? id;
-  String? username;
   String? email;
-  bool? isEmailVerified;
-  String? createdAt;
-  String? token;
+  String? username;
+  Tokens? tokens;
 
-  UserInfoModel(
-      {this.id,
-      this.username,
-      this.email,
-      this.isEmailVerified,
-      this.createdAt,
-      this.token});
+  UserInfoModel({this.id, this.email, this.username, this.tokens});
 
   UserInfoModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    username = json['username'];
     email = json['email'];
-    isEmailVerified = json['is_email_verified'];
-    createdAt = json['created_at'];
-    token = json['token'];
+    username = json['username'];
+    tokens = json['tokens'] != null ? Tokens.fromJson(json['tokens']) : null;
   }
+}
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['username'] = username;
-    data['email'] = email;
-    data['is_email_verified'] = isEmailVerified;
-    data['created_at'] = createdAt;
-    data['token'] = token;
-    return data;
+class Tokens {
+  String? auth;
+
+  Tokens({this.auth});
+
+  Tokens.fromJson(Map<String, dynamic> json) {
+    auth = json['auth'];
   }
 }

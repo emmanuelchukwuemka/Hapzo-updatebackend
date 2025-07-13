@@ -1,4 +1,10 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
+
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
+import 'package:haptext_api/exports.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class WriteText extends StatefulWidget {
   const WriteText({Key? key}) : super(key: key);
@@ -7,100 +13,145 @@ class WriteText extends StatefulWidget {
 }
 
 class _WriteTextState extends State<WriteText> {
+  final textController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SizedBox(
-        // padding: EdgeInsets.symmetric(horizontal: 15, vertical: 35),
-        height: double.infinity,
-        width: double.infinity,
-        child: Stack(
-          children: [
-            Container(
-              // color: context.theme.primaryColor,
-              color: Colors.blue[800],
-              child: const Center(
-                child: Text(
-                  'Write a message',
-                  style: TextStyle(color: Colors.white, fontSize: 30),
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.save, color: Colors.white, size: 22),
-                      SizedBox(height: 9.0),
-                      Text(
-                        'Scheduled',
-                        style: TextStyle(color: Colors.white, fontSize: 15),
-                      )
-                    ],
-                  ),
-                  Text(
-                    'Done',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: EdgeInsets.only(right: 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
+    final watchHome = context.watch<HomeCubit>();
+    final size = MediaQuery.sizeOf(context);
+    return BlocListener<HomeCubit, HomeState>(
+      listener: (context, state) {
+        if (state is HomePostCreated) {
+          context.push(RouteName.bottomNav.path);
+        }
+      },
+      child: AbsorbPointer(
+        absorbing: watchHome.state is HomeLoading,
+        child: Scaffold(
+          body: Stack(
+            children: [
+              Container(
+                  // color: context.theme.primaryColor,
+                  color: Colors.blue[800],
+                  child: Center(
+                      child: SizedBox(
+                    width: size.width * 0.6,
+                    child: TextField(
+                        controller: textController,
+                        maxLines: 2,
+                        style: GoogleFonts.jost(
+                            fontSize: 16.sp, color: Colors.white),
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                            hintText: 'Write a message',
+                            border: const UnderlineInputBorder(
+                                borderSide: BorderSide.none),
+                            hintStyle: GoogleFonts.jost(
+                                fontSize: 16.sp, color: Colors.white))),
+                  ))),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    Icon(Icons.emoji_emotions_outlined,
-                        color: Colors.white, size: 22),
-                    SizedBox(height: 10),
-                    Text(
-                      'Emoji',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    const Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.save, color: Colors.white, size: 22),
+                        SizedBox(height: 9.0),
+                        AppText(
+                            text: 'Scheduled',
+                            color: Colors.white,
+                            fontSize: 15),
+                      ],
                     ),
-                    SizedBox(height: 20),
-                    Icon(Icons.access_alarms_rounded,
-                        color: Colors.white, size: 22),
-                    SizedBox(height: 10),
-                    Text(
-                      'Schedule\nTime',
-                      textAlign: TextAlign.right,
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                    SizedBox(height: 20),
-                    Icon(Icons.person_add, color: Colors.white, size: 22),
-                    SizedBox(height: 10),
-                    Text(
-                      'Tag\npeople',
-                      textAlign: TextAlign.right,
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                    SizedBox(height: 20),
-                    Icon(Icons.star_half_rounded,
-                        color: Colors.white, size: 22),
-                    SizedBox(height: 10),
-                    Text(
-                      'Background',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                    SizedBox(height: 20),
-                    // Icon(Icons.add_business_rounded, color: Colors.white),
+                    watchHome.state is HomeLoading
+                        ? LoadingAnimationWidget.inkDrop(
+                            color: Colors.orange, size: 25.sp)
+                        : GestureDetector(
+                            onTap: () => context.read<HomeCubit>().createPost(
+                                textContent: textController.text,
+                                postFormat: "text"),
+                            child: const AppText(
+                                text: 'Done',
+                                color: Colors.white,
+                                fontSize: 18)),
                   ],
                 ),
               ),
-            ),
-          ],
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Column(children: [
+                        GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) => EmojiPicker(
+                                  onEmojiSelected: (category, emoji) {
+                                    setState(() {
+                                      textController.text =
+                                          textController.text + emoji.emoji;
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                  config: Config(
+                                      // columns: 7,
+                                      emojiViewConfig: EmojiViewConfig(
+                                          emojiSizeMax: 32 *
+                                              (Platform.isIOS ? 1.30 : 1.0))),
+                                ),
+                              );
+                            },
+                            child: Icon(Icons.emoji_emotions_outlined,
+                                color: Colors.white, size: 22.sp)),
+                        const SizedBox(height: 10),
+                        const AppText(
+                            text: 'Emoji', color: Colors.white, fontSize: 12),
+                      ]),
+
+                      const SizedBox(height: 20),
+                      const Icon(Icons.access_alarms_rounded,
+                          color: Colors.white, size: 22),
+                      const SizedBox(height: 10),
+                      const AppText(
+                          text: 'Schedule\nTime',
+                          textAlign: TextAlign.right,
+                          color: Colors.white,
+                          fontSize: 12),
+                      const SizedBox(height: 20),
+                      const Icon(Icons.person_add,
+                          color: Colors.white, size: 22),
+                      const SizedBox(height: 10),
+                      const AppText(
+                          text: 'Tag\npeople',
+                          textAlign: TextAlign.right,
+                          color: Colors.white,
+                          fontSize: 12),
+                      const SizedBox(height: 20),
+                      const Icon(Icons.star_half_rounded,
+                          color: Colors.white, size: 22),
+                      const SizedBox(height: 10),
+                      const AppText(
+                          text: 'Background',
+                          color: Colors.white,
+                          fontSize: 12),
+                      const SizedBox(height: 20),
+                      // Icon(Icons.add_business_rounded, color: Colors.white),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

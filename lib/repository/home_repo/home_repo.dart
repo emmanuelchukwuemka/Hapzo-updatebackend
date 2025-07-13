@@ -8,18 +8,17 @@ class HomeRepo {
   }
 
   Future<Response> createPost(
-      // {required String page}
-      ) async {
+      {required String postFormat, required String textContent}) async {
     return await ApiMethods.postMethod(
         url: ApiConstants.postBaseUrl,
         body: {
-          "post_format": "text",
-          "text_content": "string",
-          "image_content": "string",
-          "audio_content": "string",
-          "video_content": "string",
+          "post_format": postFormat,
+          "text_content": textContent,
+          // "image_content": "string",
+          // "audio_content": "string",
+          // "video_content": "string",
           "is_reply": false,
-          "previous_post_id": "string"
+          // "previous_post_id": "string"
         },
         headers: ApiHeaders.aunthenticatedHeader);
   }

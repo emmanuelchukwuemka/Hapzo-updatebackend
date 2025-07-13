@@ -1,4 +1,5 @@
 import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
+import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/utils/extensions.dart';
 
@@ -23,6 +24,7 @@ class _SignInState extends State<SignIn> {
       listener: (context, state) {
         if (state is AuthLoginState) {
           context.go(RouteName.bottomNav.path);
+          context.read<HomeCubit>().fetchPosts();
         }
         if (state is AuthVerifyOtpSentState) {
           context.go(RouteName.otpScreen.path);

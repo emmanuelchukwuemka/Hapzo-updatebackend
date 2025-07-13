@@ -341,13 +341,10 @@ class _ProfilePageState extends State<ProfilePage>
                                     Column(
                                       children: [
                                         Text(
-                                          _userData!.followers!.length
-                                              .toString(),
+                                          "${_userData?.followers?.length ?? '0'}",
                                           style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                            // color: context.theme.textColor,
-                                          ),
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                         const Text(
                                           'Followers',
@@ -362,8 +359,7 @@ class _ProfilePageState extends State<ProfilePage>
                                     Column(
                                       children: [
                                         Text(
-                                          _userData!.following!.length
-                                              .toString(),
+                                          "${_userData?.following?.length ?? 0}",
                                           style: const TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold),
