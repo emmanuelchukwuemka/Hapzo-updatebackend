@@ -24,6 +24,9 @@ class _SignInState extends State<SignIn> {
         if (state is AuthLoginState) {
           context.go(RouteName.bottomNav.path);
         }
+        if (state is AuthVerifyOtpSentState) {
+          context.go(RouteName.otpScreen.path);
+        }
       },
       child: AbsorbPointer(
         absorbing: watchAuth.state is AuthLoadingState,
@@ -65,14 +68,14 @@ class _SignInState extends State<SignIn> {
                         const SizedBox(height: 20),
                         //PASSWORD TEXT INPUT
                         InputField(
-                          controller: watchAuth.passwordController,
-                          keyboardType: TextInputType.text,
-                          validator: (input) =>
-                              input!.isEmpty ? "Invalid password" : null,
-                          isPassword: hidePassword,
-                          hintText: 'Password',
-                          prefix: const Icon(Icons.lock, color: Colors.orange)
-                        ),
+                            controller: watchAuth.passwordController,
+                            keyboardType: TextInputType.text,
+                            validator: (input) =>
+                                input!.isEmpty ? "Invalid password" : null,
+                            isPassword: hidePassword,
+                            hintText: 'Password',
+                            prefix:
+                                const Icon(Icons.lock, color: Colors.orange)),
                         const SizedBox(height: 20.0),
                         GestureDetector(
                             onTap: () {

@@ -25,7 +25,7 @@ class AuthCubit extends Cubit<AuthState> {
           email: emailController.text,
           password: passwordController.text,
           passwordConfirm: passwordConfirmController.text);
-      log(response.body);
+
       final body = jsonDecode(response.body);
       if (response.statusCode == 201) {
         emit(AuthRegisterState());
@@ -45,7 +45,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       final response = await authRepo.verifyUserEmail(
           otp: otpController.text, email: emailController.text);
-      log(response.body);
+
       final body = jsonDecode(response.body);
       if (response.statusCode == 200) {
         emit(AuthEmailVerifiedState());
@@ -57,6 +57,26 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
       emit(AuthErrorState());
       log("verify otp $e");
+    }
+  }
+
+  verifyEmailRequest() async {
+    emit(AuthLoadingState());
+    try {
+      final response =
+          await authRepo.requestEmailVerify(email: emailController.text);
+
+      final body = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        emit(AuthVerifyOtpSentState());
+      } else {
+        ToastMessage.showErrorToast(
+            message: body["errors"]["detail"].toString());
+        emit(AuthErrorState());
+      }
+    } catch (e) {
+      emit(AuthErrorState());
+      log("request verify otp $e");
     }
   }
 
@@ -72,9 +92,13 @@ class AuthCubit extends Cubit<AuthState> {
         bearerToken = useInfo.token ?? '';
         emit(AuthLoginState());
       } else {
-        ToastMessage.showErrorToast(
-            message: body["error"]["detail"].toString());
-        emit(AuthErrorState());
+        if (body["errors"]["detail"].toString().contains("is not verified")) {
+          verifyEmailRequest();
+        } else {
+          ToastMessage.showErrorToast(
+              message: body["errors"]["detail"].toString());
+          emit(AuthErrorState());
+        }
       }
     } catch (e) {
       emit(AuthErrorState());
@@ -87,7 +111,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       final response =
           await authRepo.requestPasswordReset(email: emailController.text);
-      log(response.body);
+
       final body = jsonDecode(response.body);
       if (response.statusCode == 200) {
         ToastMessage.showSuccessToast(message: body["message"]);
@@ -112,7 +136,7 @@ class AuthCubit extends Cubit<AuthState> {
           confirmNewPassword: confirmPasword.text,
           otp: otpController.text,
           email: emailController.text);
-      log(response.body);
+
       final body = jsonDecode(response.body);
       if (response.statusCode == 200) {
         emit(AuthResetPasswordSucess());

@@ -23,7 +23,7 @@ class AuthRepo {
       {required String email, required String otp}) async {
     return await ApiMethods.postMethod(
         url: ApiConstants.verifyEmailUrl,
-        body: {"email": email, "code": otp},
+        body: {"email": email, "otp_code": int.parse(otp)},
         headers: ApiHeaders.unaunthenticatedHeader);
   }
 
@@ -35,11 +35,17 @@ class AuthRepo {
         headers: ApiHeaders.unaunthenticatedHeader);
   }
 
-  Future<Response> requestPasswordReset(
-      {required String email }) async {
+  Future<Response> requestPasswordReset({required String email}) async {
     return await ApiMethods.postMethod(
         url: ApiConstants.requestPasswordReset,
         body: {"email": email},
+        headers: ApiHeaders.unaunthenticatedHeader);
+  }
+
+  Future<Response> requestEmailVerify({required String email}) async {
+    return await ApiMethods.postMethod(
+        url: ApiConstants.verifyEmailRequestUrl,
+        body: {"email": email, "purpose": "email_verification"},
         headers: ApiHeaders.unaunthenticatedHeader);
   }
 
