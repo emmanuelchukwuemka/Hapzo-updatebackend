@@ -48,6 +48,7 @@ class PostCreateSerializer(serializers.Serializer):
                 "audio/ogg",
                 "audio/aac",
                 "audio/flac",
+                "audio/mp3",
             ]
             if audio_content.content_type not in allowed_audio_types:
                 raise serializers.ValidationError("Unsupported audio file type.")
