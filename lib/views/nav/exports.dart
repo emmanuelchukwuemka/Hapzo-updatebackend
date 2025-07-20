@@ -21,7 +21,7 @@ export 'package:haptext_api/views/nav/nav_3/text_write_up.dart';
 export 'package:haptext_api/views/nav/nav_3/confirm_image_upload.dart';
 export 'package:haptext_api/views/nav/nav_3/confirm_video_upload.dart';
 
-export 'package:haptext_api/views/nav/nav_3/new_file_selection/confirm_audio_upload.dart';
+export 'package:haptext_api/views/nav/nav_3/new_file_selection/post_audio_upload_page.dart';
 export 'package:haptext_api/views/nav/nav_3/new_file_selection/camera_button_widget.dart';
 
 // PEOPLE

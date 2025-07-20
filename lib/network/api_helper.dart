@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:go_router/go_router.dart';
+import 'package:haptext_api/config/page_route/route_name.dart';
+import 'package:haptext_api/main.dart';
 import 'package:haptext_api/utils/toast_helper.dart';
 import 'package:http/http.dart';
 
@@ -35,10 +38,10 @@ class ApiMethods {
           throw UnsupportedError("HTTP method $method not supported");
       }
       log("Response: ${response.statusCode} ${response.body} ");
-      if (response.statusCode == 403) {
+      if (response.statusCode == 401) {
         // isFirst = true;
         // SessionManager().deleteToken();
-        // clearRoad(LoginPage.route);
+        navigatorKey.currentContext?.go(RouteName.login.path);
       }
 
       return response;

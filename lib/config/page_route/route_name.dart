@@ -1,5 +1,6 @@
 enum RouteName {
-  login('/'),
+  splah('/'),
+  login('/login'),
   signUp('/sign_up'),
   otpScreen('/otp_screen'),
   bottomNav('/bottom_nav'),
@@ -8,7 +9,9 @@ enum RouteName {
   resetPasswordOtpPage('/logic_ninja_menu'),
   forgetPassword('/forget_password'),
   createTextPostPage('/create_text_post_page'),
-  productDetail('/produt_detail');
+  audioUploadPage('/audio_upload_page'),
+  confirmImageUpload('/confirm_image_upload'),
+  confirmVideoUpload('/confirm_Video_upload');
 
   final String path;
 

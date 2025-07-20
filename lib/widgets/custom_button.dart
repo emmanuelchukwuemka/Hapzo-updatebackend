@@ -39,17 +39,13 @@ class Appbutton extends StatelessWidget {
         borderColor: borderColor ?? Colors.transparent,
         height: height ?? size.height * 0.065,
         radius: size.width * 0.02,
-        
-        color: buttonColor ??Colors.orange,
+        color: buttonColor ?? Colors.orange,
         child: isLoading
-            ? LoadingAnimationWidget.flickr(
-                rightDotColor:Colors.white,
-                leftDotColor: Colors.blueAccent,
-                size: 30.sp)
+            ? LoadingAnimationWidget.beat(color: Colors.white, size: 30.sp)
             : child ??
                 AppText(
                     text: label ?? '',
-                    color: labelColor ??Colors.white,
+                    color: labelColor ?? Colors.white,
                     fontSize: labelSize ?? 16,
                     fontWeight: labelWeight ?? FontWeight.bold));
   }

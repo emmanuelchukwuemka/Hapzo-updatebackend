@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:haptext_api/exports.dart';
@@ -20,70 +22,65 @@ class _PostsState extends State<Posts> {
   String? thumbnailUrl;
   File? videoFile;
 
-  Future _selectText() async {
-    debugPrint('Clicked Text');
-    context.push(RouteName.createTextPostPage.path);
-  }
-
-  showOptionsDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (context) => SimpleDialog(
-              children: [
-                SimpleDialogOption(
-                  onPressed: () => pickVideo(ImageSource.camera, context),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.camera_alt),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Camera',
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SimpleDialogOption(
-                  onPressed: () => pickVideo(ImageSource.gallery, context),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.image),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Gallery',
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SimpleDialogOption(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.cancel),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ));
-  }
+  // showOptionsDialog(BuildContext context) {
+  //   return showDialog(
+  //       context: context,
+  //       builder: (context) => SimpleDialog(
+  //             children: [
+  //               SimpleDialogOption(
+  //                 onPressed: () => pickVideo(ImageSource.camera, context),
+  //                 child: const Row(
+  //                   children: [
+  //                     Icon(Icons.camera_alt),
+  //                     Padding(
+  //                       padding: EdgeInsets.all(8.0),
+  //                       child: Text(
+  //                         'Camera',
+  //                         style: TextStyle(
+  //                           fontSize: 20,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //               SimpleDialogOption(
+  //                 onPressed: () => pickVideo(ImageSource.gallery, context),
+  //                 child: const Row(
+  //                   children: [
+  //                     Icon(Icons.image),
+  //                     Padding(
+  //                       padding: EdgeInsets.all(8.0),
+  //                       child: Text(
+  //                         'Gallery',
+  //                         style: TextStyle(
+  //                           fontSize: 20,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //               SimpleDialogOption(
+  //                 onPressed: () => Navigator.of(context).pop(),
+  //                 child: const Row(
+  //                   children: [
+  //                     Icon(Icons.cancel),
+  //                     Padding(
+  //                       padding: EdgeInsets.all(8.0),
+  //                       child: Text(
+  //                         'Cancel',
+  //                         style: TextStyle(
+  //                           fontSize: 20,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ],
+  //           ));
+  // }
 
   pickVideo(ImageSource src, BuildContext context) async {
     final video = await ImagePicker().pickVideo(source: ImageSource.gallery);
@@ -102,39 +99,7 @@ class _PostsState extends State<Posts> {
 
   Future _selectVideoFile() async {
     final file = await ImagePicker().pickVideo(source: ImageSource.gallery);
-    return showOptionsDialog(context);
-  }
-
-  Future _selectAudio() async {
-    debugPrint('Clicked Audio');
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const ConfirmAudioUpload(),
-      ),
-    );
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.audio,
-      allowedExtensions: ['mkv', 'mp4'],
-    );
-    if (result != null && result.files.single.path != null) {
-      debugPrint('Audio Selected');
-      setState(() {
-        pickedFile = result.files.first;
-      });
-      // Navigator.push(
-      //   context, MaterialPageRoute(builder: (_) => ConfirmAudioUpload()),
-      // );
-      // LOAD RESULT AND FILE DETAILS
-      pickedFile = result.files.first;
-      debugPrint('Name: ${pickedFile.name}');
-      debugPrint('Bytes: ${pickedFile.bytes}');
-      debugPrint('Size: ${pickedFile.size}');
-      debugPrint('Extension: ${pickedFile.extension}');
-      debugPrint('Path: ${pickedFile.path}');
-    } else {
-      debugPrint('Audio selecting failed');
-    }
+    context.push(RouteName.confirmVideoUpload.path, extra: File(file!.path));
   }
 
   Future _selectPhoto() async {
@@ -147,16 +112,9 @@ class _PostsState extends State<Posts> {
       setState(() {
         pickedFile = result.files.first;
       });
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => ConfirmImageUpload(
-            videoFile: File(result.files.single.path!),
-            videoPath: result.files.single.path!,
-            pickedFile: result.files.first,
-          ),
-        ),
-      );
+      context.push(RouteName.confirmImageUpload.path,
+          extra: result.files.first);
+
       // LOAD RESULT AND FILE DETAILS
       // pickedFile = result.files.first;
       debugPrint('Name: ${pickedFile.name}');
@@ -194,10 +152,12 @@ class _PostsState extends State<Posts> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              buildPostsContainer(
-                  _selectText, choice[0].col, choice[0].desc, choice[0].icon),
-              buildPostsContainer(
-                  _selectAudio, choice[1].col, choice[1].desc, choice[1].icon),
+              buildPostsContainer(() {
+                context.push(RouteName.createTextPostPage.path);
+              }, choice[0].col, choice[0].desc, choice[0].icon),
+              buildPostsContainer(() {
+                context.push(RouteName.audioUploadPage.path);
+              }, choice[1].col, choice[1].desc, choice[1].icon),
             ],
           ),
           const SizedBox(height: 12.0),

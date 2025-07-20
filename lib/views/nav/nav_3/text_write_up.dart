@@ -72,9 +72,11 @@ class _WriteTextState extends State<WriteText> {
                         ? LoadingAnimationWidget.inkDrop(
                             color: Colors.orange, size: 25.sp)
                         : GestureDetector(
-                            onTap: () => context.read<HomeCubit>().createPost(
-                                textContent: textController.text,
-                                postFormat: "text"),
+                            onTap: () => context
+                                .read<HomeCubit>()
+                                .createTextPost(
+                                    textContent: textController.text
+                                   ),
                             child: const AppText(
                                 text: 'Done',
                                 color: Colors.white,

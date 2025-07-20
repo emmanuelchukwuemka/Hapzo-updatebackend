@@ -5,6 +5,7 @@ import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/models/user_infor_model.dart';
 import 'package:haptext_api/network/api_constants.dart';
 import 'package:haptext_api/repository/auth_repo/auth_repo.dart';
+import 'package:haptext_api/utils/session_manager.dart';
 
 part 'auth_state.dart';
 
@@ -91,6 +92,8 @@ class AuthCubit extends Cubit<AuthState> {
         log("message${body['data']}");
         useInfo = UserInfoModel.fromJson(body["data"]);
         bearerToken = useInfo.tokens?.auth ?? '';
+        SessionManager.storeUser(useInfo);
+        SessionManager().storeToken(bearerToken);
         emit(AuthLoginState());
       } else {
         if (body["errors"]["detail"].toString().contains("is not verified")) {
