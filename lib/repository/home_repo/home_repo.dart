@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
-
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:haptext_api/network/export_network.dart';
 
 class HomeRepo {
@@ -23,33 +24,46 @@ class HomeRepo {
 
   Future<StreamedResponse> createAudioPost({required File audioFile}) async {
     var request = MultipartRequest('POST', Uri.parse(ApiConstants.postBaseUrl));
-    request.files.add(MultipartFile.fromString(
-        'audio_content', audioFile.uri.toFilePath(),
-        filename: audioFile.path.split('/').last));
+    request.files.add(await MultipartFile.fromPath(
+        'audio_content', audioFile.path,
+        contentType:
+            MediaType.parse(lookupMimeType(audioFile.path) ?? 'video/mp4')));
     request.fields.addAll({"post_format": "audio", "is_reply": "false"});
     request.headers.addAll(ApiHeaders.aunthenticatedHeader);
     log("Payload ${request.fields.entries} media${request.files.first.field}");
     return await request.send();
   }
 
-  Future<StreamedResponse> createImagePost({required File image}) async {
+  Future<StreamedResponse> createImagePost(
+      {required File image, String? caption}) async {
     var request = MultipartRequest('POST', Uri.parse(ApiConstants.postBaseUrl));
     request.files.add(await MultipartFile.fromPath('image_content', image.path,
         filename: image.path.split('/').last));
-    request.fields.addAll({"post_format": "image", "is_reply": "false"});
+    request.fields.addAll({
+      "post_format": "image",
+      "text_content": caption ?? '',
+      "is_reply": "false"
+    });
     request.headers.addAll(ApiHeaders.aunthenticatedHeader);
     log("Payload ${request.fields.entries} media${request.files.first.field}");
     return await request.send();
   }
 
-  Future<StreamedResponse> createVideoPost({required File videoFile}) async {
+  Future<StreamedResponse> createVideoPost(
+      {required File videoFile, String? caption}) async {
+    log("reselt${lookupMimeType(videoFile.path)} ${videoFile.path}");
     var request = MultipartRequest('POST', Uri.parse(ApiConstants.postBaseUrl));
-    request.files.add(MultipartFile.fromString(
-        'video_content', videoFile.uri.path,
-        filename: videoFile.path.split('/').last));
-    request.fields.addAll({"post_format": "video", "is_reply": "false"});
+    request.files.add(await MultipartFile.fromPath(
+        'video_content', videoFile.path,
+        contentType:
+            MediaType.parse(lookupMimeType(videoFile.path) ?? 'video/mp4')));
+    request.fields.addAll({
+      "post_format": "video",
+      "text_content": caption ?? '',
+      "is_reply": "false"
+    });
     request.headers.addAll(ApiHeaders.aunthenticatedHeader);
-    log("Payload ${request.fields.entries} media${request.files.first.field}");
+    log("Payload ${request.fields.entries} media${request.files.first.contentType}");
     return await request.send();
   }
 }

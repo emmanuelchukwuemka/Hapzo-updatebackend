@@ -1,98 +1,66 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/exports.dart';
-// import 'package:firebase_storage/firebase_storage.dart';
+import 'package:haptext_api/widgets/app_bar_widget.dart';
 
-class ConfirmImageUpload extends StatelessWidget {
-  // final File videoFile;
-  // final String videoPath;
+class ConfirmImageUpload extends StatefulWidget {
   final PlatformFile pickedFile;
 
-  const ConfirmImageUpload(
-      {Key? key,
-      // required this.videoFile,
-      // required this.videoPath,
-      required this.pickedFile})
+  const ConfirmImageUpload({Key? key, required this.pickedFile})
       : super(key: key);
 
-  // UploadTask? uploadTask;
+  @override
+  State<ConfirmImageUpload> createState() => _ConfirmImageUploadState();
+}
+
+class _ConfirmImageUploadState extends State<ConfirmImageUpload> {
+  final captionController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final watchHome=context.watch<HomeCubit>();
-    return Scaffold(
-      body: SafeArea(
-        child: SizedBox(
-          height: double.infinity,
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(
-                child: Image.file(
-                  File(pickedFile.path!),
-                  width: double.infinity,
-                  // height: MediaQuery.of(context).size.height / 3,
-                  fit: BoxFit.contain,
-                ),
+    final watchHome = context.watch<HomeCubit>();
+    final size = MediaQuery.sizeOf(context);
+    return BlocListener<HomeCubit, HomeState>(
+      listener: (context, state) async {
+        if (state is HomePostCreated) {
+          ToastMessage.showSuccessToast(message: "Photo post created");
+          await Future.delayed(const Duration(seconds: 2));
+          context.go(RouteName.bottomNav.path);
+        }
+      },
+      child: AbsorbPointer(
+        absorbing: watchHome.state is HomeLoading,
+        child: Scaffold(
+          appBar: const AppBarWidget(title: "Create Photo Post"),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  30.verticalSpace,
+                  InputField(
+                      title: "Vide caption (optional)",
+                      controller: captionController),
+                  30.verticalSpace,
+                  Center(
+                      child: Image.file(File(widget.pickedFile.path!),
+                          width: double.infinity,
+                          height: size.height * 0.63,
+                          fit: BoxFit.cover)),
+                  30.verticalSpace,
+                  Appbutton(
+                    isLoading: watchHome.state is HomeLoading,
+                    label: "Confirm",
+                    onTap: () {
+                      context.read<HomeCubit>().createImagePost(
+                          image: File(widget.pickedFile.path!),
+                          caption: captionController.text);
+                    },
+                  )
+                ],
               ),
-              // Align(
-              //   alignment: Alignment.centerRight,
-              //   child: Container(
-              //     margin: const EdgeInsets.only(right: 10),
-              //     child: const Column(
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       crossAxisAlignment: CrossAxisAlignment.end,
-              //       children: [
-              //         Icon(Icons.text_fields_sharp,
-              //             color: Colors.white, size: 22),
-              //         SizedBox(height: 10),
-              //         Text(
-              //           'Text',
-              //           style: TextStyle(color: Colors.white, fontSize: 12),
-              //         ),
-              //         SizedBox(height: 20),
-              //         Icon(Icons.emoji_emotions_outlined,
-              //             color: Colors.white, size: 22),
-              //         SizedBox(height: 10),
-              //         Text(
-              //           'Emoji',
-              //           style: TextStyle(color: Colors.white, fontSize: 12),
-              //         ),
-              //         SizedBox(height: 20),
-              //         Icon(Icons.access_alarms_rounded,
-              //             color: Colors.white, size: 22),
-              //         SizedBox(height: 10),
-              //         Text(
-              //           'Schedule\nTime',
-              //           textAlign: TextAlign.right,
-              //           style: TextStyle(color: Colors.white, fontSize: 12),
-              //         ),
-              //         SizedBox(height: 20),
-              //         Icon(Icons.person_add, color: Colors.white, size: 22),
-              //         SizedBox(height: 10),
-              //         Text(
-              //           'Tag\npeople',
-              //           textAlign: TextAlign.right,
-              //           style: TextStyle(color: Colors.white, fontSize: 12),
-              //         ),
-              // Icon(Icons.add_business_rounded, color: Colors.white),
-              //         const SizedBox(height: 20),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-              30.verticalSpace,
-              Appbutton(isLoading: watchHome.state is HomeLoading,
-                label: "Confirm",
-                onTap: () {
-                  context
-                      .read<HomeCubit>()
-                      .createImagePost(image: File(pickedFile.path!));
-                },
-              )
-            ],
+            ),
           ),
         ),
       ),

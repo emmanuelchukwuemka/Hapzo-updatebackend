@@ -1,14 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:haptext_api/views/nav/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
-
 import '../../../models/new/posts_data.dart';
-import 'confirm_screen.dart';
 
 class Posts extends StatefulWidget {
   const Posts({Key? key}) : super(key: key);
@@ -82,21 +78,6 @@ class _PostsState extends State<Posts> {
   //           ));
   // }
 
-  pickVideo(ImageSource src, BuildContext context) async {
-    final video = await ImagePicker().pickVideo(source: ImageSource.gallery);
-    if (video != null) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => ConfirmScreen(
-            videoFile: File(video.path),
-            videoPath: video.path,
-            // videoPath: UploadVideoController.uploadVideoToStorage.videoPath,
-          ),
-        ),
-      );
-    }
-  }
-
   Future _selectVideoFile() async {
     final file = await ImagePicker().pickVideo(source: ImageSource.gallery);
     context.push(RouteName.confirmVideoUpload.path, extra: File(file!.path));
@@ -135,7 +116,6 @@ class _PostsState extends State<Posts> {
         automaticallyImplyLeading: false,
         iconTheme: IconThemeData(
           color: context.theme.primaryColor,
-          // color: Colors.orange,
         ),
         backgroundColor: context.theme.appBarColor,
         title: AppText(

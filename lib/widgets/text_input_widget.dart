@@ -69,7 +69,7 @@ class _InputFieldState extends State<InputField> {
         if (widget.title != null) ...[
           AppText(
               text: widget.title!,
-              color: Colors.black,
+              color: Colors.white,
               fontSize: 14.sp,
               fontWeight: FontWeight.w700),
           3.verticalSpace

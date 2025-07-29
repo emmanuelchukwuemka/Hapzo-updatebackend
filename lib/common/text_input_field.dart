@@ -27,7 +27,7 @@ class TextInputField extends StatelessWidget {
           prefixIconColor: context.theme.primaryColor,
           labelStyle: TextStyle(
             fontSize: 13,
-            color: context.theme.primaryColor,
+            color: context.theme.primaryColor
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),

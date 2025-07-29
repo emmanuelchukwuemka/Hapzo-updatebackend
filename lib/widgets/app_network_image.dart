@@ -29,10 +29,13 @@ class AppNetwokImage extends StatelessWidget {
                 height: height,
                 fit: fit,
                 imageUrl: imageUrl,
-                placeholder: (context, url) => Image.asset('assets/sale.avif',
-                    width: width, height: height, fit: BoxFit.cover),
+                placeholder: (context, url) => Image.asset(
+                    'assets/images/hapz_logo.png',
+                    width: width,
+                    height: height,
+                    fit: BoxFit.cover),
                 errorWidget: (context, url, error) => Image.asset(
-                    'assets/images/hapz_logo',
+                    'assets/images/hapz_logo.png',
                     width: width,
                     height: height,
                     fit: BoxFit.cover)),

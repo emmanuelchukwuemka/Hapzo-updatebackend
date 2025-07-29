@@ -15,7 +15,7 @@ class ConfirmVideoUpload extends StatefulWidget {
 
 class _ConfirmVideoUploadState extends State<ConfirmVideoUpload> {
   VideoPlayerController? _controller;
-
+  final captionController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -27,55 +27,65 @@ class _ConfirmVideoUploadState extends State<ConfirmVideoUpload> {
           });
       });
     });
-    // _controller = VideoPlayerController.networkUrl(
-    //   Uri.parse('https://example.com/video.mp4'),
-    // )..initialize().then((_) {
-    //     setState(() {});
-    //   });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Container(
-            //   height: 30,
-            //   width: double.infinity,
-            //   margin: const EdgeInsets.symmetric(horizontal: 15),
-            //   color: Colors.orange,
-            //   child: Text(widget.pickedFile.name),
-            // ),
-            _controller != null && _controller!.value.isInitialized
-                ? AspectRatio(
-                    aspectRatio: _controller!.value.aspectRatio,
-                    child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _controller!.value.isPlaying
-                                ? _controller!.pause()
-                                : _controller!.play();
-                          });
-                        },
-                        child: VideoPlayer(_controller!)),
-                  )
-                : const AppText(text: 'Loading...'),
-            20.verticalSpace,
-            Appbutton(
-              isLoading: context.watch<HomeCubit>().state is HomeLoading,
-              label: "Proceed",
-              onTap: () {
-                context
-                    .read<HomeCubit>()
-                    .createVideoPost(video: widget.videoFile!);
-              },
-            )
-          ],
-        ),
+    final size = MediaQuery.sizeOf(context);
+    final watchHome = context.watch<HomeCubit>();
+    return BlocListener<HomeCubit, HomeState>(
+      listener: (context, state) async {
+        if (state is HomePostCreated) {
+           ToastMessage.showSuccessToast(message: "Video post created");
+          await Future.delayed(const Duration(seconds: 2));
+          context.go(RouteName.bottomNav.path);
+        }
+      },
+      child: AbsorbPointer(
+        absorbing: watchHome.state is HomeLoading,
+        child: Scaffold(
+            body: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
+            child: Column(
+              children: [
+                20.verticalSpace,
+                InputField(
+                    title: "Vide caption (optional)",
+                    controller: captionController),
+                20.verticalSpace,
+                _controller != null && _controller!.value.isInitialized
+                    ? SizedBox(
+                        height: size.height * 0.7,
+                        width: size.width,
+                        child: AspectRatio(
+                            aspectRatio: _controller!.value.aspectRatio,
+                            child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _controller!.value.isPlaying
+                                        ? _controller!.pause()
+                                        : _controller!.play();
+                                  });
+                                },
+                                child: VideoPlayer(_controller!))),
+                      )
+                    : const AppText(text: 'Loading...'),
+                20.verticalSpace,
+                Appbutton(
+                    isLoading: context.watch<HomeCubit>().state is HomeLoading,
+                    label: "Proceed",
+                    onTap: () {
+                      watchHome.createVideoPost(
+                          video: widget.videoFile!,
+                          caption: captionController.text);
+                    })
+              ],
+            ),
+          ),
+        )),
       ),
-    ));
+    );
   }
 
   @override

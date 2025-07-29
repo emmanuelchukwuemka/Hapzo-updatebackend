@@ -21,6 +21,7 @@ class ResultModel {
   String? senderId;
   String? postFormat;
   String? textContent;
+  String? senderName;
   dynamic imageContent;
   dynamic audioContent;
   dynamic videoContent;
@@ -37,6 +38,7 @@ class ResultModel {
       this.imageContent,
       this.audioContent,
       this.videoContent,
+      this.senderName,
       this.isReply,
       this.previousPostId,
       this.id,
@@ -50,6 +52,7 @@ class ResultModel {
     imageContent = json['image_content'];
     audioContent = json['audio_content'];
     videoContent = json['video_content'];
+    senderName = json['sender_username'];
     isReply = json['is_reply'];
     previousPostId = json['previous_post_id'];
     id = json['id'];

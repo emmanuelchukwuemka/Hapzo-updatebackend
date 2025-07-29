@@ -74,10 +74,10 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  createImagePost({required File image}) async {
+  createImagePost({required File image,required caption}) async {
     emit(HomeLoading());
     try {
-      final response = await homeRepo.createImagePost(image: image);
+      final response = await homeRepo.createImagePost(image: image,caption: caption);
       if (response.statusCode == 201) {
         emit(HomePostCreated());
         fetchPosts();
@@ -94,16 +94,17 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  createVideoPost({required File video}) async {
+  createVideoPost({required File video, String? caption}) async {
     emit(HomeLoading());
     try {
-      final response = await homeRepo.createVideoPost(videoFile: video);
-      if (response.statusCode == 201) {
+      final response =
+          await homeRepo.createVideoPost(videoFile: video, caption: caption);
+      if (response.statusCode == 201) { 
         emit(HomePostCreated());
         fetchPosts();
+       
       } else {
         final body = jsonDecode(await response.stream.bytesToString());
-        log("message$body");
         ToastMessage.showErrorToast(
             message: body["errors"]["detail"].toString());
         emit(HomeError());

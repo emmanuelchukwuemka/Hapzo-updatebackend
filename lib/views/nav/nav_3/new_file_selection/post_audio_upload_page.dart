@@ -41,90 +41,105 @@ class PostAudioUploadPageState extends State<PostAudioUploadPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    return Scaffold(
-      appBar: AppBar(title: const AppText(text: 'Audio Upload')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            30.verticalSpace,
-            if (_selectedAudio != null) ...[
-              Column(children: [
-                const AppText(text: 'Audio', color: Colors.white),
-                const SizedBox(height: 15.0),
-                Slider(
-                  min: 0,
-                  max: duration.inMilliseconds.toDouble(),
-                  value: position.inMilliseconds.toDouble(),
-                  onChanged: _onSliderChanged,
-                ),
-                AppText(
-                  text:
-                      '${_formatDuration(position)} / ${_formatDuration(duration)}',
-                  color: Colors.white,
-                ),
+    final watchHome = context.watch<HomeCubit>();
+    return BlocListener<HomeCubit, HomeState>(
+      listener: (context, state) async {
+        if (state is HomePostCreated) {
+          ToastMessage.showSuccessToast(message: "Audio post created");
+          await Future.delayed(const Duration(seconds: 1));
+          context.go(RouteName.bottomNav.path);
+        }
+      },
+      child: AbsorbPointer(
+        absorbing: watchHome.state is HomeLoading,
+        child: Scaffold(
+          appBar: AppBar(title: const AppText(text: 'Audio Upload')),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                30.verticalSpace,
+                if (_selectedAudio != null) ...[
+                  Column(children: [
+                    const AppText(text: 'Audio', color: Colors.white),
+                    const SizedBox(height: 15.0),
+                    Slider(
+                      min: 0,
+                      max: duration.inMilliseconds.toDouble(),
+                      value: position.inMilliseconds.toDouble(),
+                      onChanged: _onSliderChanged,
+                    ),
+                    AppText(
+                      text:
+                          '${_formatDuration(position)} / ${_formatDuration(duration)}',
+                      color: Colors.white,
+                    ),
+                    20.verticalSpace,
+                    Appbutton(
+                        width: size.width * 0.6,
+                        onTap: isPlaying ? _pauseAudio : _playAudio,
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(isPlaying ? Icons.pause : Icons.play_arrow,
+                                  size: 20.sp, color: Colors.white),
+                              10.horizontalSpace,
+                              AppText(
+                                  text:
+                                      isPlaying ? "Pause Audio" : "Play Audio",
+                                  color: Colors.white)
+                            ])),
+                    20.verticalSpace,
+                    Appbutton(
+                        isLoading: watchHome.state is HomeLoading,
+                        width: size.width * 0.6,
+                        onTap: () {
+                          context.read<HomeCubit>().createAudioPost(
+                                audio: _selectedAudio!,
+                              );
+                        },
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.cloud_upload,
+                                  size: 20.sp, color: Colors.white),
+                              10.horizontalSpace,
+                              const AppText(
+                                  text: "Upload File", color: Colors.white)
+                            ])),
+                  ])
+                ],
                 20.verticalSpace,
-                Appbutton(
-                    width: size.width * 0.6,
-                    onTap: isPlaying ? _pauseAudio : _playAudio,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(isPlaying ? Icons.pause : Icons.play_arrow,
-                              size: 20.sp, color: Colors.white),
-                          10.horizontalSpace,
-                          AppText(
-                              text: isPlaying ? "Pause Audio" : "Play Audio",
-                              color: Colors.white)
-                        ])),
-                20.verticalSpace,
-                Appbutton(
-                    isLoading: context.watch<HomeCubit>().state is HomeLoading,
-                    width: size.width * 0.6,
-                    onTap: () {
-                      context
-                          .read<HomeCubit>()
-                          .createAudioPost(audio: _selectedAudio!);
-                    },
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.cloud_upload,
-                              size: 20.sp, color: Colors.white),
-                          10.horizontalSpace,
-                          const AppText(
-                              text: "Upload File", color: Colors.white)
-                        ])),
-              ])
-            ],
-            20.verticalSpace,
-            if (_selectedAudio == null) ...[
-              Appbutton(
-                  width: size.width * 0.6,
-                  onTap: _uploadAudio,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.fiber_manual_record,
-                            size: 20.sp, color: Colors.white),
-                        10.horizontalSpace,
-                        const AppText(text: "Record", color: Colors.white)
-                      ])),
-              20.verticalSpace,
-              Appbutton(
-                  width: size.width * 0.6,
-                  onTap: _uploadAudio,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.audio_file,
-                            size: 20.sp, color: Colors.white),
-                        10.horizontalSpace,
-                        const AppText(text: "Select File", color: Colors.white)
-                      ])),
-            ]
-          ],
+                if (_selectedAudio == null) ...[
+                  Appbutton(
+                      width: size.width * 0.6,
+                      onTap: _uploadAudio,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.fiber_manual_record,
+                                size: 20.sp, color: Colors.white),
+                            10.horizontalSpace,
+                            const AppText(text: "Record", color: Colors.white)
+                          ])),
+                  20.verticalSpace,
+                  Appbutton(
+                      width: size.width * 0.6,
+                      onTap: _uploadAudio,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.audio_file,
+                                size: 20.sp, color: Colors.white),
+                            10.horizontalSpace,
+                            const AppText(
+                                text: "Select File", color: Colors.white)
+                          ])),
+                ]
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -186,12 +201,10 @@ class PostAudioUploadPageState extends State<PostAudioUploadPage> {
   }
 
   Future<void> startRecording() async {
-  
     await _audioRecorder.startRecorder(toFile: 'audio.wav');
   }
 
   Future<void> stopRecording() async {
     await _audioRecorder.stopRecorder();
-   
   }
 }
