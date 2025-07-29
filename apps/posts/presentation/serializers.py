@@ -62,6 +62,10 @@ class PostCreateSerializer(serializers.Serializer):
                 "video/webm",
             ]
             if video_content.content_type not in allowed_video_types:
+                from loguru import logger
+                logger.critical(
+                    f"Unsupported video file type: {video_content.content_type}, Allowed types are: {allowed_video_types}"
+                )
                 raise serializers.ValidationError("Unsupported video file type.")
 
         attrs["sender_id"] = self.context.get("sender_id")

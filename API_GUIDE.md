@@ -551,8 +551,12 @@ All API endpoints are prefixed with `/api/v1/`.
 -   **📤 Request Body:** (Can be `application/json` or `multipart/form-data` for `media`)
     ```json
     {
-        "caption": "string", (optional)
-        "media": "file" (optional)
+        "post_format": "text",
+        "text_content": "string", (optional for media uploads)
+        "text_content": "file" (optional)
+        "image_content": "file" (optional)
+        "audio_content": "file" (optional)
+        "video_content": "file" (optional)
     }
     ```
 -   **✅ Success Response (Status: 201 Created):**
@@ -563,8 +567,14 @@ All API endpoints are prefixed with `/api/v1/`.
         "data": {
             "id": "string",
             "sender": "string",
-            "caption": "string",
-            "media": "url_to_media",
+            "post_format": "",
+            "text_content": "string",
+            "image_content": null,
+            "audio_content": null,
+            "video_content": null,
+            "is_reply": false,
+            "previous_post_id": null,
+            "sender_username": "string",
             "created_at": "datetime",
             "updated_at": "datetime"
         },
