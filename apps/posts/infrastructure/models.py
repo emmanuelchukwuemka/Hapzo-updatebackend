@@ -18,13 +18,13 @@ class Post(models.Model):
     )
     text_content = models.TextField(blank=True, null=True)
     image_content = models.ImageField(
-        upload_to="media/posts/images/", blank=True, null=True
+        upload_to="posts/images/", blank=True, null=True
     )
     audio_content = models.FileField(
-        upload_to="media/posts/audios/", blank=True, null=True
+        upload_to="posts/audios/", blank=True, null=True
     )
     video_content = models.FileField(
-        upload_to="media/posts/videos/", blank=True, null=True
+        upload_to="posts/videos/", blank=True, null=True
     )
     is_reply = models.BooleanField(default=False)
     previous_post_id = models.CharField(max_length=21, blank=True, null=True)
