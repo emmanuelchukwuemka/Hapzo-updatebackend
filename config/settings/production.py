@@ -4,7 +4,7 @@ from .base import *  # noqa
 
 SECRET_KEY = env.str("DJANGO_SECRET_KEY")  # noqa
 
-DEBUG = env.str("DJANGO_DEBUG")  # noqa
+DEBUG = env.bool("DJANGO_DEBUG")  # noqa
 
 ALLOWED_HOSTS = env.str("DJANGO_ALLOWED_HOSTS").split(",")  # noqa
 
