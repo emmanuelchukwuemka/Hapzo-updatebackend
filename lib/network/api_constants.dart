@@ -15,6 +15,16 @@ class ApiConstants {
   static const String verifyEmailUrl = "$authBaseUrl/verify-email/";
   static const String verifyEmailRequestUrl =
       "$authBaseUrl/verify-email/request/";
+  static const String userProfileBaseUrl = "$baseUrl/users";
+  static String followUserUrl({userId}) =>
+      "$userProfileBaseUrl/follow-request/$userId/";
+  static String get createProfileUrl => "$userProfileBaseUrl/profile/create/";
+  static String aceeptOrDeclineFollowUrl({requestId}) =>
+      "$userProfileBaseUrl/follow-request/handle/$requestId/";
+  static String pendingFollowRequestUrl({page}) =>
+      "$userProfileBaseUrl/follow-requests/pending/$page/20/";
+  static String getFriendsUrl({page}) =>
+      "$userProfileBaseUrl/friends/$page/20/";
   static const String postBaseUrl = "$baseUrl/posts/";
   static String fetchPostUrl({required page, required pageSize}) =>
       "${postBaseUrl}list/$page/$pageSize/";

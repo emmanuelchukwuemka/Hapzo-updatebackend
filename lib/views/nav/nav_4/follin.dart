@@ -88,7 +88,7 @@ class _FollinState extends State<Follin> {
             ],
           )),
       // CONTENT
-      _userData!.following!.isEmpty
+      _userData?.following?.isEmpty??true
           ? const Expanded(
               child: Center(
                 child: Text(

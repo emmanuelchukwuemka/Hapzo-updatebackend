@@ -28,7 +28,7 @@ export 'package:haptext_api/views/nav/nav_3/new_file_selection/camera_button_wid
 export 'package:haptext_api/views/nav/nav_4/follin.dart';
 export 'package:haptext_api/views/nav/nav_4/foller.dart';
 export 'package:haptext_api/views/nav/nav_4/friend.dart';
-export 'package:haptext_api/views/nav/nav_4/seeAll.dart';
+ 
 export 'package:haptext_api/views/nav/nav_4/following.dart';
 export 'package:haptext_api/views/nav/nav_4/image_view.dart';
 export 'package:haptext_api/views/nav/nav_4/friendCardWidget.dart';

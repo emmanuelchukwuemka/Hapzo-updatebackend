@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:haptext_api/views/nav/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
+import 'package:haptext_api/views/nav/nav_4/see_all.dart';
 
 class ImageView extends StatefulWidget {
   const ImageView({Key? key}) : super(key: key);

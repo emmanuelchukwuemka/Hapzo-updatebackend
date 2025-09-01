@@ -1,3 +1,4 @@
+import 'package:haptext_api/bloc/profile/cubit/profile_cubit.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/views/nav/exports.dart';
 
@@ -113,6 +114,7 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final watchProfile = context.watch<ProfileCubit>();
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,

@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
+import 'package:haptext_api/common/coloors.dart';
 import 'package:haptext_api/common/utils.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
@@ -70,8 +73,9 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        body: ListView.builder(
-          padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
+        body: PageView.builder(
+          scrollDirection: Axis.vertical,
+          // padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
           itemCount: post?.length ?? 0,
           itemBuilder: (context, index) {
             return PostContentWidget(
@@ -96,27 +100,103 @@ class PostContentWidget extends StatefulWidget {
 }
 
 class _PostContentWidgetState extends State<PostContentWidget> {
-  late VideoPlayerController _controller;
+  VideoPlayerController? _videoPlayerController;
+  bool _isVideoInitialized = false;
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isPlaying = false;
 
   @override
   void initState() {
     super.initState();
-    if (widget.post?[widget.index].postFormat?.toLowerCase() == "video") {
-      _controller = VideoPlayerController.networkUrl(
-          Uri.parse(widget.post![widget.index].videoContent))
-        ..initialize().then((_) {
-          setState(() {});
-          _controller.play();
-        });
+    // Initialize video player only if it's a video post
+    _initializeVideoPlayer(
+      widget.post?[widget.index].videoContent,
+      widget.post?[widget.index].postFormat,
+    );
+    // Remove WidgetsBinding.instance.addPersistentFrameCallback here.
+    // It's not the correct place for controller initialization.
+  }
+
+  // Helper method to initialize the video player
+  Future<void> _initializeVideoPlayer(
+      String? videoUrl, String? postFormat) async {
+    // Dispose any existing controller before creating a new one
+    if (_videoPlayerController != null) {
+      _videoPlayerController!.dispose();
+      _videoPlayerController = null;
     }
+
+    _isVideoInitialized = false; // Reset initialization flag
+
+    if (postFormat?.toLowerCase() == "video" &&
+        videoUrl != null &&
+        videoUrl.isNotEmpty) {
+      _videoPlayerController =
+          VideoPlayerController.networkUrl(Uri.parse(videoUrl));
+      try {
+        await _videoPlayerController!.initialize();
+        _videoPlayerController!.setLooping(true);
+        _videoPlayerController!.setVolume(0.0); // Start muted
+
+        if (mounted) {
+          setState(() {
+            _isVideoInitialized = true;
+          });
+        }
+        log("Video initialized for URL: $videoUrl, Status: ${_videoPlayerController!.value.isInitialized}");
+      } catch (e) {
+        log("Error initializing video for URL: $videoUrl, Error: $e");
+        if (mounted) {
+          setState(() {
+            _isVideoInitialized = false; // Mark as not initialized on error
+          });
+        }
+      }
+    } else {
+      // If it's not a video post or content is null/empty, ensure flag is false
+      if (mounted) {
+        setState(() {
+          _isVideoInitialized = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant PostContentWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final oldVideoContent = oldWidget.post?[oldWidget.index].videoContent;
+    final newVideoContent = widget.post?[widget.index].videoContent;
+    final oldPostFormat =
+        oldWidget.post?[oldWidget.index].postFormat?.toLowerCase();
+    final newPostFormat = widget.post?[widget.index].postFormat?.toLowerCase();
+
+    // Re-initialize video player if the video content or format changes
+    if (newPostFormat == "video" && newVideoContent != oldVideoContent) {
+      _initializeVideoPlayer(newVideoContent, newPostFormat);
+    } else if (newPostFormat != "video" && oldPostFormat == "video") {
+      // If it transitioned from video to something else, dispose the video controller
+      if (_videoPlayerController != null) {
+        _videoPlayerController!.dispose();
+        _videoPlayerController = null;
+        if (mounted) {
+          setState(() {
+            _isVideoInitialized = false;
+          });
+        }
+      }
+    }
+    // Add logic here if you need to control video play/pause based on widget.play
+    // (if you introduce a 'play' prop to this widget from a PageView parent)
   }
 
   @override
   Widget build(BuildContext context) {
     return AppshadowContainer(
-      margin: EdgeInsets.symmetric(vertical: widget.size.width * 0.02),
+      margin: EdgeInsets.symmetric(
+          vertical: widget.size.width * 0.02,
+          horizontal: widget.size.width * 0.04),
       padding: EdgeInsets.all(widget.size.width * 0.04),
       color: context.theme.appBarColor,
       alignment: Alignment.topLeft,
@@ -135,11 +215,13 @@ class _PostContentWidgetState extends State<PostContentWidget> {
           20.verticalSpace,
           AppshadowContainer(
               onTap: () {
-                setState(() {
-                  _controller.value.isPlaying
-                      ? _controller.pause()
-                      : _controller.play();
-                });
+                if (widget.post?[widget.index].postFormat == "video") {
+                  setState(() {
+                    _videoPlayerController?.value.isPlaying ?? false
+                        ? _videoPlayerController?.pause()
+                        : _videoPlayerController?.play();
+                  });
+                }
               },
               height: widget.size.height * 0.55,
               padding: EdgeInsets.all(widget.size.width * 0.04),
@@ -154,11 +236,16 @@ class _PostContentWidgetState extends State<PostContentWidget> {
                       maxLines: 150)
                   : widget.post?[widget.index].postFormat?.toLowerCase() ==
                           'video'
-                      ? _controller.value.isInitialized
-                          ? AspectRatio(
-                              aspectRatio: _controller.value.aspectRatio,
-                              child: VideoPlayer(_controller))
-                          : const CircularProgressIndicator()
+                      ? _isVideoInitialized == false
+                          ? const CircularProgressIndicator()
+                          : _videoPlayerController?.value.hasError ?? false
+                              ? Icon(Icons.error_outline,
+                                  size: 25.sp, color: Coloors.orangeDark)
+                              : AspectRatio(
+                                  aspectRatio: _videoPlayerController
+                                          ?.value.aspectRatio ??
+                                      0,
+                                  child: VideoPlayer(_videoPlayerController!))
                       : widget.post?[widget.index].postFormat?.toLowerCase() ==
                               "image"
                           ? AppNetwokImage(
@@ -221,6 +308,7 @@ class _PostContentWidgetState extends State<PostContentWidget> {
                   width: widget.size.width * 0.67,
                   child: AppText(
                       text: widget.post?[widget.index].textContent ?? "",
+                      maxLines: 3,
                       color: Colors.white)),
               const Spacer(),
               Column(
@@ -251,7 +339,7 @@ class _PostContentWidgetState extends State<PostContentWidget> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _videoPlayerController?.dispose();
     _audioPlayer.dispose();
     super.dispose();
   }

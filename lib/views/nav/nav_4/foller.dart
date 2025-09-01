@@ -60,7 +60,7 @@ class _FollerState extends State<Foller> {
             ],
           )),
       // BODY CONTAINER
-      _userData!.followers!.isEmpty
+      _userData?.followers?.isEmpty??true
           ? const Expanded(
               child: Center(
                 child: Text(

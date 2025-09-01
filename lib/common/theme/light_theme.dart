@@ -5,8 +5,8 @@ import 'package:haptext_api/common/coloors.dart';
 ThemeData lightTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
-    primaryColor:  Coloors.lightBackground,
-    scaffoldBackgroundColor: Coloors.lightBackground,
+    primaryColor: Coloors.darkBackground,
+    scaffoldBackgroundColor: Coloors.darkBackground,
     extensions: [
       CustomThemeExtension.lightMode,
     ],
@@ -19,6 +19,6 @@ ThemeData lightTheme() {
         splashFactory: NoSplash.splashFactory,
         minimumSize: const Size(double.infinity, 50),
       ),
-    ),  
+    ),
   );
 }

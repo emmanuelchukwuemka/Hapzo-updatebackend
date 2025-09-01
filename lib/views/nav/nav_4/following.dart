@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:haptext_api/bloc/people/cubit/people_cubit.dart';
+import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/views/nav/exports.dart';
-import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 
 class FollowingPage extends StatefulWidget {
   const FollowingPage({Key? key}) : super(key: key);
@@ -12,13 +13,14 @@ class FollowingPage extends StatefulWidget {
 class _FollowingPageState extends State<FollowingPage> {
   @override
   Widget build(BuildContext context) {
+    final watchPeople = context.watch<PeopleCubit>();
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
           iconTheme: const IconThemeData(
-            // color: context.theme.primaryColor,
-          ),
+              // color: context.theme.primaryColor,
+              ),
           title: const Text(
             '  People',
             style: TextStyle(
@@ -37,9 +39,15 @@ class _FollowingPageState extends State<FollowingPage> {
             labelStyle: TextStyle(fontWeight: FontWeight.bold),
             unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500),
             tabs: [
-              Tab(text: 'Followers',),
-              Tab(text: 'Following',),
-              Tab(text: 'Friends',),
+              Tab(
+                text: 'Followers',
+              ),
+              Tab(
+                text: 'Following',
+              ),
+              Tab(
+                text: 'Friends',
+              ),
             ],
           ),
         ),
