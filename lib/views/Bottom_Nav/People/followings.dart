@@ -1,17 +1,14 @@
-import 'package:haptext_api/views/nav/exports.dart';
+import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 import 'package:haptext_api/exports.dart';
 
-class Follin extends StatefulWidget {
-  const Follin({Key? key}) : super(key: key);
+class Followings extends StatefulWidget {
+  const Followings({Key? key}) : super(key: key);
 
   @override
-  State<Follin> createState() => _FollinState();
+  State<Followings> createState() => _FollowingsState();
 }
 
-class _FollinState extends State<Follin> {
-  UserModel? _userData;
-  UserModel? newData;
-
+class _FollowingsState extends State<Followings> {
   Future<void> getData() async {
     setState(() {});
   }
@@ -72,11 +69,8 @@ class _FollinState extends State<Follin> {
                     ),
                   ),
                   const SizedBox(width: 10.0),
-                  const Text(
-                    'Search',
-                    style: TextStyle(
-                        // color: context.theme.greyColor,
-                        ),
+                  const AppText(
+                    text: 'Search',
                   )
                 ],
               ),
@@ -88,16 +82,16 @@ class _FollinState extends State<Follin> {
             ],
           )),
       // CONTENT
-      _userData?.following?.isEmpty??true
+      true
           ? const Expanded(
               child: Center(
-                child: Text(
-                  'The people you follow will appear here.',
-                  style: TextStyle(
-                      color: Colors.orange,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 28),
-                ),
+                child: AppText(
+                    text: 'The people you follow will appear here.',
+                    color: Colors.orange,
+                    fontWeight: FontWeight.bold,
+                    textAlign: TextAlign.center,
+                    maxLines: 3,
+                    fontSize: 28),
               ),
             )
           : Expanded(
@@ -110,10 +104,10 @@ class _FollinState extends State<Follin> {
                       crossAxisSpacing: 5.0,
                       mainAxisSpacing: 5.0,
                       childAspectRatio: 0.8),
-                  itemCount: _userData!.following!.length,
+                  itemCount: 0,
                   itemBuilder: (context, index) => FriendCardWidget(
                       context,
-                      _userData!.following![index],
+                      " _userData!.following![index]",
                       'assets/images/chukwuchi.jpg'),
                 ),
               ),

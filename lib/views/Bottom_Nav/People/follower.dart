@@ -1,18 +1,14 @@
- 
-import 'package:haptext_api/views/nav/exports.dart';
+import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 import 'package:haptext_api/exports.dart';
 
-class Foller extends StatefulWidget {
-  const Foller({Key? key}) : super(key: key);
+class Followers extends StatefulWidget {
+  const Followers({Key? key}) : super(key: key);
 
   @override
-  State<Foller> createState() => _FollerState();
+  State<Followers> createState() => _FollowersState();
 }
 
-class _FollerState extends State<Foller> {
-  UserModel? _userData;
-  UserModel? newData;
-
+class _FollowersState extends State<Followers> {
   Future<void> getData() async {
     setState(() {});
   }
@@ -51,26 +47,19 @@ class _FollerState extends State<Foller> {
                 ),
               ),
               const SizedBox(width: 10.0),
-              const Text(
-                'Search',
-                style: TextStyle(
-                    // color: context.theme.greyColor,
-                    ),
-              )
+              const AppText(text: 'Search', color: Colors.white)
             ],
           )),
       // BODY CONTAINER
-      _userData?.followers?.isEmpty??true
+      true
           ? const Expanded(
               child: Center(
-                child: Text(
-                  'Your followers will appear here.',
-                  style: TextStyle(
+                  child: AppText(
+                      text: 'Your followers will appear here.',
                       color: Colors.orange,
+                      textAlign: TextAlign.center,
                       fontWeight: FontWeight.bold,
-                      fontSize: 28),
-                ),
-              ),
+                      fontSize: 28)),
             )
           : Expanded(
               child: Padding(
@@ -82,9 +71,9 @@ class _FollerState extends State<Foller> {
                       crossAxisSpacing: 5.0,
                       mainAxisSpacing: 5.0,
                       childAspectRatio: 0.8),
-                  itemCount: _userData!.followers!.length,
+                  itemCount: 0,
                   itemBuilder: (context, index) => FriendCardWidget(context,
-                      _userData!.followers![index], 'assets/images/me.jpg'),
+                      "_userData!.followers![index]", 'assets/images/me.jpg'),
                 ),
               ),
             ),

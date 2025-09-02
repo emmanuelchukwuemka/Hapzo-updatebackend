@@ -1,3 +1,5 @@
+import 'dart:developer';
+import 'dart:io';
 import 'package:haptext_api/network/api_constants.dart';
 import 'package:haptext_api/network/api_helper.dart';
 import 'package:http/http.dart';
@@ -9,49 +11,39 @@ class ProfileRepo {
         headers: ApiHeaders.aunthenticatedHeader);
   }
 
-  Future<Response> verifyUserEmail(
-      {required String email, required String otp}) async {
-    return await ApiMethods.postMethod(
-        url: ApiConstants.verifyEmailUrl,
-        body: {"email": email, "otp_code": int.parse(otp)},
-        headers: ApiHeaders.unaunthenticatedHeader);
-  }
-
-  Future<Response> userLogin(
-      {required String email, required String password}) async {
-    return await ApiMethods.postMethod(
-        url: ApiConstants.login,
-        body: {"email": email, "password": password},
-        headers: ApiHeaders.unaunthenticatedHeader);
-  }
-
-  Future<Response> requestPasswordReset({required String email}) async {
-    return await ApiMethods.postMethod(
-        url: ApiConstants.requestPasswordReset,
-        body: {"email": email},
-        headers: ApiHeaders.unaunthenticatedHeader);
-  }
-
-  Future<Response> requestEmailVerify({required String email}) async {
-    return await ApiMethods.postMethod(
-        url: ApiConstants.verifyEmailRequestUrl,
-        body: {"email": email, "purpose": "email_verification"},
-        headers: ApiHeaders.unaunthenticatedHeader);
-  }
-
-  Future<Response> resetPassword(
-      {required String email,
-      required String newPassword,
-      required String otp,
-      required String confirmNewPassword}) async {
-    return await ApiMethods.postMethod(
-        url: ApiConstants.verifyPasswordReset,
-        body: {
-          "email": email,
-          "code": otp,
-          "new_password": newPassword,
-          "new_password_confirm": confirmNewPassword
-        },
-        headers: ApiHeaders.unaunthenticatedHeader);
+  Future<StreamedResponse> createProfile(
+      {required String userId,
+      required String birthDate,
+      required String ethnicity,
+      required String relationshipStatus,
+      required String firstName,
+      required String lastName,
+      required String bio,
+      required String occupation,
+      required File profilePicture,
+      required String location,
+      required String height,
+      required String weight}) async {
+    var request =
+        MultipartRequest('POST', Uri.parse(ApiConstants.createProfileUrl));
+    request.files.add(await MultipartFile.fromPath(
+        'profile_picture', profilePicture.path,
+        filename: profilePicture.path.split('/').last));
+    String date = birthDate.replaceAll('/', '-').toString();
+    request.fields.addAll({
+      "user_id": userId,
+      "birth_date": date,
+      "ethnicity": ethnicity,
+      "relationship_status": relationshipStatus,
+      "first_name": firstName,
+      "last_name": firstName,
+      "bio": bio,
+      "location": location,
+      "height": height,
+      "weight": weight
+    });
+    request.headers.addAll(ApiHeaders.aunthenticatedHeader);
+    log("Payload ${request.fields.entries} media${request.files.first.field}");
+    return await request.send();
   }
 }

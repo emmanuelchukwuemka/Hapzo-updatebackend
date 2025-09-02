@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:haptext_api/views/nav/exports.dart';
+import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 
 FriendCardWidget (context, String text, String img) {
   return GestureDetector(

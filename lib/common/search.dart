@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:haptext_api/common/text_input_field.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 
-import '../views/nav/nav_2/search_option_tab.dart';
+import '../views/Bottom_Nav/Explore/search_option_tab.dart';
 
 class Search extends StatefulWidget {
   const Search({Key? key}) : super(key: key);
@@ -12,7 +12,6 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> with SingleTickerProviderStateMixin {
-
   final TextEditingController _searchController = TextEditingController();
   late TabController tabController;
   @override
@@ -33,23 +32,26 @@ class _SearchState extends State<Search> with SingleTickerProviderStateMixin {
     return Scaffold(
       backgroundColor: context.theme.bgColor,
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10,),
-            Container(
-              height: size.height * .08,
-              margin: EdgeInsets.symmetric(horizontal: 10.0),
-              child: TextInputField(
-                controller: _searchController, labelText: 'Search', icon: Icons.search,
-              ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            height: size.height * .08,
+            margin: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: TextInputField(
+              controller: _searchController,
+              labelText: 'Search',
+              icon: Icons.search,
             ),
-            SizedBox(height: 5,),
-            Expanded(
-              child: SearchOptionTabWidget(tabController: tabController),
-            ),
-          ]
-        ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Expanded(
+            child: SearchOptionTabWidget(tabController: tabController),
+          ),
+        ]),
       ),
     );
   }

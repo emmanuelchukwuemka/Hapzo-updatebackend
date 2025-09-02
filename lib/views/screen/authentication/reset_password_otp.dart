@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
 import 'package:haptext_api/exports.dart';

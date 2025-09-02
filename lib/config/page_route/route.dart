@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/main.dart';
-import 'package:haptext_api/views/nav/nav_3/confirm_image_upload.dart';
-import 'package:haptext_api/views/nav/nav_3/confirm_video_upload.dart';
-import 'package:haptext_api/views/nav/nav_3/new_file_selection/post_audio_upload_page.dart';
-import 'package:haptext_api/views/nav/nav_3/text_write_up.dart';
+import 'package:haptext_api/views/Bottom_Nav/Post/confirm_image_upload.dart';
+import 'package:haptext_api/views/Bottom_Nav/Post/confirm_video_upload.dart';
+import 'package:haptext_api/views/Bottom_Nav/Post/new_file_selection/post_audio_upload_page.dart';
+import 'package:haptext_api/views/Bottom_Nav/Post/text_write_up.dart';
+import 'package:haptext_api/views/Bottom_Nav/Profile/edit_profile.dart';
 import 'package:haptext_api/views/navigation.dart';
 import 'package:haptext_api/views/screen/authentication/forget_password.dart';
 import 'package:haptext_api/views/screen/authentication/reset_password.dart';
@@ -84,6 +85,11 @@ class AppRoute {
           builder: (context, state) {
             final File file = state.extra as File;
             return ConfirmVideoUpload(videoFile: file);
+          }),
+      GoRoute(
+          path: RouteName.editProfile.path,
+          builder: (context, state) {
+            return const EditProfile();
           }),
     ],
   );

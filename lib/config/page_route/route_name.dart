@@ -11,7 +11,8 @@ enum RouteName {
   createTextPostPage('/create_text_post_page'),
   audioUploadPage('/audio_upload_page'),
   confirmImageUpload('/confirm_image_upload'),
-  confirmVideoUpload('/confirm_Video_upload');
+  confirmVideoUpload('/confirm_Video_upload'),
+  editProfile('/edit_profile_page');
 
   final String path;
 

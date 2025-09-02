@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/utils/session_manager.dart';
 
@@ -19,7 +18,6 @@ class _SplashPageState extends State<SplashPage> {
       if (await SessionManager.getUser() != null) {
         await SessionManager().getToken();
         context.go(RouteName.bottomNav.path);
-        context.read<HomeCubit>().fetchPosts();
       } else {
         context.go(RouteName.login.path);
       }

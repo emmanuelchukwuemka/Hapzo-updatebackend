@@ -1,4 +1,3 @@
- 
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 
@@ -12,10 +11,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   @override
   Widget build(BuildContext context) {
-  final size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       // backgroundColor: context.theme.bgColor,
       // drawer: Drawer(
@@ -282,22 +280,25 @@ class _HomeState extends State<Home> {
         preferredSize: const Size.fromHeight(40),
         child: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text(' Chats', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          title: const Text(' Chats',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           // backgroundColor: context.theme.appBarColor,
           elevation: 10.0,
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => Navigation()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const Navigation()));
               },
-              icon: Icon(Icons.cloud_outlined),
+              icon: const Icon(Icons.cloud_outlined),
               iconSize: 22,
               // color: context.theme.primaryColor,
             ),
             // SizedBox(width: 0.5),
             IconButton(
               onPressed: () {},
-              icon: Icon(Icons.search),
+              icon: const Icon(Icons.search),
               iconSize: 22,
               // color: context.theme.primaryColor,
             ),
@@ -305,7 +306,8 @@ class _HomeState extends State<Home> {
             PopupMenuButton(
               position: PopupMenuPosition.under,
               color: context.theme.bgColor,
-              icon: Icon(Icons.more_vert, size: 22,
+              icon: const Icon(
+                Icons.more_vert, size: 22,
                 // color: context.theme.primaryColor,
               ),
               shape: const RoundedRectangleBorder(
@@ -320,21 +322,33 @@ class _HomeState extends State<Home> {
                 PopupMenuItem(
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => Phones(),));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const Phones(),
+                          ));
                     },
-                    child: Text('Calls'),
+                    child: const Text('Calls'),
                   ),
                 ),
-                PopupMenuItem(child: Text('Contacts'),),
-                PopupMenuItem(child: Text('New Group'),),
-                PopupMenuItem(child: Text('Channel'),),
-                PopupMenuItem(child: Text('Starred'),),
+                const PopupMenuItem(
+                  child: Text('Contacts'),
+                ),
+                const PopupMenuItem(
+                  child: Text('New Group'),
+                ),
+                const PopupMenuItem(
+                  child: Text('Channel'),
+                ),
+                const PopupMenuItem(
+                  child: Text('Starred'),
+                ),
                 PopupMenuItem(
                   child: InkWell(
                     onTap: () {
                       // Navigator.push(context, MaterialPageRoute(builder: (_) => Settings(),));
                     },
-                    child: Text('Settings'),
+                    child: const Text('Settings'),
                   ),
                 ),
               ],
@@ -345,25 +359,25 @@ class _HomeState extends State<Home> {
             child: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFFFFC203), Color(0xFFFD8502), ],
-                  begin: Alignment.bottomRight,
-                  end: Alignment.topLeft,
-                  tileMode: TileMode.clamp
-                ),
+                    colors: [
+                      Color(0xFFFFC203),
+                      Color(0xFFFD8502),
+                    ],
+                    begin: Alignment.bottomRight,
+                    end: Alignment.topLeft,
+                    tileMode: TileMode.clamp),
               ),
             ),
           ),
         ),
       ),
-      body: Container(
+      body: SizedBox(
         height: size.height,
         width: size.width,
-        child: const Column(
-          children: [
-            FavouriteContacts(),
-            RecentChats(),
-          ]
-        ),
+        child: const Column(children: [
+          FavouriteContacts(),
+          RecentChats(),
+        ]),
       ),
     );
   }

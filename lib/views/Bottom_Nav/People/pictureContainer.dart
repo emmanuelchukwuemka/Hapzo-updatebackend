@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:haptext_api/views/nav/exports.dart';
+import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
-import 'package:haptext_api/views/nav/nav_4/see_all.dart';
+import 'package:haptext_api/views/Bottom_Nav/People/see_all.dart';
 
 class PictureContainer extends StatefulWidget {
   const PictureContainer({Key? key}) : super(key: key);

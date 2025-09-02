@@ -1,7 +1,7 @@
 import 'package:currency_formatter/currency_formatter.dart';
 import 'package:flutter/services.dart';
 import 'package:haptext_api/exports.dart';
-
+import 'package:intl/intl.dart';
 export 'package:flutter_svg/svg.dart';
 
 extension StringExtension on String {
@@ -128,6 +128,16 @@ extension ValidatingExtensions on String {
     }
 
     return null;
+  }
+
+  String? validateDob() {
+    DateFormat dateFormat = DateFormat('yyyy/MM/dd');
+    try {
+      dateFormat.parseStrict(this);
+      return null;
+    } catch (e) {
+      return "Enter valid date of birth ";
+    }
   }
 }
 

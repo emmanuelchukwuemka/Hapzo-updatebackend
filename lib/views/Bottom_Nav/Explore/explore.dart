@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:haptext_api/views/nav/exports.dart';
+import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 
 import '../../../common/search.dart';
 
 class Explore extends StatelessWidget {
-  Explore({Key? key}) : super(key: key);
+  const Explore({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,23 +18,41 @@ class Explore extends StatelessWidget {
           iconTheme: IconThemeData(
             color: context.theme.primaryColor,
           ),
-          title: Text('  Explore', style: TextStyle(color: context.theme.primaryColor, fontWeight: FontWeight.bold,),),
+          title: Text(
+            '  Explore',
+            style: TextStyle(
+              color: context.theme.primaryColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           backgroundColor: context.theme.appBarColor,
           elevation: 0,
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => Search()),);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const Search()),
+                );
               },
-              icon: Icon(Icons.search, size: 28,),
+              icon: const Icon(
+                Icons.search,
+                size: 28,
+              ),
               color: context.theme.primaryColor,
             ),
-            SizedBox(width: 1.0,),
+            const SizedBox(
+              width: 1.0,
+            ),
             PopupMenuButton(
               position: PopupMenuPosition.under,
               color: context.theme.bgColor,
-              icon: Icon(Icons.more_vert, size: 22, color: context.theme.primaryColor,),
-              shape: RoundedRectangleBorder(
+              icon: Icon(
+                Icons.more_vert,
+                size: 22,
+                color: context.theme.primaryColor,
+              ),
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(0.0),
@@ -46,9 +64,15 @@ class Explore extends StatelessWidget {
                 PopupMenuItem(
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => Live(),));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const Live(),
+                          ));
                     },
-                    child: Text('Go live',),
+                    child: const Text(
+                      'Go live',
+                    ),
                   ),
                 ),
               ],
@@ -58,20 +82,30 @@ class Explore extends StatelessWidget {
             indicatorColor: context.theme.primaryColor,
             labelColor: context.theme.primaryColor,
             unselectedLabelColor: context.theme.greyColor,
-            labelStyle: TextStyle(fontWeight: FontWeight.bold,),
-            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500,),
-            tabs: [
-              Tab(text: 'Explore',),
-              Tab(text: 'Livestream',),
-              Tab(text: 'Discover',),
+            labelStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+            unselectedLabelStyle: const TextStyle(
+              fontWeight: FontWeight.w500,
+            ),
+            tabs: const [
+              Tab(
+                text: 'Explore',
+              ),
+              Tab(
+                text: 'Livestream',
+              ),
+              Tab(
+                text: 'Discover',
+              ),
             ],
           ),
         ),
         body: TabBarView(
           children: [
             XploreTab1(),
-            XploreTab2(),
-            XploreTab3(),
+            const XploreTab2(),
+            const XploreTab3(),
           ],
         ),
       ),

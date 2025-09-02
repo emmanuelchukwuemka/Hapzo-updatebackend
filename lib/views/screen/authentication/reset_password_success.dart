@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:haptext_api/exports.dart';
 
 class ResetPasswordSuccessPage extends StatelessWidget {
@@ -40,9 +39,7 @@ class ResetPasswordSuccessPage extends StatelessWidget {
                 color: Colors.white),
             30.verticalSpace,
             Appbutton(
-              onTap: () => context.go(RouteName.login.path),
-              label: "Login"
-            )
+                onTap: () => context.go(RouteName.login.path), label: "Login")
           ],
         ),
       )),

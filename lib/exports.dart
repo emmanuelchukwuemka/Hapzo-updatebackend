@@ -25,8 +25,7 @@ export 'package:haptext_api/widgets/app_text.dart';
 export './widgets/appshadowcontainer.dart';
 export 'package:haptext_api/utils/toast_helper.dart';
 export 'package:flutter/material.dart';
-// MODELS
-export 'package:haptext_api/models/user_model.dart';
+
 export 'package:haptext_api/models/posts_model.dart';
 export 'package:haptext_api/models/profileModel.dart';
 

@@ -1,5 +1,5 @@
 import 'package:haptext_api/exports.dart';
-import 'package:haptext_api/views/nav/exports.dart';
+import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 
 class FriendProfilePage extends StatefulWidget {

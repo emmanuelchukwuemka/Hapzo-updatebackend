@@ -5,13 +5,16 @@ import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/models/user_infor_model.dart';
 import 'package:haptext_api/network/api_constants.dart';
 import 'package:haptext_api/repository/auth_repo/auth_repo.dart';
+import 'package:haptext_api/repository/profile_repo/profile_repo.dart';
 import 'package:haptext_api/utils/session_manager.dart';
 
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   AuthRepo authRepo;
-  AuthCubit(this.authRepo) : super(AuthInitial());
+  AuthCubit(this.authRepo) : super(AuthInitial()) {
+    fetchUserProfile();
+  }
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -152,6 +155,29 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
       emit(AuthErrorState());
       log("confirm reset Password $e");
+    }
+  }
+
+  fetchUserProfile() async {
+    emit(AuthLoadingState());
+    try {
+      final response = await ProfileRepo().fetchUserProfile();
+      final body = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        useInfo = UserInfoModel.fromJson(body["data"]);
+        bearerToken = useInfo.tokens?.auth ?? '';
+        SessionManager.storeUser(useInfo);
+        SessionManager().storeToken(bearerToken);
+        emit(AuthLoadedState());
+      } else {
+        final body = jsonDecode(response.body);
+        ToastMessage.showErrorToast(
+            message: body["errors"]["detail"].toString());
+        emit(AuthErrorState());
+      }
+    } catch (e) {
+      emit(AuthErrorState());
+      log("user Profile $e");
     }
   }
 }

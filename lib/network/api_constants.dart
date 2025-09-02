@@ -25,6 +25,10 @@ class ApiConstants {
       "$userProfileBaseUrl/follow-requests/pending/$page/20/";
   static String getFriendsUrl({page}) =>
       "$userProfileBaseUrl/friends/$page/20/";
+  static String getFollowersUrl({userId, page}) =>
+      "$userProfileBaseUrl/followers/$userId/$page/20/";
+  static String getFollowingsUrl({userId, page}) =>
+      "$userProfileBaseUrl/followings/$userId/$page/20/";
   static const String postBaseUrl = "$baseUrl/posts/";
   static String fetchPostUrl({required page, required pageSize}) =>
       "${postBaseUrl}list/$page/$pageSize/";

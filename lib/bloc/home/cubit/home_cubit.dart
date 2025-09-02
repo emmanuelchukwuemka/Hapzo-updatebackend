@@ -9,7 +9,9 @@ part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeRepo homeRepo;
-  HomeCubit(this.homeRepo) : super(HomeInitial());
+  HomeCubit(this.homeRepo) : super(HomeInitial()) {
+    fetchPosts();
+  }
 
   int page = 1;
   PostModel posts = PostModel();
@@ -74,10 +76,11 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  createImagePost({required File image,required caption}) async {
+  createImagePost({required File image, required caption}) async {
     emit(HomeLoading());
     try {
-      final response = await homeRepo.createImagePost(image: image,caption: caption);
+      final response =
+          await homeRepo.createImagePost(image: image, caption: caption);
       if (response.statusCode == 201) {
         emit(HomePostCreated());
         fetchPosts();
@@ -99,10 +102,9 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       final response =
           await homeRepo.createVideoPost(videoFile: video, caption: caption);
-      if (response.statusCode == 201) { 
+      if (response.statusCode == 201) {
         emit(HomePostCreated());
         fetchPosts();
-       
       } else {
         final body = jsonDecode(await response.stream.bytesToString());
         ToastMessage.showErrorToast(

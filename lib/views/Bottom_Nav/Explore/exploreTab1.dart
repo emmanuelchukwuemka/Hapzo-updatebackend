@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:haptext_api/views/nav/exports.dart';
+import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 
 class XploreTab1 extends StatelessWidget {
-  XploreTab1({Key? key}) : super(key: key);
+  const XploreTab1({Key? key}) : super(key: key);
 
   // final TextEditingController _searchController = TextEditingController();
 
@@ -13,16 +13,18 @@ class XploreTab1 extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 10.0),
+          const SizedBox(height: 10.0),
           // Trending Container
           ExploreCarousel(title: 'Trending'),
-          SizedBox(height: 10.0),
+          const SizedBox(height: 10.0),
           // Most liked
           ExploreCarousel(title: 'Most liked'),
-          SizedBox(height: 10.0),
+          const SizedBox(height: 10.0),
           // Most shared
-          ExploreCarousel(title: 'Most shared',),
-          SizedBox(height: 10.0),
+          ExploreCarousel(
+            title: 'Most shared',
+          ),
+          const SizedBox(height: 10.0),
         ],
       ),
     );

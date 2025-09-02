@@ -223,7 +223,7 @@ class _PostContentWidgetState extends State<PostContentWidget> {
                   });
                 }
               },
-              height: widget.size.height * 0.55,
+              height: widget.size.height * 0.48,
               padding: EdgeInsets.all(widget.size.width * 0.04),
               border: true,
               color: Colors.transparent,
