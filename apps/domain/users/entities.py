@@ -59,3 +59,16 @@ class UserFollowing:
 
     def is_declined(self) -> bool:
         return self.status == "declined"
+
+
+@dataclass
+class UserSearchResult:
+    id: str | None
+    email: str
+    username: str
+    is_email_verified: bool = False
+    follower_count: int = 0
+    following_count: int = 0
+    mention_count: int = 0
+    created_at: datetime | None = None
+    updated_at: datetime | None = None

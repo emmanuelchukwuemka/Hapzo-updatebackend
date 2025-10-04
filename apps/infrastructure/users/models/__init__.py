@@ -1,3 +1,3 @@
-from .tables import User, UserFollowing, UserProfile
+from .tables import User, UserFollowing, UserProfile, UserMentionCount
 
-__all__ = ["User", "UserProfile", "UserFollowing"]
+__all__ = ["User", "UserProfile", "UserFollowing", "UserMentionCount"]

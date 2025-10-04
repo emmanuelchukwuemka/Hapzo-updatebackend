@@ -57,7 +57,7 @@ class SearchUserRule:
         self,
         user_repository: UserRepositoryInterface,
     ) -> None:
-        self.user_repository = user_repository 
+        self.user_repository = user_repository
 
     def __call__(self, dto: UserSearchDTO) -> SearchResponseDTO:
         query_lower = dto.query.lower().strip("@")
@@ -469,8 +469,13 @@ class SearchFriendsRule:
         self.user_following_repository = user_following_repository
 
     def __call__(self, dto: FriendSearchDTO) -> SearchResponseDTO:
-        friends, previous_link, next_link = self.user_following_repository.get_mutual_followers(
-            user_id=dto.user_id, page=dto.offset, page_size=dto.limit, query=dto.query
+        friends, previous_link, next_link = (
+            self.user_following_repository.get_mutual_followers(
+                user_id=dto.user_id,
+                page=dto.offset,
+                page_size=dto.limit,
+                query=dto.query,
+            )
         )
 
         matching_friends = []

@@ -123,3 +123,34 @@ class UserFollowing(models.Model):
 
     def __str__(self) -> str:
         return f"{self.follower} -> {self.following} ({self.status})"
+
+
+class UserMentionCount(models.Model):
+    user = models.OneToOneField(
+        "User", on_delete=models.CASCADE, related_name="mention_count_obj", primary_key=True
+    )
+    count = models.PositiveIntegerField(default=0, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "user_mention_count"
+        verbose_name = "user mention count"
+        verbose_name_plural = "user mention counts"
+
+    def __str__(self) -> str:
+        return f"{self.user.username}: {self.count} mentions"
+
+    @classmethod
+    def increment_count(cls, user_id: str, amount: int = 1):
+        obj, created = cls.objects.get_or_create(user_id=user_id, defaults={"count": 0})
+        obj.count = models.F("count") + amount
+        obj.save(update_fields=["count", "updated_at"])
+        obj.refresh_from_db()
+        return obj.count
+
+    @classmethod
+    def get_count(cls, user_id: str) -> int:
+        try:
+            return cls.objects.get(user_id=user_id).count
+        except cls.DoesNotExist:
+            return 0

@@ -103,9 +103,7 @@ class UserFollowingsSerializer(serializers.Serializer):
 
 class UserSearchSerializer(serializers.Serializer):
     query = serializers.CharField(required=True, min_length=1, max_length=50)
-    offset = serializers.IntegerField(
-        required=False, default=1, min_value=1
-    )
+    offset = serializers.IntegerField(required=False, default=1, min_value=1)
     limit = serializers.IntegerField(
         required=False, default=10, min_value=1, max_value=100
     )
@@ -113,9 +111,7 @@ class UserSearchSerializer(serializers.Serializer):
 
 class FriendSearchSerializer(serializers.Serializer):
     query = serializers.CharField(required=True, min_length=1, max_length=50)
-    offset = serializers.IntegerField(
-        required=False, default=1, min_value=1
-    )
+    offset = serializers.IntegerField(required=False, default=1, min_value=1)
     limit = serializers.IntegerField(
         required=False, default=10, min_value=1, max_value=100
     )

@@ -421,7 +421,6 @@ def search_users(request: Request) -> Response:
     )
 
 
-
 @extend_schema(
     request=FriendSearchSerializer,
     responses={
@@ -440,7 +439,8 @@ def search_friends(request: Request) -> Response:
     offset = int(request.query_params.get("offset", 1))
     limit = int(request.query_params.get("limit", 10))
     serializer = FriendSearchSerializer(
-        data={"query": query, "offset": offset, "limit": limit}, context={"user_id": request.user.id}
+        data={"query": query, "offset": offset, "limit": limit},
+        context={"user_id": request.user.id},
     )
     serializer.is_valid(raise_exception=True)
 

@@ -71,6 +71,8 @@ from apps.infrastructure.users.repositories import (
     DjangoUserRepository,
 )
 
+from apps.infrastructure.users.models import UserMentionCount
+
 
 def get_user_repository() -> DjangoUserRepository:
     return DjangoUserRepository()
@@ -87,8 +89,10 @@ def get_user_following_repository() -> DjangoUserFollowingRepository:
 def fetch_user_rule() -> FetchUserRule:
     return FetchUserRule(user_repository=get_user_repository())
 
+
 def search_users_rule() -> SearchUserRule:
     return SearchUserRule(user_repository=get_user_repository())
+
 
 def create_user_profile_rule() -> CreateUserProfileRule:
     return CreateUserProfileRule(user_profile_repository=get_user_profile_repository())
@@ -222,6 +226,7 @@ def create_post_rule() -> CreatePostRule:
     return CreatePostRule(
         post_repository=get_post_repository(),
         post_tag_repository=get_post_tag_repository(),
+        user_mention_count_model=UserMentionCount,
     )
 
 

@@ -21,15 +21,11 @@ class UserDetailDTO:
 class UserResponseDTO(UserDetailDTO):
     email: str | None = None
     is_email_verified: bool = False
+    follower_count: int | None = None
+    following_count: int | None = None
+    mention_count: int | None = None
     created_at: datetime | None = None
     updated_at: datetime | None = None
-
-
-@dataclass
-class UserSearchDTO:
-    query: str
-    offset: int = 10
-    limit: int = 1000
 
 
 @dataclass
@@ -146,6 +142,13 @@ class PaginatedFollowingsResponseDTO:
     followings: List[UserProfileResponseDTO]
     previous_followings_data: str | None = None
     next_followings_data: str | None = None
+
+
+@dataclass
+class UserSearchDTO:
+    query: str
+    offset: int = 10
+    limit: int = 1000
 
 
 @dataclass

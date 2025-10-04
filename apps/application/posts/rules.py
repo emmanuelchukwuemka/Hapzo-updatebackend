@@ -1,6 +1,6 @@
 from dataclasses import asdict
 from datetime import UTC, datetime
-from typing import List
+from typing import Any, List
 
 from apps.domain.posts.entities import Post, PostReaction, PostShare, PostTag
 
@@ -98,9 +98,11 @@ class CreatePostRule:
         self,
         post_repository: PostRepositoryInterface,
         post_tag_repository: PostTagRepositoryInterface,
+        user_mention_count_model: Any,
     ) -> None:
         self.post_repository = post_repository
         self.post_tag_repository = post_tag_repository
+        self.user_mention_count_model = user_mention_count_model
 
     def __call__(self, dto: PostDetailDTO) -> PostResponseDTO:
         post = Post(
@@ -129,6 +131,14 @@ class CreatePostRule:
                 for tagged_user_id in dto.tagged_user_ids
             ]
             self.post_tag_repository.create_tags(tags)
+
+            try:
+                for tagged_user_id in dto.tagged_user_ids:
+                    self.user_mention_count_model.increment_count(tagged_user_id)
+            except Exception as e:
+                from loguru import logger
+
+                logger.error(f"Failed to increment mention count: {e}")
 
         return PostResponseDTO(
             **{

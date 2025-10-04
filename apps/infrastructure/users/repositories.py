@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Tuple
 
 from django.db import IntegrityError
-from django.db.models import Q
+from django.db.models import Q, Count, OuterRef, Subquery
 from django.urls import reverse
 
 from apps.application.users.ports import (
@@ -13,8 +13,9 @@ from apps.core.exceptions import ConflictError
 from apps.domain.users.entities import User as DomainUser
 from apps.domain.users.entities import UserFollowing as DomainUserFollowing
 from apps.domain.users.entities import UserProfile as DomainUserProfile
+from apps.domain.users.entities import UserSearchResult as DomainUserSearchResult
 
-from .models.tables import User, UserFollowing, UserProfile
+from .models.tables import User, UserFollowing, UserProfile, UserMentionCount
 
 
 def from_domain_user_data(domain_user: DomainUser) -> Dict[str, Any]:
@@ -115,6 +116,24 @@ def to_domain_user_following_data(
     )
 
 
+def to_domain_user_search_result(
+    django_user: User,
+    follower_count: int = 0,
+    following_count: int = 0,
+    mention_count: int = 0,
+) -> DomainUserSearchResult:
+    return DomainUserSearchResult(
+        id=django_user.id,
+        email=django_user.email,
+        username=django_user.username,
+        follower_count=follower_count,
+        following_count=following_count,
+        mention_count=mention_count,
+        created_at=django_user.created_at,
+        updated_at=django_user.updated_at,
+    )
+
+
 class DjangoUserRepository(UserRepositoryInterface):
     def create(self, user: DomainUser) -> DomainUser:
         django_user = from_domain_user_data(user)
@@ -156,32 +175,74 @@ class DjangoUserRepository(UserRepositoryInterface):
 
     def search(
         self, query: str, page: int, page_size: int
-    ) -> Tuple[List[Any], str | None, str | None]:
-        query_data = User.objects.filter(
-            Q(username__istartswith=query) | Q(user_profile__first_name__istartswith=query) | Q(user_profile__last_name__istartswith=query),
-            is_email_verified=True,
-            is_active=True
-        ).order_by("-created_at")
+    ) -> Tuple[List[DomainUserSearchResult], str | None, str | None]:
+        from apps.infrastructure.posts.models.tables import PostTag
+
+        follower_count_subquery = (
+            UserFollowing.objects.filter(
+                following__user_id=OuterRef("id"), status="accepted"
+            )
+            .values("following__user_id")
+            .annotate(count=Count("id"))
+            .values("count")
+        )
+
+        following_count_subquery = (
+            UserFollowing.objects.filter(
+                follower__user_id=OuterRef("id"), status="accepted"
+            )
+            .values("follower__user_id")
+            .annotate(count=Count("id"))
+            .values("count")
+        )
+
+        mention_count_subquery = (
+            UserMentionCount.objects.filter(user_id=OuterRef("id"))
+    .values("count")[:1]
+        )
+
+        query_data = (
+            User.objects.filter(
+                Q(username__istartswith=query)
+                | Q(user_profile__first_name__istartswith=query)
+                | Q(user_profile__last_name__istartswith=query),
+                is_email_verified=True,
+                is_active=True,
+            )
+            .annotate(
+                follower_count=Subquery(follower_count_subquery),
+                following_count=Subquery(following_count_subquery),
+                mention_count=Subquery(mention_count_subquery),
+            )
+            .order_by("-created_at")
+        )
 
         total_users = query_data.count()
         offset = (page - 1) * page_size
         end = offset + page_size
 
         users = [
-            to_domain_user_data(qs)
-            for qs in list(query_data[offset:end])
+            to_domain_user_search_result(
+                qs,
+                follower_count=qs.follower_count or 0,
+                following_count=qs.following_count or 0,
+                mention_count=qs.mention_count or 0,
+            )
+            for qs in query_data[offset:end]
         ]
 
         previous_link = None
         if page > 1:
             previous_link = reverse(
-                "search-users", query={"query": query, "offset": page - 1, "limit": page_size}
+                "search-users",
+                query={"query": query, "offset": page - 1, "limit": page_size},
             )
 
         next_link = None
         if end < total_users:
             next_link = reverse(
-                "search-users", query={"query": query, "offset": page + 1, "limit": page_size}
+                "search-users",
+                query={"query": query, "offset": page + 1, "limit": page_size},
             )
 
         return users, previous_link, next_link
@@ -470,13 +531,15 @@ class DjangoUserFollowingRepository(UserFollowingRepositoryInterface):
         previous_link = None
         if page > 1:
             previous_link = reverse(
-                "search-friends", query={"query": query, "offset": page - 1, "limit": page_size}
+                "search-friends",
+                query={"query": query, "offset": page - 1, "limit": page_size},
             )
 
         next_link = None
         if end < total_friends:
             next_link = reverse(
-                "search-friends", query={"query": query, "offset": page + 1, "limit": page_size}
+                "search-friends",
+                query={"query": query, "offset": page + 1, "limit": page_size},
             )
 
         return friends, previous_link, next_link
