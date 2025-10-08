@@ -121,6 +121,7 @@ def to_domain_user_search_result(
     follower_count: int = 0,
     following_count: int = 0,
     mention_count: int = 0,
+    profile_picture: str | None = None,
 ) -> DomainUserSearchResult:
     return DomainUserSearchResult(
         id=django_user.id,
@@ -129,6 +130,7 @@ def to_domain_user_search_result(
         follower_count=follower_count,
         following_count=following_count,
         mention_count=mention_count,
+        profile_picture=profile_picture,
         created_at=django_user.created_at,
         updated_at=django_user.updated_at,
     )
@@ -227,6 +229,11 @@ class DjangoUserRepository(UserRepositoryInterface):
                 follower_count=qs.follower_count or 0,
                 following_count=qs.following_count or 0,
                 mention_count=qs.mention_count or 0,
+                profile_picture=(
+                    qs.user_profile.profile_picture.name
+                    if hasattr(qs, "user_profile") and qs.user_profile.profile_picture
+                    else None
+                ),
             )
             for qs in query_data[offset:end]
         ]

@@ -24,6 +24,7 @@ class UserResponseDTO(UserDetailDTO):
     follower_count: int | None = None
     following_count: int | None = None
     mention_count: int | None = None
+    profile_picture: str | None = None
     created_at: datetime | None = None
     updated_at: datetime | None = None
 
