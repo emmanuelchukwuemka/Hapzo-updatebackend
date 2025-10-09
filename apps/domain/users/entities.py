@@ -43,22 +43,9 @@ class UserProfile:
 class UserFollowing:
     follower_id: str
     following_id: str
-    status: str = "pending"
     id: str | None = None
     created_at: datetime | None = None
     updated_at: datetime | None = None
-
-    def __post_init__(self) -> None:
-        self.status = FollowRequestStatus(self.status).value
-
-    def is_pending(self) -> bool:
-        return self.status == "pending"
-
-    def is_accepted(self) -> bool:
-        return self.status == "accepted"
-
-    def is_declined(self) -> bool:
-        return self.status == "declined"
 
 
 @dataclass

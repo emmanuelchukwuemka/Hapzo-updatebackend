@@ -7,10 +7,8 @@ from apps.presentation.views.users import (
     fetch_user,
     fetch_user_profile,
     get_friends_list,
-    get_pending_requests,
     get_user_followers,
     get_user_followings,
-    handle_follow_request,
     search_friends,
     send_follow_request,
     update_user,
@@ -33,16 +31,6 @@ urlpatterns = [
     ),
     path(
         "follow-request/<str:user_id>/", send_follow_request, name="send-follow-request"
-    ),
-    path(
-        "follow-request/handle/<str:request_id>/",
-        handle_follow_request,
-        name="handle-follow-request",
-    ),
-    path(
-        "follow-requests/pending/<int:page>/<int:page_size>/",
-        get_pending_requests,
-        name="get-pending-requests",
     ),
     path(
         "friends/<int:page>/<int:page_size>/", get_friends_list, name="get-friends-list"

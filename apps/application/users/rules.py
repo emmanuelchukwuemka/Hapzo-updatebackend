@@ -9,13 +9,10 @@ from .dtos import (
     FriendSearchDTO,
     SearchResponseDTO,
     FriendsListDTO,
-    HandleFollowRequestDTO,
     PaginatedFollowersResponseDTO,
     PaginatedFollowingsResponseDTO,
     PaginatedFriendsListResponseDTO,
-    PaginatedPendingRequestsResponseDTO,
     PaginatedUserProfileListResponseDTO,
-    PendingRequestsDTO,
     UserDetailDTO,
     UserFollowersDTO,
     UserFollowingsDTO,
@@ -229,7 +226,7 @@ class UserProfileListRule:
         )
 
 
-class SendFollowRequestRule:
+class FollowUserRule:
     def __init__(
         self,
         user_following_repository: UserFollowingRepositoryInterface,
@@ -240,7 +237,7 @@ class SendFollowRequestRule:
 
     def __call__(self, dto: FollowRequestDTO) -> FollowRequestResponseDTO:
         if dto.requester_id == dto.target_id:
-            raise ValueError("Users cannot send follow requests to themselves.")
+            raise ValueError("Users cannot follow themselves.")
 
         requester_profile = self.user_profile_repository.find_by_user(dto.requester_id)
         target_profile = self.user_profile_repository.find_by_user(dto.target_id)
@@ -250,113 +247,20 @@ class SendFollowRequestRule:
                 "Both users must have profiles to send/receive follow requests."
             )
 
-        existing_request = self.user_following_repository.find_existing_request(
-            dto.requester_id, dto.target_id
-        )
-
-        if existing_request:
-            if existing_request.status == "pending":
-                raise ValueError("A follow request is already pending.")
-            elif existing_request.status == "accepted":
-                raise ValueError("You are already following this user.")
-
         user_following = UserFollowing(
-            follower_id=dto.requester_id, following_id=dto.target_id, status="pending"
+            follower_id=dto.requester_id, following_id=dto.target_id
         )
 
-        created_request = self.user_following_repository.create(user_following)
+        new_follow_relationship = self.user_following_repository.create(user_following)
 
         return FollowRequestResponseDTO(
-            requester_id=created_request.follower_id,
-            target_id=created_request.following_id,
+            requester_id=new_follow_relationship.follower_id,
+            target_id=new_follow_relationship.following_id,
             **{
                 key: value
-                for key, value in asdict(created_request).items()
+                for key, value in asdict(new_follow_relationship).items()
                 if key in FollowRequestResponseDTO.__dataclass_fields__
             },
-        )
-
-
-class HandleFollowRequestRule:
-    def __init__(
-        self,
-        user_following_repository: UserFollowingRepositoryInterface,
-    ):
-        self.user_following_repository = user_following_repository
-
-    def __call__(self, dto: HandleFollowRequestDTO) -> FollowRequestResponseDTO:
-        follow_request = self.user_following_repository.find_by_id(dto.request_id)
-
-        if not follow_request:
-            raise ValueError("Follow request not found.")
-
-        if follow_request.following_id != dto.user_id:
-            raise ValueError("You can only handle requests sent to you.")
-
-        if follow_request.status != "pending":
-            raise ValueError("This request has already been handled.")
-
-        updated_request = self.user_following_repository.update_status(
-            dto.request_id, dto.action
-        )
-
-        return FollowRequestResponseDTO(
-            requester_id=updated_request.follower_id,
-            target_id=updated_request.following_id,
-            **{
-                key: value
-                for key, value in asdict(updated_request).items()
-                if key in FollowRequestResponseDTO.__dataclass_fields__
-            },
-        )
-
-
-class GetPendingRequestsRule:
-    def __init__(
-        self,
-        user_following_repository: UserFollowingRepositoryInterface,
-    ):
-        self.user_following_repository = user_following_repository
-
-    def __call__(self, dto: PendingRequestsDTO) -> PaginatedPendingRequestsResponseDTO:
-        received_requests, received_previous, received_next = (
-            self.user_following_repository.get_received_requests(
-                dto.user_id, dto.page, dto.page_size, status="pending"
-            )
-        )
-        sent_requests, sent_previous, sent_next = (
-            self.user_following_repository.get_sent_requests(
-                dto.user_id, dto.page, dto.page_size, status="pending"
-            )
-        )
-
-        return PaginatedPendingRequestsResponseDTO(
-            received_requests=[
-                FollowRequestResponseDTO(
-                    requester_id=req.follower_id,
-                    target_id=req.following_id,
-                    **{
-                        key: value
-                        for key, value in asdict(req).items()
-                        if key in FollowRequestResponseDTO.__dataclass_fields__
-                    },
-                )
-                for req in received_requests
-            ],
-            sent_requests=[
-                FollowRequestResponseDTO(
-                    requester_id=req.follower_id,
-                    target_id=req.following_id,
-                    **{
-                        key: value
-                        for key, value in asdict(req).items()
-                        if key in FollowRequestResponseDTO.__dataclass_fields__
-                    },
-                )
-                for req in sent_requests
-            ],
-            previous_requests_data=received_previous or sent_previous,
-            next_requests_data=received_next or sent_next,
         )
 
 

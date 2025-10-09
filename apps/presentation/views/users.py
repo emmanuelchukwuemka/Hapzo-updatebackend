@@ -18,8 +18,6 @@ from apps.application.users.dtos import (
     FollowRequestDTO,
     FriendSearchDTO,
     FriendsListDTO,
-    HandleFollowRequestDTO,
-    PendingRequestsDTO,
     UserDetailDTO,
     UserFollowersDTO,
     UserFollowingsDTO,
@@ -33,12 +31,9 @@ from apps.presentation.factory import (
     fetch_user_rule,
     search_users_rule,
     get_friends_list_rule,
-    get_notify_user_of_follow_acceptance_rule,
     get_notify_user_of_follow_rule,
-    get_pending_requests_rule,
     get_user_followers_rule,
     get_user_followings_rule,
-    handle_follow_request_rule,
     search_friends_rule,
     send_follow_request_rule,
     update_user_rule,
@@ -52,7 +47,6 @@ from apps.presentation.serializers.examples import (
 from apps.presentation.serializers.users import (
     FollowRequestSerializer,
     FriendSearchSerializer,
-    HandleFollowRequestSerializer,
     PaginatedDataRequestSerializer,
     UserDetailSerializer,
     UserFollowersSerializer,
@@ -224,83 +218,10 @@ def send_follow_request(request: Request, user_id: str) -> Response:
             follow_request_id=follow_request_data["id"],
         )
     except Exception as e:
-        logger.error(f"Failed to send follow request notification: {e}")
+        logger.error(f"Failed to send user follow notification: {e}")
 
     return StandardResponse.created(
-        data=follow_request_data, message="Follow request sent successfully."
-    )
-
-
-@extend_schema(
-    request=HandleFollowRequestSerializer,
-    responses={
-        200: SuccessResponseExampleSerializer,
-        400: ErrorResponseExampleSerializer,
-        500: ErrorResponseExampleSerializer,
-    },
-    description="Accept or decline a follow request.",
-    tags=["Users"],
-)
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-@throttle_classes([UserRateThrottle])
-def handle_follow_request(request: Request, request_id: str) -> Response:
-    serializer = HandleFollowRequestSerializer(
-        data={**request.data},
-        context={"request_id": request_id, "user_id": request.user.id},
-    )
-    serializer.is_valid(raise_exception=True)
-
-    handle_request_rule = handle_follow_request_rule()
-    updated_request = handle_request_rule(
-        HandleFollowRequestDTO(**serializer.validated_data)
-    )
-    updated_request_data = asdict(updated_request)
-
-    action = serializer.validated_data["action"]
-    message = f"Follow request {action}ed successfully."
-
-    if action == "accepted":
-        try:
-            notify_acceptance_rule = get_notify_user_of_follow_acceptance_rule()
-            notify_acceptance_rule(
-                requester_id=updated_request_data["requester_id"],
-                accepter_id=updated_request_data["target_id"],
-                follow_request_id=request_id,
-            )
-        except Exception as e:
-            logger.error(f"Failed to send follow acceptance notification: {e}")
-
-    return StandardResponse.success(data=updated_request_data, message=message)
-
-
-@extend_schema(
-    request=PaginatedDataRequestSerializer,
-    responses={
-        200: SuccessResponseExampleSerializer,
-        400: ErrorResponseExampleSerializer,
-        500: ErrorResponseExampleSerializer,
-    },
-    description="Get pending follow requests (sent and received).",
-    tags=["Users"],
-)
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-@throttle_classes([UserRateThrottle])
-def get_pending_requests(request: Request, page: int, page_size: int) -> Response:
-    serializer = PaginatedDataRequestSerializer(
-        data={"page": page, "page_size": page_size},
-        context={"user_id": request.user.id},
-    )
-    serializer.is_valid(raise_exception=True)
-
-    pending_requests_rule = get_pending_requests_rule()
-    requests_data = pending_requests_rule(
-        PendingRequestsDTO(**serializer.validated_data)
-    )
-
-    return StandardResponse.success(
-        data=asdict(requests_data), message="Pending requests fetched successfully."
+        data=follow_request_data, message="User followed successfully."
     )
 
 

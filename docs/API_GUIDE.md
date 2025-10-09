@@ -369,101 +369,26 @@ All API endpoints are prefixed with `/api/v1/`.
 
 -   **🔗 Endpoint:** `/api/v1/users/follow-request/<str:user_id>/`
 -   **📡 HTTP Method:** `POST`
--   **📝 Description:** Sends a follow request to another user.
+-   **📝 Description:** Follows another user.
 -   **🔐 Authentication:** Required (Bearer Token in Header: Authorization: Bearer <auth_token>)
 -   **🔗 URL Parameters:**
-    - `user_id`: string (required) - The ID of the user to send a follow request to.
+    - `user_id`: string (required) - The ID of the user to follow.
 -   **📤 Request Body:** None
 -   **✅ Success Response (Status: 201 Created):**
     ```json
     {
         "success": true,
-        "message": "Follow request sent successfully.",
+        "message": "User followed successfully.",
         "data": {
             "id": "string",
             "requester_id": "string",
             "target_user_id": "string",
-            "status": "pending",
             "created_at": "datetime",
-            "updated_at": "datetime"
         },
         "status_code": 201
     }
     ```
 
-### 2.7. ✅❌ Handle Follow Request
-
--   **🔗 Endpoint:** `/api/v1/users/follow-request/handle/<str:request_id>/`
--   **📡 HTTP Method:** `POST`
--   **📝 Description:** Accept or decline a follow request.
--   **🔐 Authentication:** Required (Bearer Token in Header: Authorization: Bearer <auth_token>)
--   **🔗 URL Parameters:**
-    - `request_id`: string (required) - The ID of the follow request to handle.
--   **📤 Request Body:**
-    ```json
-    {
-        "action": "accept" // or "decline"
-    }
-    ```
--   **✅ Success Response (Status: 201 Created):**
-    ```json
-    {
-        "success": true,
-        "message": "Follow request accepted successfully.",
-        "data": {
-            "id": "string",
-            "requester_id": "string",
-            "target_user_id": "string",
-            "status": "accepted", // or "declined"
-            "created_at": "datetime",
-            "updated_at": "datetime"
-        },
-        "status_code": 200
-    }
-    ```
-
-### 2.8. 📋 Get Pending Requests (Paginated)
-
--   **🔗 Endpoint:** `/api/v1/users/follow-requests/pending/<int:page>/<int:page_size>/`
--   **📡 HTTP Method:** `GET`
--   **📝 Description:** Get pending follow requests (both sent and received) with pagination.
--   **🔐 Authentication:** Required (Bearer Token in Header: Authorization: Bearer <auth_token>)
--   **🔗 URL Parameters:**
-    - `page`: integer (required) - The page number (starts from 1).
-    - `page_size`: integer (required) - Number of requests per page (1-100).
--   **📤 Request Body:** None
--   **✅ Success Response (Status: 200 OK):**
-    ```json
-    {
-        "success": true,
-        "message": "Pending requests fetched successfully.",
-        "data": {
-            "received_requests": [
-                {
-                    "id": "string",
-                    "requester_id": "string",
-                    "target_user_id": "string",
-                    "status": "pending",
-                    "created_at": "datetime",
-                    "updated_at": "datetime"
-                }
-            ],
-            "sent_requests": [
-                {
-                    "id": "string",
-                    "requester_id": "string",
-                    "target_user_id": "string", 
-                    "status": "pending",
-                    "created_at": "datetime",
-                    "updated_at": "datetime"
-                }
-            ],
-            "previous_requests_data": "/api/v1/users/follow-requests/pending/1/10/",
-            "next_requests_data": "/api/v1/users/follow-requests/pending/3/10/",
-        },
-        "status_code": 200
-    }
-    ```
 ### 2.9. 👫 Get Friends List (Paginated)
 
 -   **🔗 Endpoint:** `/api/v1/users/friends/<int:page>/<int:page_size>/`
@@ -1003,5 +928,5 @@ All API responses follow a consistent format:
 ## 👫 7. Friends Logic
 -   **What Makes Users "Friends"?**
 Users are considered friends when both conditions are met:
-1) `User A` → `User B`: Has an accepted follow request
-2) `User B` → `User A`: Has an accepted follow request
+1) `User A` follows `User B`
+2) `User B` follows `User A`

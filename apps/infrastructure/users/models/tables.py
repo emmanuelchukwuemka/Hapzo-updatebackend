@@ -106,13 +106,7 @@ class UserFollowing(models.Model):
     following = models.ForeignKey(
         "UserProfile", on_delete=models.CASCADE, related_name="follower_set"
     )
-    status = models.CharField(
-        max_length=10,
-        choices=FollowRequestStatus.choices(),
-        default=FollowRequestStatus.PENDING,
-    )
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "user_following"
@@ -122,12 +116,15 @@ class UserFollowing(models.Model):
         unique_together = ["follower", "following"]
 
     def __str__(self) -> str:
-        return f"{self.follower} -> {self.following} ({self.status})"
+        return f"{self.follower} -> {self.following}"
 
 
 class UserMentionCount(models.Model):
     user = models.OneToOneField(
-        "User", on_delete=models.CASCADE, related_name="mention_count_obj", primary_key=True
+        "User",
+        on_delete=models.CASCADE,
+        related_name="mention_count_obj",
+        primary_key=True,
     )
     count = models.PositiveIntegerField(default=0, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -59,18 +59,6 @@ class FollowRequestSerializer(serializers.Serializer):
         return attrs
 
 
-class HandleFollowRequestSerializer(serializers.Serializer):
-    request_id = serializers.CharField(read_only=True)
-    action = serializers.ChoiceField(choices=["accepted", "declined"], required=True)
-    user_id = serializers.CharField(read_only=True)
-
-    def validate(self, attrs):
-        attrs["request_id"] = self.context.get("request_id")
-        attrs["user_id"] = self.context.get("user_id")
-        attrs["action"] = attrs["action"].lower().strip()
-        return attrs
-
-
 class PaginatedDataRequestSerializer(serializers.Serializer):
     page = serializers.IntegerField(required=True)
     page_size = serializers.IntegerField(required=True)

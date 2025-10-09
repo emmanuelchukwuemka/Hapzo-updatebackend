@@ -72,35 +72,11 @@ class FollowRequestDTO:
 
 
 @dataclass
-class HandleFollowRequestDTO:
-    request_id: str
-    user_id: str
-    action: str
-
-
-@dataclass
 class FollowRequestResponseDTO:
     id: str
     requester_id: str
     target_id: str
-    status: str
     created_at: datetime
-    updated_at: datetime
-
-
-@dataclass
-class PendingRequestsDTO:
-    user_id: str
-    page: int
-    page_size: int
-
-
-@dataclass
-class PaginatedPendingRequestsResponseDTO:
-    received_requests: List[FollowRequestResponseDTO]
-    sent_requests: List[FollowRequestResponseDTO]
-    previous_requests_data: str | None = None
-    next_requests_data: str | None = None
 
 
 @dataclass

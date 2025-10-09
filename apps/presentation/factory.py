@@ -31,12 +31,10 @@ from apps.application.users.rules import (
     FetchUserProfileRule,
     FetchUserRule,
     GetFriendsListRule,
-    GetPendingRequestsRule,
     GetUserFollowersRule,
     GetUserFollowingsRule,
-    HandleFollowRequestRule,
     SearchFriendsRule,
-    SendFollowRequestRule,
+    FollowUserRule,
     UpdateUserRule,
     UserProfileListRule,
     SearchUserRule,
@@ -110,22 +108,10 @@ def update_user_rule() -> UpdateUserRule:
     return UpdateUserRule(user_repository=get_user_repository())
 
 
-def send_follow_request_rule() -> SendFollowRequestRule:
-    return SendFollowRequestRule(
+def send_follow_request_rule() -> FollowUserRule:
+    return FollowUserRule(
         user_following_repository=get_user_following_repository(),
         user_profile_repository=get_user_profile_repository(),
-    )
-
-
-def handle_follow_request_rule() -> HandleFollowRequestRule:
-    return HandleFollowRequestRule(
-        user_following_repository=get_user_following_repository(),
-    )
-
-
-def get_pending_requests_rule() -> GetPendingRequestsRule:
-    return GetPendingRequestsRule(
-        user_following_repository=get_user_following_repository(),
     )
 
 
@@ -343,13 +329,6 @@ def get_notify_post_creator_of_reply_rule() -> NotifyPostCreatorOfReplyRule:
 
 def get_notify_user_of_follow_rule() -> NotifyUserOfFollowRule:
     return NotifyUserOfFollowRule(
-        user_repository=get_user_repository(),
-        create_notification_rule=get_create_notification_rule(),
-    )
-
-
-def get_notify_user_of_follow_acceptance_rule() -> NotifyUserOfFollowAcceptanceRule:
-    return NotifyUserOfFollowAcceptanceRule(
         user_repository=get_user_repository(),
         create_notification_rule=get_create_notification_rule(),
     )
