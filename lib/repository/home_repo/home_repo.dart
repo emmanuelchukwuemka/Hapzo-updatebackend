@@ -11,6 +11,13 @@ class HomeRepo {
         headers: ApiHeaders.aunthenticatedHeader);
   }
 
+  Future<Response> fetchUserPost({required int page, userId}) async {
+    return await ApiMethods.getMethod(
+        url: ApiConstants.fetchUserPostUrl(
+            page: page, userId: userId, pageSize: "20"),
+        headers: ApiHeaders.aunthenticatedHeader);
+  }
+
   Future<Response> createTextPost({required String textContent}) async {
     return await ApiMethods.postMethod(
         url: ApiConstants.postBaseUrl,

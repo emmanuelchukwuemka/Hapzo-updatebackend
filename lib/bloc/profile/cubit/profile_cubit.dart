@@ -41,7 +41,7 @@ class ProfileCubit extends Cubit<ProfileState> {
           weight: weight);
       // final body = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         emit(ProfileLoaded());
       } else {
         final body = jsonDecode(await response.stream.bytesToString());

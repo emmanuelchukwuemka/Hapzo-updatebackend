@@ -58,7 +58,7 @@ class _FriendState extends State<Friend> {
                 childAspectRatio: 0.8),
             itemCount: 17,
             itemBuilder: (context, index) =>
-                FriendCardWidget(context, 'Sasuke', 'assets/images/sasuke.jpg'),
+                friendCardWidget(context, 'Sasuke', 'assets/images/sasuke.jpg'),
           ),
         ),
       ),

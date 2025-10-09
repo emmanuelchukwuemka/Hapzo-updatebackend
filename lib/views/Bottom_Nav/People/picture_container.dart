@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:haptext_api/exports.dart';
+import 'package:haptext_api/models/searched_user_model.dart';
 import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 import 'package:haptext_api/views/Bottom_Nav/People/see_all.dart';
 
 class PictureContainer extends StatefulWidget {
-  const PictureContainer({Key? key}) : super(key: key);
+  const PictureContainer({super.key, required this.user});
+  final SearchedUserModel user;
 
   @override
   State<PictureContainer> createState() => _PictureContainerState();
@@ -14,7 +16,9 @@ class _PictureContainerState extends State<PictureContainer> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Container(
+    return AppshadowContainer(
+      onTap: () {},
+      color: Colors.transparent,
       padding: EdgeInsets.symmetric(
           horizontal: size.width * .01, vertical: size.width * .015),
       height: size.width * 1.15,
@@ -141,12 +145,8 @@ class _PictureContainerState extends State<PictureContainer> {
               },
               child: Padding(
                 padding: const EdgeInsets.only(top: 10.0, right: 10.0),
-                child: Text(
-                  'See all posts',
-                  style: TextStyle(
-                    color: context.theme.primaryColor,
-                  ),
-                ),
+                child: AppText(
+                    text: 'See all posts', color: context.theme.primaryColor),
               ),
             ),
           )

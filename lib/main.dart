@@ -22,30 +22,28 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => AuthCubit(AuthRepo())),
-        BlocProvider(create: (context) => HomeCubit(HomeRepo())),
-        BlocProvider(create: (context) => ProfileCubit(ProfileRepo())),
-        BlocProvider(create: (context) => PeopleCubit(PeopleRepo())),
-      ],
-      child: ScreenUtilInit(
-        designSize: MediaQuery.sizeOf(context),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        child: MaterialApp.router(
-            routerConfig: AppRoute.router,
-            debugShowCheckedModeBanner: false,
-            title: 'Hapztext',
-            theme: lightTheme(),
-            darkTheme: darkTheme(),
-            themeMode: ThemeMode.dark,
-            builder: (context, child) {
-              return MediaQuery(
-                  data: MediaQuery.of(context)
-                      .copyWith(textScaler: const TextScaler.linear(1.0)),
-                  child: child!);
-            }),
-      ),
-    );
+        providers: [
+          BlocProvider(create: (context) => AuthCubit(AuthRepo())),
+          BlocProvider(create: (context) => HomeCubit(HomeRepo())),
+          BlocProvider(create: (context) => ProfileCubit(ProfileRepo())),
+          BlocProvider(create: (context) => PeopleCubit(PeopleRepo())),
+        ],
+        child: ScreenUtilInit(
+            designSize: MediaQuery.sizeOf(context),
+            minTextAdapt: true,
+            splitScreenMode: true,
+            child: MaterialApp.router(
+                routerConfig: AppRoute.router,
+                debugShowCheckedModeBanner: false,
+                title: 'Hapztext',
+                theme: lightTheme(),
+                darkTheme: darkTheme(),
+                themeMode: ThemeMode.dark,
+                builder: (context, child) {
+                  return MediaQuery(
+                      data: MediaQuery.of(context)
+                          .copyWith(textScaler: const TextScaler.linear(1.0)),
+                      child: child!);
+                })));
   }
 }

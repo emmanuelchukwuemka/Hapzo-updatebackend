@@ -12,9 +12,7 @@ part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   AuthRepo authRepo;
-  AuthCubit(this.authRepo) : super(AuthInitial()) {
-    fetchUserProfile();
-  }
+  AuthCubit(this.authRepo) : super(AuthInitial());
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -165,9 +163,7 @@ class AuthCubit extends Cubit<AuthState> {
       final body = jsonDecode(response.body);
       if (response.statusCode == 200) {
         useInfo = UserInfoModel.fromJson(body["data"]);
-        bearerToken = useInfo.tokens?.auth ?? '';
-        SessionManager.storeUser(useInfo);
-        SessionManager().storeToken(bearerToken);
+
         emit(AuthLoadedState());
       } else {
         final body = jsonDecode(response.body);

@@ -1,4 +1,6 @@
+import 'package:blowe_bloc/blowe_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:haptext_api/bloc/people/cubit/people_cubit.dart';
 import 'package:haptext_api/common/text_input_field.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 
@@ -33,18 +35,17 @@ class _SearchState extends State<Search> with SingleTickerProviderStateMixin {
       backgroundColor: context.theme.bgColor,
       body: SafeArea(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           Container(
-            height: size.height * .08,
-            margin: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: TextInputField(
-              controller: _searchController,
-              labelText: 'Search',
-              icon: Icons.search,
-            ),
-          ),
+              height: size.height * .08,
+              margin: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: TextInputField(
+                  controller: _searchController,
+                  labelText: 'Search',
+                  onChanged: (value) {
+                    context.read<PeopleCubit>().searchFriends(query: "string");
+                  },
+                  icon: Icons.search)),
           const SizedBox(
             height: 5,
           ),

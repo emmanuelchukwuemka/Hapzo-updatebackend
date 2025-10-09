@@ -39,7 +39,7 @@ class Appbutton extends StatelessWidget {
         borderColor: borderColor ?? Colors.transparent,
         height: height ?? size.height * 0.065,
         radius: size.width * 0.02,
-        color: buttonColor ?? Colors.orange,
+        color: buttonColor ?? Theme.of(context).primaryColor,
         child: isLoading
             ? LoadingAnimationWidget.beat(color: Colors.white, size: 30.sp)
             : child ??

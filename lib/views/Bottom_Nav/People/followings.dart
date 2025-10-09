@@ -105,7 +105,7 @@ class _FollowingsState extends State<Followings> {
                       mainAxisSpacing: 5.0,
                       childAspectRatio: 0.8),
                   itemCount: 0,
-                  itemBuilder: (context, index) => FriendCardWidget(
+                  itemBuilder: (context, index) => friendCardWidget(
                       context,
                       " _userData!.following![index]",
                       'assets/images/chukwuchi.jpg'),

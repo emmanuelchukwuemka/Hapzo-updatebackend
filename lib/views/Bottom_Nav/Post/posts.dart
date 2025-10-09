@@ -14,100 +14,6 @@ class Posts extends StatefulWidget {
 }
 
 class _PostsState extends State<Posts> {
-  late PlatformFile pickedFile;
-  String? thumbnailUrl;
-  File? videoFile;
-
-  // showOptionsDialog(BuildContext context) {
-  //   return showDialog(
-  //       context: context,
-  //       builder: (context) => SimpleDialog(
-  //             children: [
-  //               SimpleDialogOption(
-  //                 onPressed: () => pickVideo(ImageSource.camera, context),
-  //                 child: const Row(
-  //                   children: [
-  //                     Icon(Icons.camera_alt),
-  //                     Padding(
-  //                       padding: EdgeInsets.all(8.0),
-  //                       child: Text(
-  //                         'Camera',
-  //                         style: TextStyle(
-  //                           fontSize: 20,
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //               SimpleDialogOption(
-  //                 onPressed: () => pickVideo(ImageSource.gallery, context),
-  //                 child: const Row(
-  //                   children: [
-  //                     Icon(Icons.image),
-  //                     Padding(
-  //                       padding: EdgeInsets.all(8.0),
-  //                       child: Text(
-  //                         'Gallery',
-  //                         style: TextStyle(
-  //                           fontSize: 20,
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //               SimpleDialogOption(
-  //                 onPressed: () => Navigator.of(context).pop(),
-  //                 child: const Row(
-  //                   children: [
-  //                     Icon(Icons.cancel),
-  //                     Padding(
-  //                       padding: EdgeInsets.all(8.0),
-  //                       child: Text(
-  //                         'Cancel',
-  //                         style: TextStyle(
-  //                           fontSize: 20,
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ],
-  //           ));
-  // }
-
-  Future _selectVideoFile() async {
-    final file = await ImagePicker().pickVideo(source: ImageSource.gallery);
-    context.push(RouteName.confirmVideoUpload.path, extra: File(file!.path));
-  }
-
-  Future _selectPhoto() async {
-    debugPrint('Clicked Photo');
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-    );
-    if (result != null && result.files.single.path != null) {
-      debugPrint('Image Selected');
-      setState(() {
-        pickedFile = result.files.first;
-      });
-      context.push(RouteName.confirmImageUpload.path,
-          extra: result.files.first);
-
-      // LOAD RESULT AND FILE DETAILS
-      // pickedFile = result.files.first;
-      debugPrint('Name: ${pickedFile.name}');
-      debugPrint('Bytes: ${pickedFile.bytes}');
-      debugPrint('Size: ${pickedFile.size}');
-      debugPrint('Extension: ${pickedFile.extension}');
-      debugPrint('Path: ${pickedFile.path}');
-    } else {
-      debugPrint('Image selecting failed');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,18 +50,14 @@ class _PostsState extends State<Posts> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              buildPostsContainer(
-                  //selectPhoto,
-                  _selectPhoto,
-                  choice[2].col,
-                  choice[2].desc,
-                  choice[2].icon),
+              buildPostsContainer(() {
+                context.push(RouteName.createPhotoPost.path);
+              }, choice[2].col, choice[2].desc, choice[2].icon),
               buildPostsContainer(
                   //selectVideo,
-                  _selectVideoFile,
-                  choice[3].col,
-                  choice[3].desc,
-                  choice[3].icon),
+                  () {
+                context.push(RouteName.confirmVideoUpload.path);
+              }, choice[3].col, choice[3].desc, choice[3].icon),
             ],
           ),
         ],

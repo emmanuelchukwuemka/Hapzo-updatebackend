@@ -1,11 +1,10 @@
-import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/main.dart';
-import 'package:haptext_api/views/Bottom_Nav/Post/confirm_image_upload.dart';
-import 'package:haptext_api/views/Bottom_Nav/Post/confirm_video_upload.dart';
-import 'package:haptext_api/views/Bottom_Nav/Post/new_file_selection/post_audio_upload_page.dart';
+import 'package:haptext_api/models/searched_user_model.dart';
+import 'package:haptext_api/views/Bottom_Nav/People/friend_profile_page.dart';
+import 'package:haptext_api/views/Bottom_Nav/Post/upload_photo_post.dart';
+import 'package:haptext_api/views/Bottom_Nav/Post/post_video_upload.dart';
+import 'package:haptext_api/views/Bottom_Nav/Post/post_audio_upload_page.dart';
 import 'package:haptext_api/views/Bottom_Nav/Post/text_write_up.dart';
 import 'package:haptext_api/views/Bottom_Nav/Profile/edit_profile.dart';
 import 'package:haptext_api/views/navigation.dart';
@@ -75,21 +74,25 @@ class AppRoute {
             return const PostAudioUploadPage();
           }),
       GoRoute(
-          path: RouteName.confirmImageUpload.path,
+          path: RouteName.createPhotoPost.path,
           builder: (context, state) {
-            final PlatformFile file = state.extra as PlatformFile;
-            return ConfirmImageUpload(pickedFile: file);
+            return const CreatePhotoPost();
           }),
       GoRoute(
           path: RouteName.confirmVideoUpload.path,
           builder: (context, state) {
-            final File file = state.extra as File;
-            return ConfirmVideoUpload(videoFile: file);
+            return const PostVideoUpload();
           }),
       GoRoute(
           path: RouteName.editProfile.path,
           builder: (context, state) {
             return const EditProfile();
+          }),
+      GoRoute(
+          path: RouteName.friendsProfilePage.path,
+          builder: (context, state) {
+            final SearchedUserModel user = state.extra as SearchedUserModel;
+            return FriendProfilePage(user: user);
           }),
     ],
   );

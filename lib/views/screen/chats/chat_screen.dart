@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:haptext_api/exports.dart';
-import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 
 class ChatScreen extends StatefulWidget {
   final Usr user;

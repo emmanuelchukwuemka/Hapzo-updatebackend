@@ -7,10 +7,10 @@ export 'package:haptext_api/views/Bottom_Nav/Explore/post_tab.dart';
 export 'package:haptext_api/views/Bottom_Nav/Explore/people_tab.dart';
 export 'package:haptext_api/views/Bottom_Nav/Explore/trending.dart';
 export 'package:haptext_api/views/Bottom_Nav/Explore/explore.dart';
-export 'package:haptext_api/views/Bottom_Nav/Explore/exploreTab1.dart';
-export 'package:haptext_api/views/Bottom_Nav/Explore/exploreTab2.dart';
-export 'package:haptext_api/views/Bottom_Nav/Explore/exploreTab3.dart';
-export 'package:haptext_api/views/Bottom_Nav/Explore/exploreCarousel.dart';
+export 'package:haptext_api/views/Bottom_Nav/Explore/explore_view.dart';
+export 'package:haptext_api/views/Bottom_Nav/Explore/live_stream.dart';
+export 'package:haptext_api/views/Bottom_Nav/Explore/discover.dart';
+export 'package:haptext_api/views/Bottom_Nav/Explore/explore_carousel.dart';
 export 'package:haptext_api/views/Bottom_Nav/Explore/trending_content.dart';
 export 'package:haptext_api/views/Bottom_Nav/Explore/search_option_tab.dart';
 
@@ -18,11 +18,10 @@ export 'package:haptext_api/views/Bottom_Nav/Explore/search_option_tab.dart';
 export 'package:haptext_api/views/Bottom_Nav/Post/posts.dart';
 export 'package:haptext_api/views/Bottom_Nav/Post/livestream.dart';
 export 'package:haptext_api/views/Bottom_Nav/Post/text_write_up.dart';
-export 'package:haptext_api/views/Bottom_Nav/Post/confirm_image_upload.dart';
-export 'package:haptext_api/views/Bottom_Nav/Post/confirm_video_upload.dart';
+export 'package:haptext_api/views/Bottom_Nav/Post/upload_photo_post.dart';
+export 'package:haptext_api/views/Bottom_Nav/Post/post_video_upload.dart';
 
-export 'package:haptext_api/views/Bottom_Nav/Post/new_file_selection/post_audio_upload_page.dart';
-export 'package:haptext_api/views/Bottom_Nav/Post/new_file_selection/camera_button_widget.dart';
+export 'package:haptext_api/views/Bottom_Nav/Post/post_audio_upload_page.dart';
 
 // PEOPLE
 export 'package:haptext_api/views/Bottom_Nav/People/followings.dart';
@@ -31,9 +30,9 @@ export 'package:haptext_api/views/Bottom_Nav/People/friend.dart';
 
 export 'package:haptext_api/views/Bottom_Nav/People/people.dart';
 export 'package:haptext_api/views/Bottom_Nav/People/image_view.dart';
-export 'package:haptext_api/views/Bottom_Nav/People/friendCardWidget.dart';
-export 'package:haptext_api/views/Bottom_Nav/People/pictureContainer.dart';
-export 'package:haptext_api/views/Bottom_Nav/People/friendProfilePage.dart';
+export 'package:haptext_api/views/Bottom_Nav/People/friend_card_widget.dart';
+export 'package:haptext_api/views/Bottom_Nav/People/picture_container.dart';
+export 'package:haptext_api/views/Bottom_Nav/People/friend_profile_page.dart';
 
 // PROFILE
 

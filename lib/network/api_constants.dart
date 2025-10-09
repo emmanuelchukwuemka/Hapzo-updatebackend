@@ -24,7 +24,13 @@ class ApiConstants {
   static String pendingFollowRequestUrl({page}) =>
       "$userProfileBaseUrl/follow-requests/pending/$page/20/";
   static String getFriendsUrl({page}) =>
-      "$userProfileBaseUrl/friends/$page/20/";
+      "$userProfileBaseUrl/friends/$page/30/";
+  static String getUserByIdUrl({userId}) =>
+      "$userProfileBaseUrl/profile/$userId/";
+  static String searchFriendsUrl({query}) =>
+      "$userProfileBaseUrl/search?query=$query&limit=20&offset=1";
+  static String usersSearchUrl({query, page}) =>
+      "$userProfileBaseUrl/search?query=$query&limit=20&offset=$page";
   static String getFollowersUrl({userId, page}) =>
       "$userProfileBaseUrl/followers/$userId/$page/20/";
   static String getFollowingsUrl({userId, page}) =>
@@ -32,6 +38,9 @@ class ApiConstants {
   static const String postBaseUrl = "$baseUrl/posts/";
   static String fetchPostUrl({required page, required pageSize}) =>
       "${postBaseUrl}list/$page/$pageSize/";
+  static String fetchUserPostUrl(
+          {required page, required userId, required pageSize}) =>
+      "${postBaseUrl}user/$userId/$page/$pageSize/";
 }
 
 class ApiHeaders {

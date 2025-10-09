@@ -34,6 +34,31 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  Future<List<ResultPostModel>?> fetchUserPosts({userId}) async {
+    emit(HomeLoading());
+    try {
+      final response = await homeRepo.fetchUserPost(page: page, userId: userId);
+      final body = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        List<ResultPostModel> posts = [];
+        for (var post in body['data']['result']) {
+          posts.add(ResultPostModel.fromJson(post));
+        }
+        emit(HomeLoaded());
+        return posts;
+      } else {
+        ToastMessage.showErrorToast(
+            message: body["errors"]["detail"].toString());
+        emit(HomeError());
+        return null;
+      }
+    } catch (e) {
+      emit(HomeError());
+      log("fetch post $e");
+      return null;
+    }
+  }
+
   createTextPost({String? textContent}) async {
     emit(HomeLoading());
     try {

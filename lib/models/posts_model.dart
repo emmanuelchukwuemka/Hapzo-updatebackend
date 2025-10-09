@@ -1,5 +1,5 @@
 class PostModel {
-  List<ResultModel>? result;
+  List<ResultPostModel>? result;
   dynamic previousPostsData;
   dynamic nextPostsData;
 
@@ -7,9 +7,9 @@ class PostModel {
 
   PostModel.fromJson(Map<String, dynamic> json) {
     if (json['result'] != null) {
-      result = <ResultModel>[];
+      result = <ResultPostModel>[];
       json['result'].forEach((v) {
-        result!.add(ResultModel.fromJson(v));
+        result!.add(ResultPostModel.fromJson(v));
       });
     }
     previousPostsData = json['previous_posts_data'];
@@ -17,7 +17,7 @@ class PostModel {
   }
 }
 
-class ResultModel {
+class ResultPostModel {
   String? senderId;
   String? postFormat;
   String? textContent;
@@ -31,7 +31,7 @@ class ResultModel {
   String? createdAt;
   String? updatedAt;
 
-  ResultModel(
+  ResultPostModel(
       {this.senderId,
       this.postFormat,
       this.textContent,
@@ -45,7 +45,7 @@ class ResultModel {
       this.createdAt,
       this.updatedAt});
 
-  ResultModel.fromJson(Map<String, dynamic> json) {
+  ResultPostModel.fromJson(Map<String, dynamic> json) {
     senderId = json['sender_id'];
     postFormat = json['post_format'];
     textContent = json['text_content'];

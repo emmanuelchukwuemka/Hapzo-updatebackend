@@ -72,7 +72,7 @@ class _FollowersState extends State<Followers> {
                       mainAxisSpacing: 5.0,
                       childAspectRatio: 0.8),
                   itemCount: 0,
-                  itemBuilder: (context, index) => FriendCardWidget(context,
+                  itemBuilder: (context, index) => friendCardWidget(context,
                       "_userData!.followers![index]", 'assets/images/me.jpg'),
                 ),
               ),

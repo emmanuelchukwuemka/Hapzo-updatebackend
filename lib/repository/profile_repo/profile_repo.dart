@@ -43,7 +43,7 @@ class ProfileRepo {
       "weight": weight
     });
     request.headers.addAll(ApiHeaders.aunthenticatedHeader);
-    log("Payload ${request.fields.entries} media${request.files.first.field}");
+    log("Payload ${request.fields.entries} media${request.files.first.field} heade${ApiHeaders.aunthenticatedHeader.entries}");
     return await request.send();
   }
 }

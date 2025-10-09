@@ -7,9 +7,21 @@ class PeopleRepo {
         headers: ApiHeaders.aunthenticatedHeader);
   }
 
-  Future<Response> getUsers() async {
+  Future<Response> getUsers({required String userId}) async {
     return await ApiMethods.getMethod(
-        url: ApiConstants.userProfileBaseUrl,
+        url: ApiConstants.getUserByIdUrl(userId: userId),
+        headers: ApiHeaders.aunthenticatedHeader);
+  }
+
+  Future<Response> searchFriends({query}) async {
+    return await ApiMethods.getMethod(
+        url: ApiConstants.searchFriendsUrl(query: query),
+        headers: ApiHeaders.aunthenticatedHeader);
+  }
+
+  Future<Response> searchUsers({query, page}) async {
+    return await ApiMethods.getMethod(
+        url: ApiConstants.usersSearchUrl(query: query, page: page),
         headers: ApiHeaders.aunthenticatedHeader);
   }
 
@@ -22,6 +34,12 @@ class PeopleRepo {
   Future<Response> fetchFollowings({page, userId}) async {
     return await ApiMethods.getMethod(
         url: ApiConstants.getFollowingsUrl(userId: userId, page: page),
+        headers: ApiHeaders.aunthenticatedHeader);
+  }
+
+  Future<Response> followUser({userId}) async {
+    return await ApiMethods.postMethod(
+        url: ApiConstants.followUserUrl(userId: userId),
         headers: ApiHeaders.aunthenticatedHeader);
   }
 }

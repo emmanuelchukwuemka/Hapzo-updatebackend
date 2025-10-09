@@ -1,10 +1,14 @@
+import 'package:haptext_api/models/searched_user_model.dart';
+
 class UserInfoModel {
   String? id;
   String? email;
   String? username;
   Tokens? tokens;
+  SearchedUserProfile? profile;
 
-  UserInfoModel({this.id, this.email, this.username, this.tokens});
+  UserInfoModel(
+      {this.id, this.profile, this.email, this.username, this.tokens});
 
   UserInfoModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];

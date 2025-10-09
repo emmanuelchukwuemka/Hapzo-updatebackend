@@ -8,7 +8,7 @@ class PostTest extends StatefulWidget {
 }
 
 class _PostTestState extends State<PostTest> {
-  List<ResultModel>? posts;
+  List<ResultPostModel>? posts;
   var isLoaded = false;
 
   @override

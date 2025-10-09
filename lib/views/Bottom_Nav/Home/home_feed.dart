@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
@@ -78,10 +79,12 @@ class _HomePageState extends State<HomePage> {
           // padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
           itemCount: post?.length ?? 0,
           itemBuilder: (context, index) {
-            return PostContentWidget(
-                size: size,
-                post: post,
-                index: index); // Replace Container with your actual widget
+            return post?[index].postFormat?.toLowerCase() == "audio"
+                ? AudioPost(post: post?[index] ?? ResultPostModel())
+                : PostContentWidget(
+                    size: size,
+                    post: post?[index] ?? ResultPostModel(),
+                    index: index); // Replace Container with your actual widget
           },
         ));
   }
@@ -93,7 +96,7 @@ class PostContentWidget extends StatefulWidget {
 
   final Size size;
   final int index;
-  final List<ResultModel>? post;
+  final ResultPostModel post;
 
   @override
   State<PostContentWidget> createState() => _PostContentWidgetState();
@@ -110,8 +113,8 @@ class _PostContentWidgetState extends State<PostContentWidget> {
     super.initState();
     // Initialize video player only if it's a video post
     _initializeVideoPlayer(
-      widget.post?[widget.index].videoContent,
-      widget.post?[widget.index].postFormat,
+      widget.post.videoContent,
+      widget.post.postFormat,
     );
     // Remove WidgetsBinding.instance.addPersistentFrameCallback here.
     // It's not the correct place for controller initialization.
@@ -166,11 +169,10 @@ class _PostContentWidgetState extends State<PostContentWidget> {
   void didUpdateWidget(covariant PostContentWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final oldVideoContent = oldWidget.post?[oldWidget.index].videoContent;
-    final newVideoContent = widget.post?[widget.index].videoContent;
-    final oldPostFormat =
-        oldWidget.post?[oldWidget.index].postFormat?.toLowerCase();
-    final newPostFormat = widget.post?[widget.index].postFormat?.toLowerCase();
+    final oldVideoContent = oldWidget.post.videoContent;
+    final newVideoContent = widget.post.videoContent;
+    final oldPostFormat = oldWidget.post.postFormat?.toLowerCase();
+    final newPostFormat = widget.post.postFormat?.toLowerCase();
 
     // Re-initialize video player if the video content or format changes
     if (newPostFormat == "video" && newVideoContent != oldVideoContent) {
@@ -204,18 +206,17 @@ class _PostContentWidgetState extends State<PostContentWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppText(
-              text: widget.post?[widget.index].senderName ?? '',
+              text: widget.post.senderName ?? '',
               fontWeight: FontWeight.w600,
               color: Colors.deepOrangeAccent),
           AppText(
               text: UsefulMethods.formatDate(
-                  widget.post?[widget.index].createdAt ??
-                      '2025-07-13T18:56:55.550942Z'),
+                  widget.post.createdAt ?? DateTime.now().toString()),
               color: Colors.deepOrangeAccent),
           20.verticalSpace,
           AppshadowContainer(
               onTap: () {
-                if (widget.post?[widget.index].postFormat == "video") {
+                if (widget.post.postFormat == "video") {
                   setState(() {
                     _videoPlayerController?.value.isPlaying ?? false
                         ? _videoPlayerController?.pause()
@@ -228,14 +229,12 @@ class _PostContentWidgetState extends State<PostContentWidget> {
               border: true,
               color: Colors.transparent,
               borderColor: Colors.white.withAlpha(50),
-              child: widget.post?[widget.index].postFormat?.toLowerCase() ==
-                      'text'
+              child: widget.post.postFormat?.toLowerCase() == 'text'
                   ? AppText(
-                      text: widget.post?[widget.index].textContent ?? '',
+                      text: widget.post.textContent ?? '',
                       color: Colors.white,
                       maxLines: 150)
-                  : widget.post?[widget.index].postFormat?.toLowerCase() ==
-                          'video'
+                  : widget.post.postFormat?.toLowerCase() == 'video'
                       ? _isVideoInitialized == false
                           ? const CircularProgressIndicator()
                           : _videoPlayerController?.value.hasError ?? false
@@ -246,12 +245,11 @@ class _PostContentWidgetState extends State<PostContentWidget> {
                                           ?.value.aspectRatio ??
                                       0,
                                   child: VideoPlayer(_videoPlayerController!))
-                      : widget.post?[widget.index].postFormat?.toLowerCase() ==
-                              "image"
+                      : widget.post.postFormat?.toLowerCase() == "image"
                           ? AppNetwokImage(
                               height: widget.size.height * 0.55,
                               width: widget.size.width,
-                              imageUrl: widget.post?[widget.index].imageContent)
+                              imageUrl: widget.post.imageContent)
                           : GestureDetector(
                               onTap: () async {
                                 if (_isPlaying) {
@@ -260,8 +258,8 @@ class _PostContentWidgetState extends State<PostContentWidget> {
                                     _isPlaying = false;
                                   });
                                 } else {
-                                  await _audioPlayer.play(UrlSource(
-                                      widget.post?[widget.index].audioContent));
+                                  await _audioPlayer.play(
+                                      UrlSource(widget.post.audioContent));
                                   setState(() {
                                     _isPlaying = true;
                                   });
@@ -307,7 +305,7 @@ class _PostContentWidgetState extends State<PostContentWidget> {
               SizedBox(
                   width: widget.size.width * 0.67,
                   child: AppText(
-                      text: widget.post?[widget.index].textContent ?? "",
+                      text: widget.post.textContent ?? "",
                       maxLines: 3,
                       color: Colors.white)),
               const Spacer(),
@@ -342,5 +340,79 @@ class _PostContentWidgetState extends State<PostContentWidget> {
     _videoPlayerController?.dispose();
     _audioPlayer.dispose();
     super.dispose();
+  }
+}
+
+class AudioPost extends StatelessWidget {
+  const AudioPost({super.key, required this.post});
+  final ResultPostModel post;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    return AppshadowContainer(
+        padding: EdgeInsets.all(size.width * 0.04),
+        color: Colors.black,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          AppText(
+              text: post.senderName ?? '',
+              fontWeight: FontWeight.w600,
+              color: Colors.deepOrangeAccent),
+          AppText(
+              text: UsefulMethods.formatDate(
+                  post.createdAt ?? DateTime.now().toString()),
+              color: Colors.deepOrangeAccent),
+          const Spacer(),
+          AppshadowContainer(
+              padding: EdgeInsets.all(size.width * 0.04),
+              radius: size.width * 0.05,
+              color: Colors.green,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(Icons.play_arrow, size: 30.sp),
+                    const AppText(text: "1.5", color: Colors.white)
+                  ])),
+          const Spacer(),
+          Row(children: [
+            5.horizontalSpace,
+            Appbutton(
+                label: "Your Friend",
+                width: size.width * 0.23,
+                labelSize: 12,
+                height: size.width * 0.09,
+                buttonColor: Colors.green)
+          ]),
+          10.verticalSpace,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                  width: size.width * 0.67,
+                  child: const AppText(
+                      text: "", maxLines: 3, color: Colors.white)),
+              const Spacer(),
+              Column(
+                children: [
+                  Row(children: [
+                    Icon(Icons.favorite,
+                        color: Colors.deepOrangeAccent, size: 25.sp),
+                    10.horizontalSpace,
+                    Icon(Icons.mode_comment_sharp,
+                        color: Colors.deepOrangeAccent, size: 25.sp)
+                  ]),
+                  10.verticalSpace,
+                  Row(children: [
+                    Icon(Icons.reply,
+                        color: Colors.deepOrangeAccent, size: 25.sp),
+                    10.horizontalSpace,
+                    Icon(Icons.download,
+                        color: Colors.deepOrangeAccent, size: 25.sp)
+                  ]),
+                ],
+              )
+            ],
+          ),
+        ]));
   }
 }
