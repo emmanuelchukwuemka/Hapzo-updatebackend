@@ -115,7 +115,7 @@ class UserFollowing(models.Model):
         verbose_name_plural = "user_followings"
         ordering = ["-created_at"]
         unique_together = ["follower", "following"]
-    indexes = [models.Index(fields=["follower", "following"])]
+        indexes = [models.Index(fields=["follower", "following"])]
 
     def __str__(self) -> str:
         return f"{self.follower} -> {self.following}"
