@@ -74,6 +74,7 @@ class CreateNotificationRule:
         return type_mapping.get(notification_type, True)
 
 
+# :TODO: Refactor to use a more generic approach, possibly with event listeners or a pub/sub system.
 class NotifyFollowersOfPostRule:
     def __init__(
         self,

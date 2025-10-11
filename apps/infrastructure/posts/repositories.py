@@ -113,7 +113,7 @@ class DjangoPostRepository(PostRepositoryInterface):
     def posts_list(
         self, page: int, page_size: int
     ) -> Tuple[List[Any], str | None, str | None]:
-        queryset = Post.objects.all().order_by("-created_at")
+        queryset = Post.objects.select_related("sender").prefetch_related("reactions", "shares").order_by("-created_at")
         total_posts = queryset.count()
 
         offset = (page - 1) * page_size

@@ -35,6 +35,12 @@ class Post(models.Model):
         verbose_name = "post"
         verbose_name_plural = "posts"
         ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["created_at"]),
+            models.Index(fields=["sender", "-created_at"]),
+            models.Index(fields=["is_published", "scheduled_at"]),
+            models.Index(fields=["is_reply", "previous_post_id"]),
+        ]
 
     def __str__(self):
         return f"{str(self.get_post_format_display())} post from {str(self.sender)}"

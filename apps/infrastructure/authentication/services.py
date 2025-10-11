@@ -2,6 +2,7 @@ from typing import Any, Dict, List
 
 from django.conf import settings
 from django.contrib.auth import signals
+from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password, make_password
 from django.core.mail import EmailMultiAlternatives
 from django.db import transaction
@@ -19,6 +20,9 @@ from apps.core.exceptions import BaseAPIException
 from apps.domain.authentication.entities import OTPCode
 from apps.domain.authentication.enums import OTPCodePurpose
 from apps.domain.authentication.value_objects import Purpose
+
+
+User = get_user_model()
 
 
 class DjangoEmailServiceAdapter(EmailServiceInterface):
@@ -82,9 +86,11 @@ class KnoxAuthenticationServiceAdapter(AuthenticationServiceInterface):
 
         try:
             with transaction.atomic():
+                User.objects.select_for_update().get(id=user.id)
+
                 tokens = AuthToken.objects.filter(user=user).order_by("-created")
                 if tokens.count() >= token_limit:
-                    tokens.first().delete()
+                    tokens.last().delete()
 
                 _, token = AuthToken.objects.create(user=user)
         except Exception as e:
