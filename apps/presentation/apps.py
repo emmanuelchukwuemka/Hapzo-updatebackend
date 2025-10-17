@@ -35,3 +35,12 @@ class NotificationsConfig(AppConfig):
 
     def ready(self) -> None:
         pass
+
+
+class ChatConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.infrastructure.chat"
+    verbose_name = "chat"
+
+    def ready(self) -> None:
+        pass

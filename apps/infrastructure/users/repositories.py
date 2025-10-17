@@ -218,17 +218,22 @@ class DjangoUserRepository(UserRepositoryInterface):
         #     if hasattr(user, "user_profile")
         # ]
 
-        queryset = User.objects.filter(
-            Q(username__istartswith=query)
-            | Q(user_profile__first_name__istartswith=query)
-            | Q(user_profile__last_name__istartswith=query),
-            is_email_verified=True,
-            is_active=True,
-        ).select_related("user_profile").annotate(
-            follower_count=Subquery(follower_count_subquery),
-            following_count=Subquery(following_count_subquery),
-            mention_count=Subquery(mention_count_subquery),
-        ).order_by("-created_at")
+        queryset = (
+            User.objects.filter(
+                Q(username__istartswith=query)
+                | Q(user_profile__first_name__istartswith=query)
+                | Q(user_profile__last_name__istartswith=query),
+                is_email_verified=True,
+                is_active=True,
+            )
+            .select_related("user_profile")
+            .annotate(
+                follower_count=Subquery(follower_count_subquery),
+                following_count=Subquery(following_count_subquery),
+                mention_count=Subquery(mention_count_subquery),
+            )
+            .order_by("-created_at")
+        )
 
         total_users = queryset.count()
         offset = (page - 1) * page_size
@@ -246,7 +251,8 @@ class DjangoUserRepository(UserRepositoryInterface):
                     else None
                 ),
             )
-            for qs in queryset[offset:end] if hasattr(qs, "user_profile")
+            for qs in queryset[offset:end]
+            if hasattr(qs, "user_profile")
         ]
 
         previous_link = None

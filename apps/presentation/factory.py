@@ -13,7 +13,6 @@ from apps.application.notifications.rules import (
     MarkNotificationsAsReadRule,
     NotifyFollowersOfPostRule,
     NotifyPostCreatorOfReplyRule,
-    NotifyUserOfFollowAcceptanceRule,
     NotifyUserOfFollowRule,
     UpdateNotificationPreferencesRule,
 )
@@ -68,6 +67,19 @@ from apps.infrastructure.users.repositories import (
     DjangoUserProfileRepository,
     DjangoUserRepository,
 )
+from apps.application.chat.rules import (
+    CreateConversationRule,
+    SendMessageRule,
+    GetConversationMessagesRule,
+    GetUserConversationsRule,
+    MarkMessagesAsReadRule,
+)
+from apps.infrastructure.chat.repositories import (
+    DjangoConversationRepository,
+    DjangoMessageRepository,
+    DjangoConversationParticipantRepository,
+)
+from apps.infrastructure.chat.services import ChannelsChatService
 
 from apps.infrastructure.users.models import UserMentionCount
 
@@ -331,4 +343,59 @@ def get_notify_user_of_follow_rule() -> NotifyUserOfFollowRule:
     return NotifyUserOfFollowRule(
         user_repository=get_user_repository(),
         create_notification_rule=get_create_notification_rule(),
+    )
+
+
+def get_conversation_repository() -> DjangoConversationRepository:
+    return DjangoConversationRepository()
+
+
+def get_message_repository() -> DjangoMessageRepository:
+    return DjangoMessageRepository()
+
+
+def get_conversation_participant_repository() -> (
+    DjangoConversationParticipantRepository
+):
+    return DjangoConversationParticipantRepository()
+
+
+def get_chat_service() -> ChannelsChatService:
+    return ChannelsChatService()
+
+
+def get_create_conversation_rule() -> CreateConversationRule:
+    return CreateConversationRule(
+        conversation_repository=get_conversation_repository(),
+        participant_repository=get_conversation_participant_repository(),
+    )
+
+
+def get_send_message_rule() -> SendMessageRule:
+    return SendMessageRule(
+        message_repository=get_message_repository(),
+        conversation_repository=get_conversation_repository(),
+        participant_repository=get_conversation_participant_repository(),
+        chat_service=get_chat_service(),
+    )
+
+
+def get_conversation_messages_rule() -> GetConversationMessagesRule:
+    return GetConversationMessagesRule(
+        message_repository=get_message_repository(),
+        participant_repository=get_conversation_participant_repository(),
+    )
+
+
+def get_user_conversations_rule() -> GetUserConversationsRule:
+    return GetUserConversationsRule(
+        conversation_repository=get_conversation_repository(),
+        message_repository=get_message_repository(),
+    )
+
+
+def get_mark_messages_read_rule() -> MarkMessagesAsReadRule:
+    return MarkMessagesAsReadRule(
+        message_repository=get_message_repository(),
+        participant_repository=get_conversation_participant_repository(),
     )

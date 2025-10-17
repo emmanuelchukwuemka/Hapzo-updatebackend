@@ -28,6 +28,7 @@ CORS_ALLOWED_ORIGINS = env.str("CORS_ALLOWED_ORIGINS").split(",")
 
 INSTALLED_APPS = [
     "daphne",
+    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     "apps.presentation.apps.AuthenticationConfig",
     "apps.presentation.apps.PostsConfig",
     "apps.presentation.apps.NotificationsConfig",
+    "apps.presentation.apps.ChatConfig",
 ]
 
 MIDDLEWARE = [
@@ -78,6 +80,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
+ASGI_APPLICATION = "config.asgi.application"
 
 DATABASES = {
     "default": dj_database_url.config(
@@ -193,3 +196,14 @@ EVENTSTREAM_STORAGE_CLASS = "django_eventstream.storage.DjangoModelStorage"
 EVENTSTREAM_ALLOW_ORIGINS = CORS_ALLOWED_ORIGINS
 EVENTSTREAM_ALLOW_CREDENTIALS = True
 EVENTSTREAM_ALLOW_HEADERS = "Authorization"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(env.str("REDIS_HOST", "redis"), env.int("REDIS_PORT", 6379))],
+            "capacity": 1500,  # Maximum number of messages to store
+            "expiry": 10,  # Message expiry time in seconds
+        },
+    },
+}

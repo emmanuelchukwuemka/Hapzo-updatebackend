@@ -5,6 +5,8 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "channels-redis>=4.3.0",
+    "channels[daphne,redis]>=4.3.1",
     "daphne>=4.2.1",
     "dj-database-url>=3.0.1",
     "django>=5.2.5",

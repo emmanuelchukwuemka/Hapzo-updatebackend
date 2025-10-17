@@ -90,7 +90,7 @@ class NotifyFollowersOfPostRule:
         self, post_creator_id: str, post_id: str, post_content: str
     ) -> List[NotificationResponseDTO]:
         user = self.user_repository.find_by_id(post_creator_id)
-        
+
         followers, _, _ = self.user_profile_repository.get_followers(
             user_id=post_creator_id,
             page=1,
