@@ -1,4 +1,5 @@
 import 'package:haptext_api/exports.dart';
+import 'package:haptext_api/models/new/chats_mssgs_data.dart';
 
 class Blocked extends StatefulWidget {
   const Blocked({Key? key}) : super(key: key);
@@ -85,7 +86,6 @@ class _BlockedState extends State<Blocked> {
                   ),
                   GestureDetector(
                     onTap: () {
-                   
                       showDialog(
                           context: context,
                           builder: (_) => const CustomDialog());

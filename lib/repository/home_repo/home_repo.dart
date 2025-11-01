@@ -18,6 +18,25 @@ class HomeRepo {
         headers: ApiHeaders.aunthenticatedHeader);
   }
 
+  Future<Response> sharePost({required String id}) async {
+    return await ApiMethods.postMethod(
+        url: ApiConstants.sharePostUrl(postId: id),
+        headers: ApiHeaders.aunthenticatedHeader);
+  }
+
+  Future<Response> reactPost({required String id}) async {
+    return await ApiMethods.postMethod(
+        url: ApiConstants.reactPostUrl(postId: id),
+        body: {"reaction_type": "like"},
+        headers: ApiHeaders.aunthenticatedHeader);
+  }
+
+  Future<Response> fetchNotification({required int page}) async {
+    return await ApiMethods.getMethod(
+        url: ApiConstants.fetchNotificationUrl(page: page),
+        headers: ApiHeaders.aunthenticatedHeader);
+  }
+
   Future<Response> createTextPost({required String textContent}) async {
     return await ApiMethods.postMethod(
         url: ApiConstants.postBaseUrl,

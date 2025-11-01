@@ -36,6 +36,10 @@ class ApiConstants {
   static String getFollowingsUrl({userId, page}) =>
       "$userProfileBaseUrl/followings/$userId/$page/20/";
   static const String postBaseUrl = "$baseUrl/posts/";
+  static String fetchNotificationUrl({page}) =>
+      "$baseUrl/notifications/$page/20/";
+  static String sharePostUrl({postId}) => "$postBaseUrl$postId/share/";
+  static String reactPostUrl({postId}) => "$postBaseUrl$postId/react/";
   static String fetchPostUrl({required page, required pageSize}) =>
       "${postBaseUrl}list/$page/$pageSize/";
   static String fetchUserPostUrl(

@@ -176,4 +176,20 @@ class AuthCubit extends Cubit<AuthState> {
       log("user Profile $e");
     }
   }
+
+  fetchLocalUser() async {
+    emit(AuthLoadingState());
+    try {
+      final storedUser = await SessionManager.getUser();
+      if (storedUser != null) {
+        useInfo = storedUser;
+        emit(AuthLoadedState());
+      } else {
+        emit(AuthErrorState());
+      }
+    } catch (e) {
+      emit(AuthErrorState());
+      log("local user $e");
+    }
+  }
 }

@@ -376,7 +376,7 @@ class _HomeState extends State<Home> {
         width: size.width,
         child: const Column(children: [
           FavouriteContacts(),
-          RecentChats(),
+          // RecentChats(),
         ]),
       ),
     );

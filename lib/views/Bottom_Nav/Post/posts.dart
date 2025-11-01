@@ -1,8 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 import 'package:haptext_api/exports.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 import '../../../models/new/posts_data.dart';
 

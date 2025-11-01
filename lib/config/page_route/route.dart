@@ -2,6 +2,7 @@ import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/main.dart';
 import 'package:haptext_api/models/searched_user_model.dart';
 import 'package:haptext_api/views/Bottom_Nav/People/friend_profile_page.dart';
+import 'package:haptext_api/views/Bottom_Nav/Post/comment_page.dart';
 import 'package:haptext_api/views/Bottom_Nav/Post/upload_photo_post.dart';
 import 'package:haptext_api/views/Bottom_Nav/Post/post_video_upload.dart';
 import 'package:haptext_api/views/Bottom_Nav/Post/post_audio_upload_page.dart';
@@ -12,6 +13,7 @@ import 'package:haptext_api/views/screen/authentication/forget_password.dart';
 import 'package:haptext_api/views/screen/authentication/reset_password.dart';
 import 'package:haptext_api/views/screen/authentication/reset_password_otp.dart';
 import 'package:haptext_api/views/screen/authentication/reset_password_success.dart';
+import 'package:haptext_api/views/screen/chats/voice_call.dart';
 
 class AppRoute {
   static final router = GoRouter(
@@ -49,6 +51,11 @@ class AppRoute {
             return const ForgetPasswordPage();
           }),
       GoRoute(
+          path: RouteName.commentpage.path,
+          builder: (context, state) {
+            return const CommentScreen();
+          }),
+      GoRoute(
           path: RouteName.resetPasswordPage.path,
           builder: (context, state) {
             return const ResetPasswordPage();
@@ -74,6 +81,16 @@ class AppRoute {
             return const PostAudioUploadPage();
           }),
       GoRoute(
+          path: RouteName.voiceCallPage.path,
+          builder: (context, state) {
+            return const VoiceCallPage();
+          }),
+      GoRoute(
+          path: RouteName.videoCallPage.path,
+          builder: (context, state) {
+            return const GroupCallPage();
+          }),
+      GoRoute(
           path: RouteName.createPhotoPost.path,
           builder: (context, state) {
             return const CreatePhotoPost();
@@ -87,6 +104,11 @@ class AppRoute {
           path: RouteName.editProfile.path,
           builder: (context, state) {
             return const EditProfile();
+          }),
+      GoRoute(
+          path: RouteName.chatPage.path,
+          builder: (context, state) {
+            return const ChatsHome();
           }),
       GoRoute(
           path: RouteName.friendsProfilePage.path,

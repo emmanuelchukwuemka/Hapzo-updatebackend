@@ -43,12 +43,12 @@ class _SearchState extends State<Search> with SingleTickerProviderStateMixin {
                   controller: _searchController,
                   labelText: 'Search',
                   onChanged: (value) {
-                    context.read<PeopleCubit>().searchFriends(query: "string");
+                    if (value.isNotEmpty) {
+                      context.read<PeopleCubit>().searchFriends(query: value);
+                    }
                   },
                   icon: Icons.search)),
-          const SizedBox(
-            height: 5,
-          ),
+          const SizedBox(height: 5),
           Expanded(
             child: SearchOptionTabWidget(tabController: tabController),
           ),

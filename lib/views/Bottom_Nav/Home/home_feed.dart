@@ -1,7 +1,7 @@
 import 'dart:developer';
-import 'dart:ui';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/common/coloors.dart';
 import 'package:haptext_api/common/utils.dart';
@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                   onPressed: () {
                     //  context.read<HomeCubit>()
-                    context.push(RouteName.bottomNav.path);
+                    context.push(RouteName.chatPage.path);
                   },
                   icon: const Icon(Icons.chat),
                   iconSize: 22,
@@ -44,13 +44,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(width: 3),
               IconButton(
                   onPressed: () {
-                    context.read<HomeCubit>().fetchPosts();
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (_) => const Notifications(),
-                    //   ),
-                    // );
+                    context.read<HomeCubit>().fetchNotification();
                   },
                   icon: const Icon(Icons.notifications),
                   iconSize: 22),
@@ -74,18 +68,25 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        body: PageView.builder(
-          scrollDirection: Axis.vertical,
-          // padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
-          itemCount: post?.length ?? 0,
-          itemBuilder: (context, index) {
-            return post?[index].postFormat?.toLowerCase() == "audio"
-                ? AudioPost(post: post?[index] ?? ResultPostModel())
-                : PostContentWidget(
-                    size: size,
-                    post: post?[index] ?? ResultPostModel(),
-                    index: index); // Replace Container with your actual widget
+        body: RefreshIndicator(
+          color: Theme.of(context).primaryColor,
+          onRefresh: () async {
+            await context.read<HomeCubit>().fetchPosts();
           },
+          child: PageView.builder(
+            scrollDirection: Axis.vertical,
+            // padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
+            itemCount: post?.length ?? 0,
+            itemBuilder: (context, index) {
+              return post?[index].postFormat?.toLowerCase() == "audio"
+                  ? AudioPost(post: post?[index] ?? ResultPostModel())
+                  : PostContentWidget(
+                      size: size,
+                      post: post?[index] ?? ResultPostModel(),
+                      index:
+                          index); // Replace Container with your actual widget
+            },
+          ),
         ));
   }
 }
@@ -312,16 +313,35 @@ class _PostContentWidgetState extends State<PostContentWidget> {
               Column(
                 children: [
                   Row(children: [
-                    Icon(Icons.favorite,
-                        color: Colors.deepOrangeAccent, size: 25.sp),
+                    GestureDetector(
+                      onTap: () {
+                        context
+                            .read<HomeCubit>()
+                            .reactToPost(postId: widget.post.id);
+                      },
+                      child: Icon(Icons.favorite,
+                          color: Colors.deepOrangeAccent, size: 25.sp),
+                    ),
                     10.horizontalSpace,
-                    Icon(Icons.mode_comment_sharp,
-                        color: Colors.deepOrangeAccent, size: 25.sp)
+                    GestureDetector(
+                      onTap: () {
+                        context.push(RouteName.commentpage.path);
+                      },
+                      child: Icon(CupertinoIcons.chat_bubble_text,
+                          color: Colors.deepOrangeAccent, size: 25.sp),
+                    )
                   ]),
                   10.verticalSpace,
                   Row(children: [
-                    Icon(Icons.reply,
-                        color: Colors.deepOrangeAccent, size: 25.sp),
+                    GestureDetector(
+                      onTap: () {
+                        context
+                            .read<HomeCubit>()
+                            .sharePost(postId: widget.post.id);
+                      },
+                      child: Icon(Icons.reply,
+                          color: Colors.deepOrangeAccent, size: 25.sp),
+                    ),
                     10.horizontalSpace,
                     Icon(Icons.download,
                         color: Colors.deepOrangeAccent, size: 25.sp)
@@ -395,16 +415,26 @@ class AudioPost extends StatelessWidget {
               Column(
                 children: [
                   Row(children: [
-                    Icon(Icons.favorite,
-                        color: Colors.deepOrangeAccent, size: 25.sp),
+                    GestureDetector(
+                      onTap: () {
+                        context.read<HomeCubit>().reactToPost(postId: post.id);
+                      },
+                      child: Icon(Icons.favorite,
+                          color: Colors.deepOrangeAccent, size: 25.sp),
+                    ),
                     10.horizontalSpace,
                     Icon(Icons.mode_comment_sharp,
                         color: Colors.deepOrangeAccent, size: 25.sp)
                   ]),
                   10.verticalSpace,
                   Row(children: [
-                    Icon(Icons.reply,
-                        color: Colors.deepOrangeAccent, size: 25.sp),
+                    GestureDetector(
+                      onTap: () {
+                        context.read<HomeCubit>().sharePost(postId: post.id);
+                      },
+                      child: Icon(Icons.reply,
+                          color: Colors.deepOrangeAccent, size: 25.sp),
+                    ),
                     10.horizontalSpace,
                     Icon(Icons.download,
                         color: Colors.deepOrangeAccent, size: 25.sp)
