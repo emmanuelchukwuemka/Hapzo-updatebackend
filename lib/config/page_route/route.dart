@@ -111,6 +111,11 @@ class AppRoute {
             return const ChatsHome();
           }),
       GoRoute(
+          path: RouteName.notificationPage.path,
+          builder: (context, state) {
+            return const Notifications();
+          }),
+      GoRoute(
           path: RouteName.friendsProfilePage.path,
           builder: (context, state) {
             final SearchedUserModel user = state.extra as SearchedUserModel;

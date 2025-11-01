@@ -17,6 +17,7 @@ enum RouteName {
   commentpage('/comment_page'),
   voiceCallPage('/voice_call_page'),
   videoCallPage('/video_call_page'),
+  notificationPage('/notification_page'),
   editProfile('/edit_profile_page');
 
   final String path;

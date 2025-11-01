@@ -45,6 +45,7 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                   onPressed: () {
                     context.read<HomeCubit>().fetchNotification();
+                    context.push(RouteName.notificationPage.path);
                   },
                   icon: const Icon(Icons.notifications),
                   iconSize: 22),
@@ -343,8 +344,8 @@ class _PostContentWidgetState extends State<PostContentWidget> {
                           color: Colors.deepOrangeAccent, size: 25.sp),
                     ),
                     10.horizontalSpace,
-                    Icon(Icons.download,
-                        color: Colors.deepOrangeAccent, size: 25.sp)
+                    // Icon(Icons.bookmark,
+                    //     color: Colors.deepOrangeAccent, size: 25.sp)
                   ]),
                 ],
               )
@@ -436,8 +437,8 @@ class AudioPost extends StatelessWidget {
                           color: Colors.deepOrangeAccent, size: 25.sp),
                     ),
                     10.horizontalSpace,
-                    Icon(Icons.download,
-                        color: Colors.deepOrangeAccent, size: 25.sp)
+                    // Icon(Icons.download,
+                    //     color: Colors.deepOrangeAccent, size: 25.sp)
                   ]),
                 ],
               )
