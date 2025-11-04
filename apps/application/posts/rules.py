@@ -66,7 +66,7 @@ class PostListRule:
                     current_user_id, post_id
                 )
                 if reaction:
-                    user_reactions[post_id] = reaction.reaction_type
+                    user_reactions[post_id] = reaction.reaction
 
         posts_data = []
 
@@ -182,7 +182,7 @@ class UserPostsRule:
                     current_user_id, post_id
                 )
                 if reaction:
-                    user_reactions[post_id] = reaction.reaction_type
+                    user_reactions[post_id] = reaction.reaction
 
         posts_data = []
         for post in posts:
@@ -219,7 +219,7 @@ class ReactToPostRule:
         reaction = PostReaction(
             user_id=dto.user_id,
             post_id=dto.post_id,
-            reaction_type=dto.reaction_type,
+            reaction=dto.reaction,
         )
 
         created_reaction = self.post_reaction_repository.create_or_update(reaction)

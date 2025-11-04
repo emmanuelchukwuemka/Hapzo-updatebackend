@@ -70,7 +70,7 @@ class PaginatedUserPostsResponseDTO:
 class PostReactionDTO:
     user_id: str
     post_id: str
-    reaction_type: str
+    reaction: str
 
 
 @dataclass
@@ -78,7 +78,7 @@ class PostReactionResponseDTO:
     id: str
     user_id: str
     post_id: str
-    reaction_type: str
+    reaction: str
     created_at: datetime
     updated_at: datetime
 

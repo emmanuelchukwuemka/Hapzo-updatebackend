@@ -171,7 +171,7 @@ def fetch_user_posts(
         400: ErrorResponseExampleSerializer,
         500: ErrorResponseExampleSerializer,
     },
-    description="React to a post with an emoji (like, love, haha, wow, sad, angry).",
+    description="React to a post with an emoji.",
     tags=["Posts"],
 )
 @api_view(["POST"])

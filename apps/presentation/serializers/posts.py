@@ -2,7 +2,7 @@ from datetime import datetime
 
 from rest_framework import serializers
 
-from apps.domain.posts.enums import PostFormat, ReactionType
+from apps.domain.posts.enums import PostFormat
 
 
 class PostCreateSerializer(serializers.Serializer):
@@ -111,8 +111,8 @@ class UserPostsSerializer(serializers.Serializer):
 
 
 class PostReactionSerializer(serializers.Serializer):
-    reaction_type = serializers.ChoiceField(
-        choices=ReactionType.choices(), required=True
+    reaction = serializers.CharField(
+        required=True
     )
     post_id = serializers.CharField(read_only=True)
     user_id = serializers.CharField(read_only=True)

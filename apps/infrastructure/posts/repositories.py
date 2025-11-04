@@ -74,7 +74,7 @@ def to_domain_post_reaction_data(django_reaction: PostReaction) -> DomainPostRea
     return DomainPostReaction(
         user_id=django_reaction.user_id,
         post_id=django_reaction.post_id,
-        reaction_type=django_reaction.reaction_type,
+        reaction=django_reaction.reaction,
         id=django_reaction.id,
         created_at=django_reaction.created_at,
         updated_at=django_reaction.updated_at,
@@ -253,7 +253,7 @@ class DjangoPostReactionRepository(PostReactionRepositoryInterface):
         django_reaction, created = PostReaction.objects.update_or_create(
             user_id=reaction.user_id,
             post_id=reaction.post_id,
-            defaults={"reaction_type": reaction.reaction_type},
+            defaults={"reaction": reaction.reaction},
         )
         return to_domain_post_reaction_data(django_reaction)
 
@@ -272,17 +272,17 @@ class DjangoPostReactionRepository(PostReactionRepositoryInterface):
     def get_post_reaction_counts(self, post_id: str) -> Dict[str, int]:
         reactions = (
             PostReaction.objects.filter(post_id=post_id)
-            .values("reaction_type")
+            .values("reaction")
             .annotate(count=models.Count("id"))
         )
-        return {reaction["reaction_type"]: reaction["count"] for reaction in reactions}
+        return {reaction["reaction"]: reaction["count"] for reaction in reactions}
 
     def get_posts_reaction_counts(
         self, post_ids: List[str]
     ) -> Dict[str, Dict[str, int]]:
         reactions = (
             PostReaction.objects.filter(post_id__in=post_ids)
-            .values("post_id", "reaction_type")
+            .values("post_id", "reaction")
             .annotate(count=models.Count("id"))
         )
 
@@ -291,7 +291,7 @@ class DjangoPostReactionRepository(PostReactionRepositoryInterface):
             post_id = reaction["post_id"]
             if post_id not in result:
                 result[post_id] = {}
-            result[post_id][reaction["reaction_type"]] = reaction["count"]
+            result[post_id][reaction["reaction"]] = reaction["count"]
 
         return result
 

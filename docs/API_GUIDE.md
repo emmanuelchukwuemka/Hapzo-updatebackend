@@ -757,7 +757,7 @@ All API endpoints are prefixed with `/api/v1/`.
 -   **Request Body:** 
     ```json
     {
-        "reaction_type": "love"
+        "reaction": "👍"
     }
     ```
 -   **Success Response (Status: 201 Created):**
@@ -769,7 +769,7 @@ All API endpoints are prefixed with `/api/v1/`.
             "id": "string",
             "user_id": "string",
             "post_id": "string",
-            "reaction_type": "love",
+            "reaction": "👍",
             "created_at": "datetime",
             "updated_at": "datetime"
         },
