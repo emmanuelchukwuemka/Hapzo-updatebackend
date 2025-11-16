@@ -24,10 +24,11 @@ class HomeRepo {
         headers: ApiHeaders.aunthenticatedHeader);
   }
 
-  Future<Response> reactPost({required String id}) async {
+  Future<Response> reactPost(
+      {required String id, required String reaction}) async {
     return await ApiMethods.postMethod(
         url: ApiConstants.reactPostUrl(postId: id),
-        body: {"reaction_type": "like"},
+        body: {"reaction": reaction},
         headers: ApiHeaders.aunthenticatedHeader);
   }
 

@@ -78,10 +78,10 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  reactToPost({postId}) async {
+  reactToPost({postId, reaction}) async {
     emit(HomeLoading());
     try {
-      final response = await homeRepo.reactPost(id: postId);
+      final response = await homeRepo.reactPost(id: postId, reaction: reaction);
       final body = jsonDecode(response.body);
       if (response.statusCode == 201) {
         emit(PostReact());

@@ -54,6 +54,9 @@ class _FollowingPageState extends State<FollowingPage> {
                       context.read<PeopleCubit>().fetchFollowings(
                           userId: context.read<AuthCubit>().useInfo.id ?? "");
                       break;
+                    case 2:
+                      context.read<PeopleCubit>().fetchFriends();
+                      break;
                     default:
                   }
                 },

@@ -64,12 +64,12 @@ dependencies:
   emoji_picker_flutter: ^4.3.0
   cached_network_image: ^3.4.1
   audioplayers: ^6.5.0
-  flutter_sound: ^9.28.0
   mime: ^1.0.6
   http_parser: ^4.1.2
   intl: ^0.20.2
   record: ^6.1.1
   just_audio: ^0.10.5
+  mic_stream_recorder: ^1.1.2
 
 dev_dependencies:
   build_runner: ^2.4.8
