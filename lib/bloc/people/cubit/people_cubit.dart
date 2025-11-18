@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:haptext_api/models/searched_user_model.dart';
 import 'package:haptext_api/repository/people_repo/people_repo.dart';
@@ -105,15 +104,20 @@ class PeopleCubit extends Cubit<PeopleState> {
     }
   }
 
+  List<SearchedUserProfile> followings = [];
   fetchFollowings({userId}) async {
     emit(PeopleLoading());
     try {
       final response =
           await peopleRepo.fetchFollowings(page: 1, userId: userId);
+      final body = jsonDecode(response.body);
       if (response.statusCode == 200) {
+        followings.clear();
+        for (var user in body['data']['followings']) {
+          followings.add(SearchedUserProfile.fromJson(user));
+        }
         emit(PeopleLoaded());
       } else {
-        final body = jsonDecode(response.body);
         ToastMessage.showErrorToast(
             message: body["errors"]["detail"].toString());
         emit(PeopleError());

@@ -126,29 +126,25 @@ class _PictureContainerState extends State<PictureContainer> {
               ),
               SizedBox(width: size.width * .01),
               Container(
-                height: size.width * .33,
-                width: size.width * .32,
-                decoration: BoxDecoration(
-                    color: Colors.grey[400],
-                    borderRadius: BorderRadius.circular(15)),
-              ),
+                  height: size.width * .33,
+                  width: size.width * .32,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(15)))
             ],
           ),
           Align(
             alignment: Alignment.bottomRight,
             child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const SeeAll()),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10.0, right: 10.0),
-                child: AppText(
-                    text: 'See all posts', color: context.theme.primaryColor),
-              ),
-            ),
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const SeeAll()));
+                },
+                child: Padding(
+                    padding: const EdgeInsets.only(top: 10.0, right: 10.0),
+                    child: AppText(
+                        text: 'See all posts',
+                        color: context.theme.primaryColor))),
           )
         ],
       ),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
 import 'package:haptext_api/bloc/people/cubit/people_cubit.dart';
@@ -40,6 +42,19 @@ class _FollowingPageState extends State<FollowingPage> {
             elevation: 0,
             automaticallyImplyLeading: false,
             bottom: TabBar(
+                onTap: (value) {
+                  switch (value) {
+                    case 0:
+                      context.read<PeopleCubit>().fetchFollowers(
+                          userId: context.read<AuthCubit>().useInfo.id ?? "");
+                      break;
+                    case 1:
+                      context.read<PeopleCubit>().fetchFollowings(
+                          userId: context.read<AuthCubit>().useInfo.id ?? "");
+                      break;
+                    default:
+                  }
+                },
                 labelStyle: GoogleFonts.itim(fontWeight: FontWeight.bold),
                 unselectedLabelStyle:
                     GoogleFonts.itim(fontWeight: FontWeight.w500),

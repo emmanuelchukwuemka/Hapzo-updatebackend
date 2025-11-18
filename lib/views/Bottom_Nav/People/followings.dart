@@ -1,4 +1,6 @@
-import 'package:haptext_api/views/Bottom_Nav/exports.dart';
+import 'package:haptext_api/bloc/people/cubit/people_cubit.dart';
+import 'package:haptext_api/models/searched_user_model.dart';
+import 'package:haptext_api/utils/extensions.dart';
 import 'package:haptext_api/exports.dart';
 
 class Followings extends StatefulWidget {
@@ -40,6 +42,8 @@ class _FollowingsState extends State<Followings> {
 
   @override
   Widget build(BuildContext context) {
+    final followings = context.watch<PeopleCubit>().followings;
+    final size = MediaQuery.sizeOf(context);
     return Column(children: [
       // SEARCH CONTAINER
       Container(
@@ -82,7 +86,7 @@ class _FollowingsState extends State<Followings> {
             ],
           )),
       // CONTENT
-      true
+      followings.isEmpty
           ? const Expanded(
               child: Center(
                 child: AppText(
@@ -96,22 +100,51 @@ class _FollowingsState extends State<Followings> {
             )
           : Expanded(
               child: Padding(
-                padding:
-                    const EdgeInsets.only(bottom: 5.0, left: 5.0, right: 5.0),
-                child: GridView.builder(
+              padding:
+                  const EdgeInsets.only(bottom: 5.0, left: 5.0, right: 5.0),
+              child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       crossAxisSpacing: 5.0,
                       mainAxisSpacing: 5.0,
                       childAspectRatio: 0.8),
-                  itemCount: 0,
-                  itemBuilder: (context, index) => friendCardWidget(
-                      context,
-                      " _userData!.following![index]",
-                      'assets/images/chukwuchi.jpg'),
-                ),
-              ),
-            )
+                  itemCount: followings.length,
+                  itemBuilder: (context, index) {
+                    return AppshadowContainer(
+                        onTap: () {
+                          // if (followings[index].profile?.firstName == null) {
+                          //   context.read<PeopleCubit>().fetchUserProfileById(
+                          //       userId: followings[index].id ?? "0");
+                          // } else {
+                          context.push(RouteName.friendsProfilePage.path,
+                              extra: SearchedUserModel(
+                                  id: followings[index].id,
+                                  username: '',
+                                  profilePicture:
+                                      followings[index].profilePicture,
+                                  profile: followings[index]));
+                          // }
+                        },
+                        padding: EdgeInsets.all(size.width * 0.04),
+                        margin: EdgeInsets.only(bottom: size.width * 0.04),
+                        color: Theme.of(context).primaryColorDark,
+                        child: Column(children: [
+                          AppNetwokImage(
+                              height: size.width * 0.18,
+                              width: size.width * 0.18,
+                              radius: size.width * 0.9,
+                              fit: BoxFit.cover,
+                              imageUrl: followings[index].profilePicture ?? ""),
+                          const SizedBox(height: 10),
+                          AppText(
+                              text:
+                                  "${followings[index].lastName?.capitalizeFirstChar() ?? ""} ${followings[index].firstName?.capitalizeFirstChar() ?? ""}",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).primaryColor),
+                        ]));
+                  }),
+            ))
     ]);
   }
 }
