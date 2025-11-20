@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart' hide Config;
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -75,8 +75,7 @@ class _WriteTextState extends State<WriteText> {
                             onTap: () => context
                                 .read<HomeCubit>()
                                 .createTextPost(
-                                    textContent: textController.text
-                                   ),
+                                    textContent: textController.text),
                             child: const AppText(
                                 text: 'Done',
                                 color: Colors.white,
