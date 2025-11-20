@@ -59,6 +59,62 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  sharePost({postId}) async {
+    emit(HomeLoading());
+    try {
+      final response = await homeRepo.sharePost(id: postId);
+      final body = jsonDecode(response.body);
+      if (response.statusCode == 201) {
+        emit(PostShared());
+        fetchPosts();
+      } else {
+        ToastMessage.showErrorToast(
+            message: body["errors"]["detail"].toString());
+        emit(HomeError());
+      }
+    } catch (e) {
+      emit(HomeError());
+      log("share post $e");
+    }
+  }
+
+  reactToPost({postId, reaction}) async {
+    emit(HomeLoading());
+    try {
+      final response = await homeRepo.reactPost(id: postId, reaction: reaction);
+      final body = jsonDecode(response.body);
+      if (response.statusCode == 201) {
+        emit(PostReact());
+        fetchPosts();
+      } else {
+        ToastMessage.showErrorToast(
+            message: body["errors"]["detail"].toString());
+        emit(HomeError());
+      }
+    } catch (e) {
+      emit(HomeError());
+      log("react post $e");
+    }
+  }
+
+  fetchNotification() async {
+    emit(HomeLoading());
+    try {
+      final response = await homeRepo.fetchNotification(page: 1);
+      final body = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        emit(HomeLoaded());
+      } else {
+        ToastMessage.showErrorToast(
+            message: body["errors"]["detail"].toString());
+        emit(HomeError());
+      }
+    } catch (e) {
+      emit(HomeError());
+      log("fetch notification $e");
+    }
+  }
+
   createTextPost({String? textContent}) async {
     emit(HomeLoading());
     try {

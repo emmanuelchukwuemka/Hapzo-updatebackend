@@ -115,6 +115,9 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                             ])),
                     const SizedBox(width: 10),
                     Appbutton(
+                        onTap: () {
+                          context.push(RouteName.chatPage.path);
+                        },
                         width: 120,
                         height: 40,
                         buttonColor: context.theme.primaryColor,

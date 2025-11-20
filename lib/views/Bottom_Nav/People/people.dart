@@ -1,10 +1,17 @@
+<<<<<<< HEAD
 import 'dart:developer';
 
+=======
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+>>>>>>> b1334493dd7bbe2e3a932049cd1150a8051cfd02
 import 'package:google_fonts/google_fonts.dart';
 import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
 import 'package:haptext_api/bloc/people/cubit/people_cubit.dart';
-import 'package:haptext_api/exports.dart';
-import 'package:haptext_api/views/Bottom_Nav/exports.dart';
+import 'package:haptext_api/views/Bottom_Nav/People/follower.dart';
+import 'package:haptext_api/views/Bottom_Nav/People/followings.dart';
+import 'package:haptext_api/views/Bottom_Nav/People/friend.dart';
+import 'package:haptext_api/widgets/app_text.dart';
 
 class FollowingPage extends StatefulWidget {
   const FollowingPage({Key? key}) : super(key: key);
@@ -52,6 +59,12 @@ class _FollowingPageState extends State<FollowingPage> {
                       context.read<PeopleCubit>().fetchFollowings(
                           userId: context.read<AuthCubit>().useInfo.id ?? "");
                       break;
+<<<<<<< HEAD
+=======
+                    case 2:
+                      context.read<PeopleCubit>().fetchFriends();
+                      break;
+>>>>>>> b1334493dd7bbe2e3a932049cd1150a8051cfd02
                     default:
                   }
                 },

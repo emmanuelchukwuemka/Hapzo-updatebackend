@@ -191,17 +191,16 @@ class _CreatePhotoPostState extends State<CreatePhotoPost> {
 
                   // Schedule post
                   ListTile(
-                    leading: const Icon(Icons.schedule),
-                    title: AppText(
-                        text: _scheduledDate == null
-                            ? "Schedule Post"
-                            : "Scheduled: ${_scheduledDate!.toLocal()}"
-                                .split(' ')[0],
-                        fontSize: 18,
-                        color: Colors.white),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: _selectDate,
-                  ),
+                      leading: const Icon(Icons.schedule),
+                      title: AppText(
+                          text: _scheduledDate == null
+                              ? "Schedule Post"
+                              : "Scheduled: ${_scheduledDate!.toLocal()}"
+                                  .split(' ')[0],
+                          fontSize: 18,
+                          color: Colors.white),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: _selectDate),
                   const SizedBox(height: 16),
 
                   // Scheduled posts section

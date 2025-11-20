@@ -13,6 +13,11 @@ enum RouteName {
   createPhotoPost('/create_photo_post'),
   confirmVideoUpload('/confirm_Video_upload'),
   friendsProfilePage('/friend_profile_page'),
+  chatPage('/chat_page'),
+  commentpage('/comment_page'),
+  voiceCallPage('/voice_call_page'),
+  videoCallPage('/video_call_page'),
+  notificationPage('/notification_page'),
   editProfile('/edit_profile_page');
 
   final String path;

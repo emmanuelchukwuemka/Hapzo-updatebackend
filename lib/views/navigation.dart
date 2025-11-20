@@ -10,12 +10,12 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-  final List<Widget> screens = const [
+  final List<Widget> screens = [
     HomePage(),
-    Explore(),
-    Posts(),
-    FollowingPage(),
-    ProfilePage(),
+    const Explore(),
+    const Posts(),
+    const FollowingPage(),
+    const ProfilePage(),
   ];
   int _selectedIndex = 0;
   void onClick(int index) {
