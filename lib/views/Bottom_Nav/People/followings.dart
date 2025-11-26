@@ -1,10 +1,7 @@
 import 'package:haptext_api/bloc/people/cubit/people_cubit.dart';
 import 'package:haptext_api/models/searched_user_model.dart';
 import 'package:haptext_api/utils/extensions.dart';
-<<<<<<< HEAD
-=======
 import 'package:haptext_api/views/Bottom_Nav/exports.dart';
->>>>>>> b1334493dd7bbe2e3a932049cd1150a8051cfd02
 import 'package:haptext_api/exports.dart';
 
 class Followings extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:mime/mime.dart';
-import 'package:http_parser/http_parser.dart';
+// import 'package:http_parser/http_parser.dart';
 import 'package:haptext_api/network/export_network.dart';
 
 class HomeRepo {
@@ -15,6 +15,25 @@ class HomeRepo {
     return await ApiMethods.getMethod(
         url: ApiConstants.fetchUserPostUrl(
             page: page, userId: userId, pageSize: "20"),
+        headers: ApiHeaders.aunthenticatedHeader);
+  }
+
+  Future<Response> commentOnPost(
+      {required String postId, required String comment}) async {
+    return await ApiMethods.postMethod(
+        url: ApiConstants.postBaseUrl,
+        body: {
+          "is_reply": true,
+          "previous_post_id": postId,
+          "post_format": "text",
+          "text_content": comment
+        },
+        headers: ApiHeaders.aunthenticatedHeader);
+  }
+
+  Future<Response> fetchPostComment({required String postId}) async {
+    return await ApiMethods.getMethod(
+        url: ApiConstants.postCommentUrl(page: 1, postId: postId),
         headers: ApiHeaders.aunthenticatedHeader);
   }
 
@@ -38,37 +57,36 @@ class HomeRepo {
         headers: ApiHeaders.aunthenticatedHeader);
   }
 
-  Future<Response> createTextPost({required String textContent}) async {
+  Future<Response> createTextPost(
+      {required String textContent,
+      String? scheduledAt,
+      String? taggedUser}) async {
     return await ApiMethods.postMethod(
         url: ApiConstants.postBaseUrl,
         body: {
           "post_format": "text",
           "text_content": textContent,
-          "is_reply": false
+          "is_reply": false,
+          if (scheduledAt != null) "scheduled_at": scheduledAt,
+          if (taggedUser != null) "tagged_user_ids": taggedUser,
         },
         headers: ApiHeaders.aunthenticatedHeader);
   }
 
-  Future<StreamedResponse> createAudioPost({required File audioFile}) async {
+  Future<StreamedResponse> createAudioPost(
+      {required File audioFile,
+      String? scheduledAt,
+      String? taggedUser}) async {
     var request = MultipartRequest('POST', Uri.parse(ApiConstants.postBaseUrl));
+    log("${lookupMimeType(audioFile.path)} ${audioFile.path}");
     request.files.add(await MultipartFile.fromPath(
         'audio_content', audioFile.path,
         contentType:
             MediaType.parse(lookupMimeType(audioFile.path) ?? 'video/mp4')));
-    request.fields.addAll({"post_format": "audio", "is_reply": "false"});
-    request.headers.addAll(ApiHeaders.aunthenticatedHeader);
-    log("Payload ${request.fields.entries} media${request.files.first.field}");
-    return await request.send();
-  }
-
-  Future<StreamedResponse> createImagePost(
-      {required File image, String? caption}) async {
-    var request = MultipartRequest('POST', Uri.parse(ApiConstants.postBaseUrl));
-    request.files.add(await MultipartFile.fromPath('image_content', image.path,
-        filename: image.path.split('/').last));
     request.fields.addAll({
-      "post_format": "image",
-      "text_content": caption ?? '',
+      "post_format": "audio",
+      if (scheduledAt != null) "scheduled_at": scheduledAt,
+      if (taggedUser != null) "tagged_user_ids": taggedUser,
       "is_reply": "false"
     });
     request.headers.addAll(ApiHeaders.aunthenticatedHeader);
@@ -76,8 +94,31 @@ class HomeRepo {
     return await request.send();
   }
 
+  Future<StreamedResponse> createImagePost(
+      {required File image,
+      String? caption,
+      String? scheduledAt,
+      String? taggedUser}) async {
+    var request = MultipartRequest('POST', Uri.parse(ApiConstants.postBaseUrl));
+    request.files.add(await MultipartFile.fromPath('image_content', image.path,
+        filename: image.path.split('/').last));
+    request.fields.addAll({
+      "post_format": "image",
+      "text_content": caption ?? '',
+      "is_reply": "false",
+      if (scheduledAt != null) "scheduled_at": scheduledAt,
+      if (taggedUser != null) "tagged_user_ids": taggedUser,
+    });
+    request.headers.addAll(ApiHeaders.aunthenticatedHeader);
+    log("Payload ${request.fields.entries} media${request.files.first.field}");
+    return await request.send();
+  }
+
   Future<StreamedResponse> createVideoPost(
-      {required File videoFile, String? caption}) async {
+      {required File videoFile,
+      String? caption,
+      String? scheduledAt,
+      String? taggedUser}) async {
     log("reselt${lookupMimeType(videoFile.path)} ${videoFile.path}");
     var request = MultipartRequest('POST', Uri.parse(ApiConstants.postBaseUrl));
     request.files.add(await MultipartFile.fromPath(
@@ -87,7 +128,9 @@ class HomeRepo {
     request.fields.addAll({
       "post_format": "video",
       "text_content": caption ?? '',
-      "is_reply": "false"
+      "is_reply": "false",
+      if (scheduledAt != null) "scheduled_at": scheduledAt,
+      if (taggedUser != null) "tagged_user_ids": taggedUser,
     });
     request.headers.addAll(ApiHeaders.aunthenticatedHeader);
     log("Payload ${request.fields.entries} media${request.files.first.contentType}");

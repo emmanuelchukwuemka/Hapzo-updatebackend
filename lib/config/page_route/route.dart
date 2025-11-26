@@ -53,7 +53,8 @@ class AppRoute {
       GoRoute(
           path: RouteName.commentpage.path,
           builder: (context, state) {
-            return const CommentScreen();
+            final ResultPostModel post = state.extra as ResultPostModel;
+            return CommentScreen(post: post);
           }),
       GoRoute(
           path: RouteName.resetPasswordPage.path,

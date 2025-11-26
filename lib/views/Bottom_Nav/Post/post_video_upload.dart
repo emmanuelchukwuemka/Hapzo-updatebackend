@@ -1,10 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/exports.dart';
+import 'package:haptext_api/models/searched_user_model.dart';
+import 'package:haptext_api/views/Bottom_Nav/Post/post_audio_upload_page.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
-import 'package:video_player/video_player.dart';
 
 // class ConfirmVideoUpload extends StatefulWidget {
 //   final File? videoFile;
@@ -107,19 +109,18 @@ class PostVideoUpload extends StatefulWidget {
 class _PostVideoUploadState extends State<PostVideoUpload> {
   DateTime? _scheduledDate;
   final TextEditingController _captionController = TextEditingController();
-  final List<DateTime> _scheduledPosts = [];
 
   PlatformFile? pickedFile;
-  Future _selectPhoto() async {
-    debugPrint('Clicked Photo');
-    final result = await FilePicker.platform.pickFiles(type: FileType.image);
+  SearchedUserModel? taggedUsers;
+  Future selectVideo() async {
+    final result = await FilePicker.platform.pickFiles(type: FileType.video);
     if (result != null && result.files.single.path != null) {
-      debugPrint('Image Selected');
+      debugPrint('Video Selected');
       setState(() {
         pickedFile = result.files.first;
       });
     } else {
-      debugPrint('Image selecting failed');
+      debugPrint('Video selecting failed');
     }
   }
 
@@ -134,7 +135,6 @@ class _PostVideoUploadState extends State<PostVideoUpload> {
     if (pickedDate != null) {
       setState(() {
         _scheduledDate = pickedDate;
-        _scheduledPosts.add(pickedDate);
       });
     }
   }
@@ -190,9 +190,9 @@ class _PostVideoUploadState extends State<PostVideoUpload> {
     );
   }
 
-  void _deleteScheduledPost(DateTime date) {
+  void _deleteScheduledPost() {
     setState(() {
-      _scheduledPosts.remove(date);
+      _scheduledDate = null;
     });
   }
 
@@ -224,8 +224,11 @@ class _PostVideoUploadState extends State<PostVideoUpload> {
                           icon: const Icon(Icons.check),
                           onPressed: () {
                             if (pickedFile != null) {
-                              context.read<HomeCubit>().createImagePost(
-                                  image: File(pickedFile!.path!),
+                              context.read<HomeCubit>().createVideoPost(
+                                  video: File(pickedFile!.path!),
+                                  scheduledAt:
+                                      _scheduledDate?.toIso8601String(),
+                                  taggedUser: taggedUsers?.id,
                                   caption: _captionController.text);
                             }
                           })
@@ -236,21 +239,22 @@ class _PostVideoUploadState extends State<PostVideoUpload> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AppshadowContainer(
-                      onTap: _selectPhoto,
+                      onTap: selectVideo,
                       height: size.height * 0.4,
                       width: double.infinity,
                       color: Colors.grey[850],
                       child: pickedFile == null
                           ? const Center(
                               child: AppText(
-                                  text: "Tap to pick Photo ",
+                                  text: "Tap to pick Video ",
                                   fontSize: 16,
                                   color: Colors.white))
-                          : Center(
-                              child: Image.file(File(pickedFile!.path!),
-                                  width: double.infinity,
-                                  height: size.height * 0.4,
-                                  fit: BoxFit.contain))),
+                          : Row(
+                              children: [
+                                const Icon(Icons.video_library),
+                                AppText(text: pickedFile?.name ?? '')
+                              ],
+                            )),
                   const SizedBox(height: 16),
 
                   // Caption + font + emoji
@@ -278,48 +282,54 @@ class _PostVideoUploadState extends State<PostVideoUpload> {
                     title: const AppText(
                         text: "Tag Friends", fontSize: 18, color: Colors.white),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () {},
+                    onTap: () {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (_) {
+                            return TaggedFriendModal(
+                              onchange: (value) {
+                                if (value.id != null) {
+                                  setState(() {
+                                    taggedUsers = value;
+                                  });
+                                }
+                              },
+                            );
+                          });
+                    },
                   ),
                   const Divider(),
 
                   // Schedule post
                   ListTile(
-                    leading: const Icon(Icons.schedule),
-                    title: AppText(
-                        text: _scheduledDate == null
-                            ? "Schedule Post"
-                            : "Scheduled: ${_scheduledDate!.toLocal()}"
-                                .split(' ')[0],
-                        fontSize: 18,
-                        color: Colors.white),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: _selectDate,
-                  ),
+                      leading: const Icon(Icons.schedule),
+                      title: const AppText(
+                          text: "Schedule Post",
+                          fontSize: 18,
+                          color: Colors.white),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: _selectDate),
                   const SizedBox(height: 16),
 
                   // Scheduled posts section
-                  if (_scheduledPosts.isNotEmpty) ...[
+                  if (_scheduledDate != null) ...[
                     const AppText(
                         text: "Scheduled Posts:",
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                         color: Colors.white),
                     const SizedBox(height: 8),
-                    Column(
-                      children: _scheduledPosts.map((date) {
-                        return ListTile(
-                          leading: const Icon(Icons.photo),
-                          title: AppText(
-                              text:
-                                  "Scheduled: ${date.toLocal()}".split(' ')[0],
-                              fontSize: 18,
-                              color: Colors.white),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => _deleteScheduledPost(date),
-                          ),
-                        );
-                      }).toList(),
+                    ListTile(
+                      leading: const Icon(Icons.photo),
+                      title: AppText(
+                          text:
+                              "Scheduled: ${_scheduledDate?.toLocal().toString().split(' ')[0]}",
+                          fontSize: 18,
+                          color: Colors.white),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _deleteScheduledPost(),
+                      ),
                     ),
                   ],
                 ],

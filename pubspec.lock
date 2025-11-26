@@ -149,10 +149,10 @@ packages:
     dependency: transitive
     description:
       name: build
-      sha256: dfb67ccc9a78c642193e0c2d94cb9e48c2c818b3178a86097d644acdcde6a8d9
+      sha256: c1668065e9ba04752570ad7e038288559d1e2ca5c6d0131c0f5f55e39e777413
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.2"
+    version: "4.0.3"
   build_config:
     dependency: transitive
     description:
@@ -173,10 +173,10 @@ packages:
     dependency: "direct dev"
     description:
       name: build_runner
-      sha256: "7b5b569f3df370590a85029148d6fc66c7d0201fc6f1847c07dd85d365ae9fcd"
+      sha256: "110c56ef29b5eb367b4d17fc79375fa8c18a6cd7acd92c05bb3986c17a079057"
       url: "https://pub.dev"
     source: hosted
-    version: "2.10.3"
+    version: "2.10.4"
   built_collection:
     dependency: transitive
     description:
@@ -780,10 +780,10 @@ packages:
     dependency: "direct dev"
     description:
       name: json_serializable
-      sha256: "33a040668b31b320aafa4822b7b1e177e163fc3c1e835c6750319d4ab23aa6fe"
+      sha256: c5b2ee75210a0f263c6c7b9eeea80553dbae96ea1bf57f02484e806a3ffdffa3
       url: "https://pub.dev"
     source: hosted
-    version: "6.11.1"
+    version: "6.11.2"
   just_audio:
     dependency: "direct main"
     description:
@@ -887,10 +887,7 @@ packages:
       sha256: "23f08335362185a5ea2ad3a4e597f1375e78bce8a040df5c600c8d3552ef2394"
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
     version: "1.17.0"
-=======
-    version: "1.16.0"
   mic_stream_recorder:
     dependency: "direct main"
     description:
@@ -899,7 +896,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.2"
->>>>>>> b1334493dd7bbe2e3a932049cd1150a8051cfd02
   mime:
     dependency: "direct main"
     description:
@@ -916,6 +912,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  objective_c:
+    dependency: transitive
+    description:
+      name: objective_c
+      sha256: "1f81ed9e41909d44162d7ec8663b2c647c202317cc0b56d3d56f6a13146a0b64"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.0"
   octo_image:
     dependency: transitive
     description:
@@ -965,7 +969,7 @@ packages:
     source: hosted
     version: "1.1.0"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       sha256: "50c5dd5b6e1aaf6fb3a78b33f6aa3afca52bf903a8a5298f53101fdaee55bbcd"
@@ -984,10 +988,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_foundation
-      sha256: "97390a0719146c7c3e71b6866c34f1cde92685933165c1c671984390d2aca776"
+      sha256: "6192e477f34018ef1ea790c56fffc7302e3bc3efede9e798b934c252c8c105ba"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.4"
+    version: "2.5.0"
   path_provider_linux:
     dependency: transitive
     description:
@@ -1096,18 +1100,18 @@ packages:
     dependency: transitive
     description:
       name: record_android
-      sha256: fb54ee4e28f6829b8c580252a9ef49d9c549cfd263b0660ad7eeac0908658e9f
+      sha256: "9aaf3f151e61399b09bd7c31eb5f78253d2962b3f57af019ac5a2d1a3afdcf71"
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.4"
+    version: "1.4.5"
   record_ios:
     dependency: transitive
     description:
       name: record_ios
-      sha256: "765b42ac1be019b1674ddd809b811fc721fe5a93f7bb1da7803f0d16772fd6d7"
+      sha256: "69fcd37c6185834e90254573599a9165db18a2cbfa266b6d1e46ffffeb06a28c"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.4"
+    version: "1.1.5"
   record_linux:
     dependency: transitive
     description:
@@ -1136,10 +1140,10 @@ packages:
     dependency: transitive
     description:
       name: record_web
-      sha256: "20ac10d56514cb9f8cecc8f3579383084fdfb43b0d04e05a95244d0d76091d90"
+      sha256: "3feeffbc0913af3021da9810bb8702a068db6bc9da52dde1d19b6ee7cb9edb51"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "1.2.2"
   record_windows:
     dependency: transitive
     description:
@@ -1237,10 +1241,10 @@ packages:
     dependency: transitive
     description:
       name: source_gen
-      sha256: "0d6c4e1080176801112ed1111226d13cd4f74947383aabafbd9726a22083aeaa"
+      sha256: "07b277b67e0096c45196cbddddf2d8c6ffc49342e88bf31d460ce04605ddac75"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.0"
+    version: "4.1.1"
   source_helper:
     dependency: transitive
     description:

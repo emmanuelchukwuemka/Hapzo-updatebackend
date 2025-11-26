@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/repository/home_repo/home_repo.dart';
-
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
@@ -31,6 +29,50 @@ class HomeCubit extends Cubit<HomeState> {
     } catch (e) {
       emit(HomeError());
       log("fetch post $e");
+    }
+  }
+
+  commentOnPost({ResultPostModel? post, postId, comment}) async {
+    emit(PostCommenting());
+    try {
+      final response = await homeRepo.commentOnPost(
+          postId: post?.id ?? postId, comment: comment);
+      final body = jsonDecode(response.body);
+      if (response.statusCode == 201) {
+        if (post != null) {
+          post.comments.add(CommentModel.fromJson(body['data']));
+        }
+        emit(PostCommented());
+      } else {
+        ToastMessage.showErrorToast(
+            message: body["errors"]["detail"].toString());
+        emit(HomeError());
+      }
+    } catch (e) {
+      emit(HomeError());
+      log("fetch post $e");
+    }
+  }
+
+  fetchPostComents({required ResultPostModel post}) async {
+    emit(HomeLoading());
+    try {
+      final response = await homeRepo.fetchPostComment(postId: post.id ?? '');
+      final body = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        post.comments.clear();
+        for (var comment in body['data']['result']) {
+          post.comments.add(CommentModel.fromJson(comment));
+        }
+        emit(HomeLoaded());
+      } else {
+        ToastMessage.showErrorToast(
+            message: body["errors"]["detail"].toString());
+        emit(HomeError());
+      }
+    } catch (e) {
+      emit(HomeError());
+      log("fetch post comments $e");
     }
   }
 
@@ -115,13 +157,19 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  createTextPost({String? textContent}) async {
+  createTextPost(
+      {required String textContent,
+      String? scheduledAt,
+      String? taggedUser}) async {
+    if (textContent.isEmpty) return;
     emit(HomeLoading());
     try {
-      final response =
-          await homeRepo.createTextPost(textContent: textContent ?? "");
+      final response = await homeRepo.createTextPost(
+          textContent: textContent,
+          scheduledAt: scheduledAt,
+          taggedUser: taggedUser);
       final body = jsonDecode(response.body);
-      if (response.statusCode == 201) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         emit(HomePostCreated());
         await Future.delayed(const Duration(seconds: 2));
 
@@ -137,11 +185,41 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  createAudioPost({required File audio}) async {
+  createAudioPost(
+      {required File audio, String? taggedUser, String? scheduledAt}) async {
     emit(HomeLoading());
     try {
-      final response = await homeRepo.createAudioPost(audioFile: audio);
-      if (response.statusCode == 201) {
+      final response = await homeRepo.createAudioPost(
+          audioFile: audio, taggedUser: taggedUser, scheduledAt: scheduledAt);
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        emit(HomePostCreated());
+        fetchPosts();
+      } else {
+        final body = jsonDecode(await response.stream.bytesToString());
+
+        ToastMessage.showErrorToast(
+            message: body["errors"]["detail"].toString());
+        emit(HomeError());
+      }
+    } catch (e) {
+      emit(HomeError());
+      log("create audio post $e");
+    }
+  }
+
+  createImagePost(
+      {required File image,
+      required caption,
+      String? scheduledAt,
+      String? taggedUser}) async {
+    emit(HomeLoading());
+    try {
+      final response = await homeRepo.createImagePost(
+          image: image,
+          caption: caption,
+          taggedUser: taggedUser,
+          scheduledAt: scheduledAt);
+      if (response.statusCode == 201 || response.statusCode == 200) {
         emit(HomePostCreated());
         fetchPosts();
       } else {
@@ -157,32 +235,18 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  createImagePost({required File image, required caption}) async {
+  createVideoPost(
+      {required File video,
+      String? caption,
+      String? scheduledAt,
+      String? taggedUser}) async {
     emit(HomeLoading());
     try {
-      final response =
-          await homeRepo.createImagePost(image: image, caption: caption);
-      if (response.statusCode == 201) {
-        emit(HomePostCreated());
-        fetchPosts();
-      } else {
-        final body = jsonDecode(await response.stream.bytesToString());
-        log("message$body");
-        ToastMessage.showErrorToast(
-            message: body["errors"]["detail"].toString());
-        emit(HomeError());
-      }
-    } catch (e) {
-      emit(HomeError());
-      log("create audio post $e");
-    }
-  }
-
-  createVideoPost({required File video, String? caption}) async {
-    emit(HomeLoading());
-    try {
-      final response =
-          await homeRepo.createVideoPost(videoFile: video, caption: caption);
+      final response = await homeRepo.createVideoPost(
+          videoFile: video,
+          caption: caption,
+          taggedUser: taggedUser,
+          scheduledAt: scheduledAt);
       if (response.statusCode == 201) {
         emit(HomePostCreated());
         fetchPosts();

@@ -1,7 +1,10 @@
+import 'dart:developer' as d;
 import 'dart:math';
+
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:video_player/video_player.dart';
 
 //----- FULL SCREEN FEED ----------
 class HomePage extends StatelessWidget {
@@ -12,19 +15,24 @@ class HomePage extends StatelessWidget {
     final post = context.watch<HomeCubit>().posts.result;
     return Scaffold(
       backgroundColor: Colors.black,
-      body: PageView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: post?.length ?? 0,
-        itemBuilder: (context, index) {
-          debugPrint("message ${post?[index].postFormat}");
-          return (post?[index].postFormat == "text")
-              ? TextPost(post: post?[index] ?? ResultPostModel())
-              : (post?[index].postFormat == "audio")
-                  ? AudioPost(post: post?[index] ?? ResultPostModel())
-                  : (post?[index].postFormat == "video")
-                      ? VideoPost(post: post?[index] ?? ResultPostModel())
-                      : ImagePost(post: post?[index] ?? ResultPostModel());
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await context.read<HomeCubit>().fetchPosts();
         },
+        child: PageView.builder(
+          scrollDirection: Axis.vertical,
+          itemCount: post?.length ?? 0,
+          itemBuilder: (context, index) {
+            debugPrint("message ${post?[index].postFormat}");
+            return (post?[index].postFormat == "text")
+                ? TextPost(post: post?[index] ?? ResultPostModel())
+                : (post?[index].postFormat == "audio")
+                    ? AudioPost(post: post?[index] ?? ResultPostModel())
+                    : (post?[index].postFormat == "video")
+                        ? VideoPost(post: post?[index] ?? ResultPostModel())
+                        : ImagePost(post: post?[index] ?? ResultPostModel());
+          },
+        ),
       ),
     );
   }
@@ -38,6 +46,7 @@ class PostWrapper extends StatefulWidget {
   final int viewCount;
   final int tagCount;
   final bool overlayHideEnabled;
+  final ResultPostModel post;
 
   const PostWrapper({
     super.key,
@@ -47,6 +56,7 @@ class PostWrapper extends StatefulWidget {
     this.viewCount = 1000,
     this.tagCount = 13,
     this.overlayHideEnabled = true,
+    required this.post,
   });
 
   @override
@@ -140,6 +150,7 @@ class _PostWrapperState extends State<PostWrapper>
             ),
           if (overlayVisible)
             _PostOverlay(
+              post: widget.post,
               caption: widget.caption,
               username: widget.username,
               viewCount: widget.viewCount,
@@ -222,7 +233,7 @@ class _PostOverlay extends StatelessWidget {
   final int tagCount;
   final VoidCallback? onCommentTap;
   final VoidCallback? onFullScreenTap;
-
+  final ResultPostModel post;
   const _PostOverlay({
     required this.caption,
     this.username = "@roman",
@@ -230,6 +241,7 @@ class _PostOverlay extends StatelessWidget {
     this.tagCount = 13,
     this.onCommentTap,
     this.onFullScreenTap,
+    required this.post,
   });
 
   @override
@@ -300,7 +312,7 @@ class _PostOverlay extends StatelessWidget {
                 const SizedBox(width: 20),
                 GestureDetector(
                   onTap: () {
-                    context.push(RouteName.commentpage.path);
+                    context.push(RouteName.commentpage.path, extra: post);
                   },
                   child: _buildAction(Icons.chat_bubble_outline, '789', null),
                 ),
@@ -388,23 +400,57 @@ class ReactionDialog extends StatelessWidget {
 }
 
 // ---------- VIDEO POST ----------
-class VideoPost extends StatelessWidget {
+class VideoPost extends StatefulWidget {
   const VideoPost({super.key, required this.post});
   final ResultPostModel post;
+
+  @override
+  State<VideoPost> createState() => _VideoPostState();
+}
+
+class _VideoPostState extends State<VideoPost> {
+  late VideoPlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    try {
+      _controller =
+          VideoPlayerController.networkUrl(Uri.parse(widget.post.videoContent))
+            ..initialize().then((_) {
+              setState(() {
+                _controller.play();
+              });
+            });
+    } catch (e) {
+      d.log("failed video $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PostWrapper(
-      caption: 'Just finished an amazing project! 🚀✨',
-      content: Container(
-        color: Colors.grey[900],
-        child: const Center(
-            child:
-                Icon(Icons.play_circle_fill, size: 100, color: Colors.white38)),
-      ),
-      username: "@roman",
-      viewCount: 1200,
-      tagCount: 34,
-    );
+        post: widget.post,
+        caption: widget.post.textContent ?? '',
+        content: _controller.value.isInitialized
+            ? GestureDetector(
+                // onTap: () {
+                //   d.log("ggggggg");
+                //   setState(() {
+                //     _controller.value.isPlaying
+                //         ? _controller.pause()
+                //         : _controller.play();
+                //   });
+                // },
+                child: AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller)))
+            : const Center(
+                child: Icon(Icons.play_circle_fill,
+                    size: 100, color: Colors.white38)),
+        username: "@${widget.post.senderName ?? ''}",
+        viewCount: 1200,
+        tagCount: 34);
   }
 }
 
@@ -417,7 +463,8 @@ class ImagePost extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     return PostWrapper(
-      caption: 'Beautiful moments from the trip 📸✨',
+      post: post,
+      caption: post.textContent ?? '',
       content: PageView.builder(
         itemCount: 3,
         itemBuilder: (context, index) {
@@ -487,7 +534,8 @@ class AudioPostState extends State<AudioPost>
   @override
   Widget build(BuildContext context) {
     return PostWrapper(
-      caption: 'My Latest Track — quick demo',
+      post: widget.post,
+      caption: widget.post.textContent ?? '',
       content: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -565,17 +613,13 @@ class TextPost extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Spacer(),
-            SizedBox(
-              height: MediaQuery.sizeOf(context).height * 0.7,
-              child: SingleChildScrollView(
-                child: AppText(
-                    text: post.textContent ?? '',
-                    textAlign: TextAlign.center,
-                    color: Colors.white,
-                    fontSize: 20),
-              ),
-            ),
-            const Spacer(),
+            Expanded(
+                child: SingleChildScrollView(
+                    child: AppText(
+                        text: post.textContent ?? '',
+                        textAlign: TextAlign.center,
+                        color: Colors.white,
+                        fontSize: 20))),
             Row(children: [
               AppText(
                   text: '@${post.senderName}',

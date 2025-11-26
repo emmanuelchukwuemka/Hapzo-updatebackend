@@ -2,35 +2,6 @@ import 'package:haptext_api/exports.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-class Friend {
-  final String id;
-  final String name;
-  final Color color;
-  Friend(this.id, this.name, this.color);
-}
-
-/// Comment model (mutable replies + reactions storage)
-class Comment {
-  final String id;
-  final String authorId;
-  final String authorName;
-  final String content;
-  final bool isVoiceNote;
-  final DateTime timestamp;
-  final List<Comment> replies = [];
-  final Map<String, List<String>> reactions = {}; // emoji -> list of userIds
-  final bool bookmarked;
-
-  Comment(
-      {required this.content,
-      required this.bookmarked,
-      required this.id,
-      required this.authorName,
-      required this.isVoiceNote,
-      required this.timestamp,
-      required this.authorId});
-}
-
 // Paste this into lib/main.dart (or DartPad Flutter) and run.
 // Full chat UI with injected Chat Mode Options (single file)
 

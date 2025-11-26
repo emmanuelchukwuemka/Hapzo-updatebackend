@@ -36,6 +36,8 @@ class ApiConstants {
   static String getFollowingsUrl({userId, page}) =>
       "$userProfileBaseUrl/followings/$userId/$page/20/";
   static const String postBaseUrl = "$baseUrl/posts/";
+  static String postCommentUrl({page, postId}) =>
+      "$baseUrl/posts/$postId/replies/$page/30";
   static String fetchNotificationUrl({page}) =>
       "$baseUrl/notifications/$page/20/";
   static String sharePostUrl({postId}) => "$postBaseUrl$postId/share/";
