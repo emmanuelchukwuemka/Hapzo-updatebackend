@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
+import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/bloc/people/cubit/people_cubit.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 import 'package:haptext_api/exports.dart';
@@ -56,9 +59,19 @@ class _ProfilePageState extends State<ProfilePage>
   ];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await context.read<PeopleCubit>().fetchUserProfileById(
+          userId: context.read<AuthCubit>().useInfo.id ?? '',
+          loggedInUser: true);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
+    final watchPeople = context.watch<PeopleCubit>();
     final user = context.watch<AuthCubit>().useInfo;
     return BlocListener<PeopleCubit, PeopleState>(
       listener: (context, state) {
@@ -204,7 +217,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   maxLines: 3)))),
-                                  const SizedBox(
+                                  SizedBox(
                                       width: double.infinity,
                                       height: 65.0,
                                       // color: Colors.orange,
@@ -214,7 +227,7 @@ class _ProfilePageState extends State<ProfilePage>
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceAround,
                                           children: [
-                                            Column(children: [
+                                            const Column(children: [
                                               AppText(
                                                   text: '0',
                                                   fontSize: 20,
@@ -226,7 +239,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold)
                                             ]),
-                                            Column(
+                                            const Column(
                                               children: [
                                                 AppText(
                                                     text: '0',
@@ -244,11 +257,12 @@ class _ProfilePageState extends State<ProfilePage>
                                             ),
                                             Column(children: [
                                               AppText(
-                                                  text: " 0",
+                                                  text:
+                                                      "${watchPeople.followings.length}",
                                                   fontSize: 20,
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold),
-                                              AppText(
+                                              const AppText(
                                                   text: 'Following',
                                                   fontSize: 12.0,
                                                   color: Colors.white,
@@ -290,6 +304,8 @@ class _ProfilePageState extends State<ProfilePage>
                             itemBuilder: (ctx, index) {
                               return GestureDetector(
                                   onTap: () {
+                                    context.read<HomeCubit>().fetchUserPosts(
+                                        userId: user.profile?.id ?? "");
                                     setState(() {
                                       current = index;
                                     });

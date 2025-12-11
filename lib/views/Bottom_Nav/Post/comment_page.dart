@@ -64,7 +64,6 @@ class _CommentScreenState extends State<CommentScreen>
   //   });
   // }
 
-  // Toggle bookmark
   void _toggleBookmark(CommentModel c) {
     setState(() {});
   }
@@ -221,24 +220,20 @@ class _CommentScreenState extends State<CommentScreen>
                     child:
                         const AppText(text: 'Reply', color: Colors.cyanAccent)),
                 IconButton(
-                    onPressed: () {},
-                    // onPressed: () => _toggleBookmark(c),
+                    onPressed: () => _toggleBookmark(comment),
                     icon: const Icon(
                         // c.bookmarked ? Icons.star :
                         Icons.star_border,
                         color: Colors.yellowAccent)),
                 IconButton(
-                    onPressed: () {},
-                    // onPressed: () => _openEmojiPickerFor(c),
+                    // onPressed: () {},
+                    onPressed: () => _openEmojiPickerFor(comment),
                     icon: const Icon(Icons.emoji_emotions_outlined,
                         color: Colors.white70)),
               ])
             ]),
           )
         ]),
-        // replies block
-        // if (replyCount > 0) const SizedBox(height: 8),
-        // if (replyCount > 0)
         Padding(
           padding: const EdgeInsets.only(left: 44.0),
           child:
@@ -357,7 +352,7 @@ class _CommentScreenState extends State<CommentScreen>
         }
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
+        // resizeToAvoidBottomInset: true,
         backgroundColor: const Color(0xFF0F0F10),
         appBar: AppBar(
             title: const AppText(
@@ -379,41 +374,38 @@ class _CommentScreenState extends State<CommentScreen>
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(children: [
-                          CircleAvatar(
-                              backgroundColor: Colors.deepPurple,
-                              child: AppText(
-                                  text:
-                                      '${widget.post.senderName?.substring(0, 1)}',
-                                  color: Colors.white)),
-                          const SizedBox(width: 10),
-                          Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AppText(
-                                    text: widget.post.senderName ?? "",
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white),
-                                const SizedBox(height: 6),
-                                SizedBox(
-                                  width: 280,
-                                  child: GestureDetector(
-                                    onTap: () => setState(() =>
-                                        _showFullCaption = !_showFullCaption),
-                                    child: AppText(
-                                        text: _showFullCaption ||
-                                                (widget.post.textContent
-                                                            ?.length ??
-                                                        0) <
-                                                    140
-                                            ? widget.post.textContent ?? ""
-                                            : '${widget.post.textContent?.substring(0, 140)}…',
-                                        maxLines: 4,
-                                        color: Colors.white70),
-                                  ),
-                                ),
-                              ]),
-                        ]),
+                        Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CircleAvatar(
+                                  backgroundColor: Colors.deepPurple,
+                                  child: AppText(
+                                      text:
+                                          '${widget.post.senderName?.substring(0, 1)}',
+                                      color: Colors.white)),
+                              const SizedBox(width: 10),
+                              Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    AppText(
+                                        text: widget.post.senderName ?? "",
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white),
+                                    const SizedBox(height: 6),
+                                    SizedBox(
+                                      width: 280,
+                                      child: GestureDetector(
+                                        onTap: () => setState(() =>
+                                            _showFullCaption =
+                                                !_showFullCaption),
+                                        child: AppText(
+                                            text: widget.post.textContent ?? "",
+                                            maxLines: _showFullCaption ? 2 : 10,
+                                            color: Colors.white70),
+                                      ),
+                                    ),
+                                  ]),
+                            ]),
                         const SizedBox(height: 10),
                         Row(children: [
                           const AppText(
@@ -527,18 +519,18 @@ class _CommentScreenState extends State<CommentScreen>
                             maxLines: null,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 12),
-                              hintText: _replyTo != null
-                                  ? 'Reply to ${_replyTo?.senderUsername ?? ''}…'
-                                  : 'Add a comment',
-                              hintStyle: const TextStyle(color: Colors.white54),
-                              filled: true,
-                              fillColor: const Color(0xFF161616),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(24),
-                                  borderSide: BorderSide.none),
-                            ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 12),
+                                hintText: _replyTo != null
+                                    ? 'Reply to ${_replyTo?.senderUsername ?? ''}…'
+                                    : 'Add a comment',
+                                hintStyle:
+                                    const TextStyle(color: Colors.white54),
+                                filled: true,
+                                fillColor: const Color(0xFF161616),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                    borderSide: BorderSide.none)),
                             onSubmitted: (_) {})),
                     const SizedBox(width: 8),
                     // quick emoji chooser / send

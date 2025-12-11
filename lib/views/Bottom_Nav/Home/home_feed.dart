@@ -298,10 +298,12 @@ class _PostOverlay extends StatelessWidget {
             ),
             if (caption.isNotEmpty)
               Padding(
-                padding: const EdgeInsets.only(top: 12, bottom: 12),
-                child: Text(caption,
-                    style: const TextStyle(color: Colors.white, fontSize: 16)),
-              ),
+                  padding: const EdgeInsets.only(top: 12, bottom: 12),
+                  child: AppText(
+                      text: caption,
+                      color: Colors.white,
+                      maxLines: 2,
+                      fontSize: 16)),
             Row(
               children: [
                 GestureDetector(
@@ -318,8 +320,8 @@ class _PostOverlay extends StatelessWidget {
                 ),
                 const SizedBox(width: 20),
                 GestureDetector(
-                  onTap: () => ScaffoldMessenger.of(context)
-                      .showSnackBar(const SnackBar(content: Text('Saved'))),
+                  onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: AppText(text: 'Saved'))),
                   child: _buildAction(Icons.bookmark_border, 'Save', null),
                 ),
                 const Spacer(),
@@ -475,8 +477,8 @@ class ImagePost extends StatelessWidget {
                 child: AppNetwokImage(
                     height: size.height,
                     width: size.width,
-                    fit: BoxFit.contain,
-                    imageUrl: post.imageContent)),
+                    fit: BoxFit.fill,
+                    imageUrl: post.imageContent ?? '')),
           );
         },
       ),
@@ -605,6 +607,7 @@ class TextPost extends StatelessWidget {
   final ResultPostModel post;
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
     return Container(
       color: Colors.grey[900],
       child: Padding(
@@ -612,22 +615,31 @@ class TextPost extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Spacer(),
-            Expanded(
+            // (post.textContent?.length ?? 0) > 30
+            //     ? SizedBox(height: size.height * 0.02)
+            //     :
+            Expanded(child: Container()),
+            SizedBox(
+                height: (post.textContent?.length ?? 0) > 300
+                    ? size.height * 0.5
+                    : size.height * 0.1,
                 child: SingleChildScrollView(
                     child: AppText(
                         text: post.textContent ?? '',
                         textAlign: TextAlign.center,
                         color: Colors.white,
+                        maxLines: 10000,
                         fontSize: 20))),
+            Expanded(child: Container()),
             Row(children: [
               AppText(
                   text: '@${post.senderName}',
                   color: Colors.white,
                   fontWeight: FontWeight.bold),
               const Spacer(),
-              const AppText(
-                  text: '1k view  13 tagged',
+              AppText(
+                  text:
+                      '1k view ${post.taggedUserIds.length > 1 ? "${post.taggedUserIds.length} tagged" : ""}',
                   color: Colors.white70,
                   fontWeight: FontWeight.bold)
             ]),
@@ -640,7 +652,7 @@ class TextPost extends StatelessWidget {
                     child: const Row(children: [
                       Icon(Icons.favorite_border, color: Colors.white),
                       SizedBox(width: 6),
-                      Text('3.5K', style: TextStyle(color: Colors.white))
+                      AppText(text: '3.5K', color: Colors.white)
                     ])),
                 const SizedBox(width: 22),
                 GestureDetector(
@@ -657,7 +669,7 @@ class TextPost extends StatelessWidget {
                   child: const Row(children: [
                     Icon(Icons.chat_bubble_outline, color: Colors.white),
                     SizedBox(width: 6),
-                    Text('789', style: TextStyle(color: Colors.white)),
+                    AppText(text: '789', color: Colors.white)
                   ]),
                 ),
                 const SizedBox(width: 22),
@@ -667,7 +679,7 @@ class TextPost extends StatelessWidget {
                   child: const Row(children: [
                     Icon(Icons.bookmark_border, color: Colors.white),
                     SizedBox(width: 6),
-                    Text('Save', style: TextStyle(color: Colors.white)),
+                    AppText(text: 'Save', color: Colors.white)
                   ]),
                 ),
                 const Spacer(),
@@ -677,7 +689,7 @@ class TextPost extends StatelessWidget {
                   child: const Row(children: [
                     Icon(Icons.send_outlined, color: Colors.white),
                     SizedBox(width: 6),
-                    Text('Share', style: TextStyle(color: Colors.white)),
+                    AppText(text: 'Share', color: Colors.white)
                   ]),
                 ),
               ],

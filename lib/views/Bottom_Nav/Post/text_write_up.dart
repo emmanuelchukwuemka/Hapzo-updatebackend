@@ -42,7 +42,9 @@ class _WriteTextState extends State<WriteText> {
                     width: size.width * 0.6,
                     child: TextField(
                         controller: textController,
-                        maxLines: 2,
+                        maxLines: null,
+                        minLines: 1,
+                        keyboardType: TextInputType.multiline,
                         style: GoogleFonts.jost(
                             fontSize: 16.sp, color: Colors.white),
                         textAlign: TextAlign.center,

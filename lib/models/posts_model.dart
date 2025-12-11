@@ -28,6 +28,7 @@ class ResultPostModel {
   bool? isReply;
   dynamic previousPostId;
   String? id;
+  List taggedUserIds = [];
   String? createdAt;
   String? updatedAt;
   List<CommentModel> comments = [];
@@ -44,6 +45,7 @@ class ResultPostModel {
       this.previousPostId,
       this.id,
       this.comments = const [],
+      this.taggedUserIds = const [],
       this.createdAt,
       this.updatedAt});
 
@@ -57,6 +59,7 @@ class ResultPostModel {
     senderName = json['sender_username'];
     isReply = json['is_reply'];
     previousPostId = json['previous_post_id'];
+    taggedUserIds = json['tagged_user_ids'];
     id = json['id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

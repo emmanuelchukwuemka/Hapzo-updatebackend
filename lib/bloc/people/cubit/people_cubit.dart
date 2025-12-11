@@ -11,7 +11,9 @@ part 'people_state.dart';
 class PeopleCubit extends Cubit<PeopleState> {
   PeopleRepo peopleRepo;
   PeopleCubit(this.peopleRepo) : super(PeopleInitial()) {
-    // fetchFriends();
+    fetchFollowings();
+    fetchFriends();
+    fetchFollowers();
   }
 
   fetchFriends() async {

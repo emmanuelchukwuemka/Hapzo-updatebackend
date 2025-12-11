@@ -21,14 +21,16 @@ class _CreatePhotoPostState extends State<CreatePhotoPost> {
   bool isRecording = false;
   SearchedUserModel? taggedUsers;
 
-  PlatformFile? pickedFile;
+  List<PlatformFile>? pickedFiles;
+
   Future _selectPhoto() async {
-    debugPrint('Clicked Photo');
-    final result = await FilePicker.platform.pickFiles(type: FileType.image);
-    if (result != null && result.files.single.path != null) {
-      debugPrint('Image Selected');
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: true,
+    );
+    if (result != null && result.files.isNotEmpty) {
       setState(() {
-        pickedFile = result.files.first;
+        pickedFiles = result.files;
       });
     } else {
       debugPrint('Image selecting failed');
@@ -137,12 +139,13 @@ class _CreatePhotoPostState extends State<CreatePhotoPost> {
                           : IconButton(
                               icon: const Icon(Icons.check),
                               onPressed: () {
-                                if (pickedFile != null) {
+                                if (pickedFiles != null) {
                                   context.read<HomeCubit>().createImagePost(
                                       taggedUser: taggedUsers?.id,
                                       scheduledAt:
                                           _scheduledDate?.toIso8601String(),
-                                      image: File(pickedFile!.path!),
+                                      image: File(
+                                          pickedFiles?.firstOrNull?.path ?? ''),
                                       caption: _captionController.text);
                                 }
                               })
@@ -157,17 +160,33 @@ class _CreatePhotoPostState extends State<CreatePhotoPost> {
                               height: size.height * 0.4,
                               width: double.infinity,
                               color: Colors.grey[850],
-                              child: pickedFile == null
+                              child: pickedFiles == null
                                   ? const Center(
                                       child: AppText(
                                           text: "Tap to pick Photo ",
                                           fontSize: 16,
                                           color: Colors.white))
-                                  : Center(
-                                      child: Image.file(File(pickedFile!.path!),
-                                          width: double.infinity,
+                                  : (pickedFiles?.length ?? 0) < 2
+                                      ? Center(
+                                          child: Image.file(
+                                              File(pickedFiles?.first.path ??
+                                                  ''),
+                                              width: double.infinity,
+                                              height: size.height * 0.4,
+                                              fit: BoxFit.contain))
+                                      : SizedBox(
                                           height: size.height * 0.4,
-                                          fit: BoxFit.contain))),
+                                          child: GridView.count(
+                                              crossAxisCount: 2,
+                                              children: List.generate(
+                                                  pickedFiles?.length ?? 0,
+                                                  (index) => Image.file(
+                                                      File(pickedFiles?[index]
+                                                              .path ??
+                                                          ''),
+                                                      width: double.infinity,
+                                                      fit: BoxFit.cover))),
+                                        )),
                           const SizedBox(height: 16),
 
                           // Caption + font + emoji

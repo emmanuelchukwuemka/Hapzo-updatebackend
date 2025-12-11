@@ -15,19 +15,40 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  TextEditingController firstController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
-  TextEditingController birthdayController = TextEditingController();
-  TextEditingController ocupationController = TextEditingController();
-  TextEditingController heightController = TextEditingController();
-  TextEditingController weightController = TextEditingController();
-  TextEditingController ethnicityController = TextEditingController();
-  TextEditingController relationshipStatusController = TextEditingController();
-  TextEditingController locationController = TextEditingController();
-  TextEditingController biographyController = TextEditingController();
+  final firstController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final birthdayController = TextEditingController();
+  final ocupationController = TextEditingController();
+  final heightController = TextEditingController();
+  final weightController = TextEditingController();
+  final ethnicityController = TextEditingController();
+  final relationshipStatusController = TextEditingController();
+  final locationController = TextEditingController();
+  final biographyController = TextEditingController();
   File? profilePhoto;
   File? coverPhoto;
   final formkey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+    firstController.text =
+        context.read<AuthCubit>().useInfo.profile?.firstName ?? "";
+    lastNameController.text =
+        context.read<AuthCubit>().useInfo.profile?.lastName ?? "";
+    biographyController.text =
+        context.read<AuthCubit>().useInfo.profile?.bio ?? "";
+    ocupationController.text =
+        context.read<AuthCubit>().useInfo.profile?.occupation ?? "";
+    heightController.text =
+        "${context.read<AuthCubit>().useInfo.profile?.height ?? ""}";
+    ethnicityController.text =
+        context.read<AuthCubit>().useInfo.profile?.ethnicity ?? "";
+    relationshipStatusController.text =
+        context.read<AuthCubit>().useInfo.profile?.relationshipStatus ?? "";
+    locationController.text =
+        context.read<AuthCubit>().useInfo.profile?.location ?? "";
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -38,6 +59,7 @@ class _EditProfileState extends State<EditProfile> {
         absorbing: watchProfile.state is ProfileLoading,
         child: Scaffold(
             appBar: AppBar(
+                forceMaterialTransparency: true,
                 iconTheme: const IconThemeData(),
                 title: const AppText(
                     text: 'Edit Profile', fontSize: 20, color: Colors.white),
@@ -61,7 +83,7 @@ class _EditProfileState extends State<EditProfile> {
                       });
                     },
                   ),
-                  const SizedBox(height: 10),
+                  40.verticalSpace,
                   Expanded(
                       child: ListView(
                           padding: EdgeInsets.symmetric(
