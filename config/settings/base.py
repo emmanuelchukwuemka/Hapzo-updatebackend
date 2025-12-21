@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "drf_spectacular_sidecar",
     "django_eventstream",
+    "cloudinary_storage",
+    "cloudinary",
     "apps.presentation.apps.UsersConfig",
     "apps.presentation.apps.AuthenticationConfig",
     "apps.presentation.apps.PostsConfig",
@@ -122,6 +124,15 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_ROOT.mkdir(exist_ok=True)
+
+# Cloudinary configuration
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": env.str("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": env.str("CLOUDINARY_API_KEY"),
+    "API_SECRET": env.str("CLOUDINARY_API_SECRET"),
+}
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

@@ -51,7 +51,7 @@ class UserProfile(models.Model):
         upload_to="media/profile_images/", blank=True, null=True, db_index=True
     )
     occupation = models.CharField(max_length=100, blank=True, null=True)
-    birth_date = models.DateField(blank=False)
+    birth_date = models.DateField(blank=True, null=True)
     height = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
     weight = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
     ethnicity = models.CharField(
