@@ -306,6 +306,20 @@ class DjangoUserProfileRepository(UserProfileRepositoryInterface):
             return None
 
 
+    def find_by_user_with_stats(self, user_id: str) -> Dict[str, Any] | None:
+        try:
+            django_user_profile = UserProfile.objects.get(user_id=user_id)
+            profile_data = to_domain_user_profile_data(django_user_profile)
+            stats = get_user_stats(user_id)
+
+            return {
+                "profile": profile_data,
+                "stats": stats,
+            }
+        except UserProfile.DoesNotExist:
+            return None
+
+
     def profiles_list(
         self, page: int, page_size: int
     ) -> Tuple[List[Any], str | None, str | None]:
