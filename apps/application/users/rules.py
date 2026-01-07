@@ -154,19 +154,23 @@ class FetchUserProfileRule:
         self.user_profile_repository = user_profile_repository
 
     def __call__(self, dto: UserProfileDetailDTO) -> UserProfileResponseDTO:
-        user_profile = self.user_profile_repository.find_by_user(dto.user_id)
-        if not user_profile:
+        result = self.user_profile_repository.find_by_user_with_stats(dto.user_id)
+        if not result:
             raise ValueError(
                 f"Profile for user with id '{dto.user_id}' does not exist."
             )
 
-        return UserProfileResponseDTO(
-            **{
-                key: value
-                for key, value in asdict(user_profile).items()
-                if key in UserProfileResponseDTO.__dataclass_fields__
-            }
-        )
+        profile = result["profile"]
+        stats = result["stats"]
+
+        response_data = {
+            key: value
+            for key, value in asdict(profile).items()
+            if key in UserProfileResponseDTO.__dataclass_fields__
+        }
+        response_data.update(stats)
+
+        return UserProfileResponseDTO(**response_data)
 
 
 class UpdateUserProfileRule:
@@ -174,7 +178,7 @@ class UpdateUserProfileRule:
         self.user_profile_repository = user_profile_repository
 
     def __call__(self, dto: UserProfileDetailDTO) -> UserProfileResponseDTO:
-        user_profile = self.user_profile_repository.find_by_user(dto.user_id)
+        user_profile = self.user_profile_repository.find_by_user(dto.user_id, raw=True)
         if not user_profile:
             raise ValueError(
                 f"Profile for user with id '{dto.user_id}' does not exist."
@@ -190,13 +194,18 @@ class UpdateUserProfileRule:
             user_profile, **update_fields
         )
 
-        return UserProfileResponseDTO(
-            **{
-                key: value
-                for key, value in asdict(updated_profile).items()
-                if key in UserProfileResponseDTO.__dataclass_fields__
-            }
-        )
+        # Fetch stats after update
+        result = self.user_profile_repository.find_by_user_with_stats(dto.user_id)
+        stats = result["stats"] if result else {}
+
+        response_data = {
+            key: value
+            for key, value in asdict(updated_profile).items()
+            if key in UserProfileResponseDTO.__dataclass_fields__
+        }
+        response_data.update(stats)
+
+        return UserProfileResponseDTO(**response_data)
 
 
 class UserProfileListRule:

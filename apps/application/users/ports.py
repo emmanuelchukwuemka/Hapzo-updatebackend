@@ -1,4 +1,4 @@
-from typing import Any, List, Protocol, Tuple
+from typing import Any, Dict, List, Protocol, Tuple
 
 from apps.domain.users.entities import User, UserFollowing, UserProfile
 
@@ -19,6 +19,8 @@ class UserProfileRepositoryInterface(Protocol):
     def update(self, user_profile: UserProfile, **kwargs) -> UserProfile: ...
 
     def find_by_user(self, user_id: str, raw: bool = False) -> UserProfile: ...
+
+    def find_by_user_with_stats(self, user_id: str) -> Dict[str, Any] | None: ...
 
     def profiles_list(
         self, page: int, page_size: int

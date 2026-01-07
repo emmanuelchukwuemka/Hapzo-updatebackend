@@ -35,6 +35,7 @@ from apps.presentation.factory import (
     get_user_followings_rule,
     search_friends_rule,
     send_follow_request_rule,
+    update_user_profile_rule,
     update_user_rule,
     user_profile_list_rule,
 )
@@ -160,6 +161,33 @@ def fetch_user_profile(request: Request, user_id: str) -> Response:
         data=asdict(user_profile), message="User profile fetched successfully."
     )
 
+
+@extend_schema(
+    request=UserProfileDetailSerializer,
+    responses={
+        200: SuccessResponseExampleSerializer,
+        400: ErrorResponseExampleSerializer,
+        500: ErrorResponseExampleSerializer,
+    },
+    description="Update the authenticated user's profile.",
+    tags=["Users"],
+)
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+@throttle_classes([UserRateThrottle])
+@parser_classes([MultiPartParser, JSONParser])
+def update_user_profile(request: Request) -> Response:
+    serializer = UserProfileDetailSerializer(
+        data=request.data, context={"user_id": request.user.id}
+    )
+    serializer.is_valid(raise_exception=True)
+
+    update_rule = update_user_profile_rule()
+    updated_profile = update_rule(UserProfileDetailDTO(**serializer.validated_data))
+
+    return StandardResponse.updated(
+        data=asdict(updated_profile), message="User profile updated successfully."
+    )
 
 @extend_schema(
     request=UserProfileListSerializer,

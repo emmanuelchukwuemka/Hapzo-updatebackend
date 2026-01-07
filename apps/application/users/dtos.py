@@ -48,6 +48,9 @@ class UserProfileDetailDTO:
 @dataclass
 class UserProfileResponseDTO(UserProfileDetailDTO):
     id: str | None = None
+    post_count: int = 0
+    follower_count: int = 0
+    following_count: int = 0
     created_at: datetime | None = None
     updated_at: datetime | None = None
 
