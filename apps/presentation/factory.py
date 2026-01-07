@@ -37,6 +37,7 @@ from apps.application.users.rules import (
     GetUserFollowingsRule,
     SearchFriendsRule,
     FollowUserRule,
+    UpdateUserProfileRule,
     UpdateUserRule,
     UserProfileListRule,
     SearchUserRule,
@@ -117,6 +118,11 @@ def fetch_user_profile_rule() -> FetchUserProfileRule:
 
 def user_profile_list_rule() -> UserProfileListRule:
     return UserProfileListRule(user_profile_repository=get_user_profile_repository())
+
+
+def update_user_profile_rule() -> UpdateUserProfileRule:
+    return UpdateUserProfileRule(user_profile_repository=get_user_profile_repository())
+
 
 
 def update_user_rule() -> UpdateUserRule:

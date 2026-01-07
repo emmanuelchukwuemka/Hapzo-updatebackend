@@ -12,6 +12,7 @@ from apps.presentation.views.users import (
     search_friends,
     send_follow_request,
     update_user,
+    update_user_profile,
 )
 
 urlpatterns = [
@@ -23,6 +24,7 @@ urlpatterns = [
     ),
     path("update/", update_user, name="update-user"),
     path("profile/create/", create_user_profile, name="create-user-profile"),
+    path("profile/update/", update_user_profile, name="update-user-profile"),
     path("profile/<str:user_id>/", fetch_user_profile, name="fetch-user-profile"),
     path(
         "profiles/<int:page>/<int:page_size>/",

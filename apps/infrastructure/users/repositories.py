@@ -82,6 +82,20 @@ def to_domain_user_profile_data(django_user_profile: UserProfile) -> DomainUserP
     )
 
 
+def get_user_stats(user_id: str) -> Dict[str, int]:
+    """Compute post count, follower count, and following count for a user."""
+    from apps.infrastructure.posts.models.tables import Post
+
+    post_count = Post.objects.filter(sender_id=user_id).count()
+    follower_count = UserFollowing.objects.filter(following__user_id=user_id).count()
+    following_count = UserFollowing.objects.filter(follower__user_id=user_id).count()
+
+    return {
+        "post_count": post_count,
+        "follower_count": follower_count,
+        "following_count": following_count,
+    }
+
 def from_domain_user_following_data(
     domain_user_following: DomainUserFollowing,
 ) -> Dict[str, Any]:
@@ -277,6 +291,20 @@ class DjangoUserProfileRepository(UserProfileRepositoryInterface):
 
         except UserProfile.DoesNotExist:
             return None
+
+    def find_by_user_with_stats(self, user_id: str) -> Dict[str, Any] | None:
+        try:
+            django_user_profile = UserProfile.objects.get(user_id=user_id)
+            profile_data = to_domain_user_profile_data(django_user_profile)
+            stats = get_user_stats(user_id)
+
+            return {
+                "profile": profile_data,
+                "stats": stats,
+            }
+        except UserProfile.DoesNotExist:
+            return None
+
 
     def profiles_list(
         self, page: int, page_size: int

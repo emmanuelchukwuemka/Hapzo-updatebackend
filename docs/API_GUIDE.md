@@ -294,7 +294,7 @@ All API endpoints are prefixed with `/api/v1/`.
 
 -   **Endpoint:** `/api/v1/users/profile/<str:user_id>/`
 -   **HTTP Method:** `GET`
--   **Description:** Fetches the profile details of a specific user.
+-   **Description:** Fetches the profile details of a specific user, including post count, follower count, and following count.
 -   **Authentication:** Required (Bearer Token in Header: `Authorization: Bearer <auth_token>`)
 -   **URL Parameters:**
     -   `user_id`: string (required) - The ID of the user whose profile is to be fetched.
@@ -314,9 +314,13 @@ All API endpoints are prefixed with `/api/v1/`.
             "bio": "string",
             "occupation": "string",
             "profile_picture": "url_to_image",
+            "location": "string",
             "height": "decimal",
             "weight": "decimal",
             "id": "string",
+            "post_count": 0,
+            "follower_count": 0,
+            "following_count": 0,
             "created_at": "datetime",
             "updated_at": "datetime"
         },
@@ -324,7 +328,59 @@ All API endpoints are prefixed with `/api/v1/`.
     }
     ```
 
-### 2.5. Fetch User Profiles List
+### 2.5. Update User Profile
+
+-   **Endpoint:** `/api/v1/users/profile/update/`
+-   **HTTP Method:** `PUT`
+-   **Description:** Updates the authenticated user's profile.
+-   **Authentication:** Required (Bearer Token in Header: `Authorization: Bearer <auth_token>`)
+-   **Request Body:** (Can be `application/json` or `multipart/form-data` for `profile_picture`)
+    ```json
+    {
+        "birth_date": "YYYY-MM-DD", (optional)
+        "ethnicity": "string", (optional, choices: "AFRICAN_AMERICAN", "ASIAN", "CAUCASIAN", "HISPANIC", "NATIVE_AMERICAN", "OTHER")
+        "relationship_status": "string", (optional, choices: "SINGLE", "IN_A_RELATIONSHIP", "MARRIED", "DIVORCED", "WIDOWED")
+        "first_name": "string", (optional)
+        "last_name": "string", (optional)
+        "bio": "string", (optional)
+        "occupation": "string", (optional)
+        "profile_picture": "file", (optional)
+        "location": "string", (optional)
+        "height": "decimal", (optional, max_digits=5, decimal_places=2)
+        "weight": "decimal" (optional, max_digits=5, decimal_places=2)
+    }
+    ```
+-   **Success Response (Status: 200 OK):**
+    ```json
+    {
+        "success": true,
+        "message": "User profile updated successfully.",
+        "data": {
+            "user_id": "string",
+            "birth_date": "YYYY-MM-DD",
+            "ethnicity": "string",
+            "relationship_status": "string",
+            "first_name": "string",
+            "last_name": "string",
+            "bio": "string",
+            "occupation": "string",
+            "profile_picture": "url_to_image",
+            "location": "string",
+            "height": "decimal",
+            "weight": "decimal",
+            "id": "string",
+            "post_count": 0,
+            "follower_count": 0,
+            "following_count": 0,
+            "created_at": "datetime",
+            "updated_at": "datetime"
+        },
+        "status_code": 200
+    }
+    ```
+
+### 2.6. Fetch User Profiles List
+
 
 -   **Endpoint:** `/api/v1/users/profiles/<int:page>/<int:page_size>/`
 -   **HTTP Method:** `GET`
@@ -365,7 +421,7 @@ All API endpoints are prefixed with `/api/v1/`.
     }
     ```
 
-### 2.6. Send Follow Request
+### 2.7. Send Follow Request
 
 -   **Endpoint:** `/api/v1/users/follow-request/<str:user_id>/`
 -   **HTTP Method:** `POST`
@@ -389,7 +445,7 @@ All API endpoints are prefixed with `/api/v1/`.
     }
     ```
 
-### 2.9. Get Friends List (Paginated)
+### 2.8. Get Friends List (Paginated)
 
 -   **Endpoint:** `/api/v1/users/friends/<int:page>/<int:page_size>/`
 -   **HTTP Method:** `GET`
@@ -430,7 +486,7 @@ All API endpoints are prefixed with `/api/v1/`.
     }
     ```
 
-### 2.10. Get User Followers (Paginated)
+### 2.9. Get User Followers (Paginated)
 
 -   **Endpoint:** `/api/v1/users/followers/<str:user_id>/<int:page>/<int:page_size>/`
 -   **HTTP Method:** `GET`
@@ -473,7 +529,7 @@ All API endpoints are prefixed with `/api/v1/`.
     }
     ```
 
-### 2.11. Get User Followings (Paginated)
+### 2.10. Get User Followings (Paginated)
 
 -   **Endpoint:** `/api/v1/users/followings/<str:user_id>/<int:page>/<int:page_size>/`
 -   **HTTP Method:** `GET`
@@ -516,7 +572,7 @@ All API endpoints are prefixed with `/api/v1/`.
     }
     ```
 
-### 2.12. Friend Search
+### 2.11. Friend Search
 
 -   **Endpoint:** `/api/v1/users/friends/search/`
 -   **HTTP Method:** `GET`
@@ -544,7 +600,7 @@ All API endpoints are prefixed with `/api/v1/`.
     }
     ```
 
-### 2.13. User Search
+### 2.12. User Search
 
 -   **Endpoint:** `/api/v1/users/search/`
 -   **HTTP Method:** `GET`
