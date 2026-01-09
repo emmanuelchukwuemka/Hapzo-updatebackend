@@ -66,7 +66,7 @@ def to_domain_user_profile_data(django_user_profile: UserProfile) -> DomainUserP
         first_name=django_user_profile.first_name,
         last_name=django_user_profile.last_name,
         profile_picture=(
-            django_user_profile.profile_picture.name
+            django_user_profile.profile_picture.url
             if django_user_profile.profile_picture
             else None
         ),
@@ -239,7 +239,7 @@ class DjangoUserRepository(UserRepositoryInterface):
                 following_count=qs.following_count or 0,
                 mention_count=qs.mention_count or 0,
                 profile_picture=(
-                    qs.user_profile.profile_picture.name
+                    qs.user_profile.profile_picture.url
                     if hasattr(qs, "user_profile") and qs.user_profile.profile_picture
                     else None
                 ),

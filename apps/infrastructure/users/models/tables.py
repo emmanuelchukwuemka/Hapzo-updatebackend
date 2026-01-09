@@ -48,7 +48,7 @@ class UserProfile(models.Model):
     last_name = models.CharField(max_length=100, blank=True, null=True)
     bio = models.TextField(max_length=500, blank=True, null=True)
     profile_picture = models.ImageField(
-        upload_to="media/profile_images/", blank=True, null=True, db_index=True
+        upload_to="profile_images/", blank=True, null=True, db_index=True
     )
     occupation = models.CharField(max_length=100, blank=True, null=True)
     birth_date = models.DateField(blank=True, null=True)
