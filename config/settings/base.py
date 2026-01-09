@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "apps.presentation.apps.NotificationsConfig",
     "apps.presentation.apps.ChatConfig",
     "apps.presentation.apps.CallsConfig",
+    "django_cleanup.apps.CleanupConfig",
 ]
 
 MIDDLEWARE = [
