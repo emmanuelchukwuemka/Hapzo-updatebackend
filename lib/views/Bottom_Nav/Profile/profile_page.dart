@@ -1,4 +1,4 @@
-import 'dart:developer';
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
@@ -21,6 +21,7 @@ class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   int current = 0;
   late TabController tabController;
+  List<ResultPostModel> userPosts = [];
 
   Future<dynamic> _showOptionsDialog(BuildContext context) async {
     return showDialog(
@@ -47,15 +48,7 @@ class _ProfilePageState extends State<ProfilePage>
     "Videos",
     "Texts",
     "Audios",
-    "Downloads",
-  ];
-
-  List<Widget> tabss = [
-    const Tab1(),
-    const Tab2(),
-    const Tab3(),
-    const Tab4(),
-    const Tab5(),
+    // "Downloads",
   ];
 
   @override
@@ -140,6 +133,10 @@ class _ProfilePageState extends State<ProfilePage>
               onRefresh: () async {
                 await context.read<PeopleCubit>().fetchUserProfileById(
                     userId: user.id ?? '', loggedInUser: true);
+                userPosts = await context
+                        .read<HomeCubit>()
+                        .fetchUserPosts(userId: user.id ?? "") ??
+                    [];
               },
               child: ListView(children: [
                 Container(
@@ -227,27 +224,29 @@ class _ProfilePageState extends State<ProfilePage>
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceAround,
                                           children: [
-                                            const Column(children: [
+                                            Column(children: [
                                               AppText(
-                                                  text: '0',
+                                                  text:
+                                                      '${user.profile?.postCount ?? 0}',
                                                   fontSize: 20,
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold),
-                                              AppText(
+                                              const AppText(
                                                   text: 'Posts',
                                                   fontSize: 12.0,
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold)
                                             ]),
-                                            const Column(
+                                            Column(
                                               children: [
                                                 AppText(
-                                                    text: '0',
+                                                    text:
+                                                        '${user.profile?.followerCount ?? 0}',
                                                     fontSize: 20,
                                                     color: Colors.white,
                                                     fontWeight:
                                                         FontWeight.bold),
-                                                AppText(
+                                                const AppText(
                                                     text: 'Followers',
                                                     color: Colors.white,
                                                     fontSize: 12.0,
@@ -258,7 +257,7 @@ class _ProfilePageState extends State<ProfilePage>
                                             Column(children: [
                                               AppText(
                                                   text:
-                                                      "${watchPeople.followings.length}",
+                                                      '${user.profile?.followingCount ?? 0}',
                                                   fontSize: 20,
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold),
@@ -297,15 +296,11 @@ class _ProfilePageState extends State<ProfilePage>
                     SizedBox(
                         height: 40,
                         width: double.infinity,
-                        child: ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: items.length,
-                            itemBuilder: (ctx, index) {
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: List.generate(items.length, (index) {
                               return GestureDetector(
-                                  onTap: () {
-                                    context.read<HomeCubit>().fetchUserPosts(
-                                        userId: user.profile?.id ?? "");
+                                  onTap: () async {
                                     setState(() {
                                       current = index;
                                     });
@@ -330,13 +325,35 @@ class _ProfilePageState extends State<ProfilePage>
                                         height: 5,
                                         width: 75)
                                   ]));
-                            })),
+                            }))),
                     Container(
-                      margin: const EdgeInsets.only(top: 7.5),
-                      height: size.height * .40,
-                      width: double.infinity,
-                      child: tabss[current],
-                    ),
+                        margin: const EdgeInsets.only(top: 7.5),
+                        height: size.height * .40,
+                        width: double.infinity,
+                        child: current == 0
+                            ? Tab1(
+                                photoPosts: userPosts
+                                    .where((e) => e.postFormat == 'image')
+                                    .toList())
+                            : current == 1
+                                ? ProfileVideoTab(
+                                    videposts: userPosts
+                                        .where((e) => e.postFormat == 'video')
+                                        .toList())
+                                : current == 2
+                                    ? ProfileTextTab(
+                                        textPosts: userPosts
+                                            .where(
+                                                (e) => e.postFormat == 'text')
+                                            .toList())
+                                    : ProfileAudioTab(
+                                        audioPosts: userPosts
+                                            .where(
+                                                (e) => e.postFormat == 'text')
+                                            .toList())
+
+                        // child: tabss[current],
+                        ),
                   ],
                 ),
               ]),

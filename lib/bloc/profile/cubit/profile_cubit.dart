@@ -13,39 +13,54 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   createProfile(
       {required String userId,
-      required String birthDate,
-      required String ethnicity,
-      required String relationshipStatus,
-      required String firstName,
-      required String lastName,
-      required String bio,
-      required String occupation,
-      required File profilePicture,
-      required String location,
-      required String height,
-      required String weight}) async {
+      String? birthDate,
+      String? ethnicity,
+      String? relationshipStatus,
+      String? firstName,
+      String? lastName,
+      String? bio,
+      String? occupation,
+      File? profilePicture,
+      bool updateProfile = false,
+      String? location,
+      String? height,
+      String? weight}) async {
     emit(ProfileLoading());
     try {
-      final response = await profileRepo.createProfile(
-          userId: userId,
-          birthDate: birthDate,
-          ethnicity: ethnicity,
-          relationshipStatus: relationshipStatus,
-          firstName: firstName,
-          lastName: lastName,
-          bio: bio,
-          occupation: occupation,
-          profilePicture: profilePicture,
-          location: location,
-          height: height,
-          weight: weight);
-      // final body = jsonDecode(response.body);
+      final response = updateProfile
+          ? await profileRepo.updateProfile(
+              userId: userId,
+              birthDate: birthDate,
+              ethnicity: ethnicity,
+              relationshipStatus: relationshipStatus,
+              firstName: firstName,
+              lastName: lastName,
+              profilePicture: profilePicture,
+              bio: bio,
+              occupation: occupation,
+              location: location,
+              height: height,
+              weight: weight)
+          : await profileRepo.createProfile(
+              userId: userId,
+              birthDate: birthDate,
+              ethnicity: ethnicity,
+              relationshipStatus: relationshipStatus,
+              firstName: firstName,
+              lastName: lastName,
+              profilePicture: profilePicture,
+              bio: bio,
+              occupation: occupation,
+              location: location,
+              height: height,
+              weight: weight);
+      final body = jsonDecode(await response.stream.bytesToString());
 
-      if (response.statusCode == 201) {
-        emit(ProfileLoaded());
+      if (response.statusCode == 201 ||
+          response.statusCode == 200 ||
+          response.statusCode == 202) {
+        emit(ProfileUpdated());
       } else {
-        final body = jsonDecode(await response.stream.bytesToString());
-        log("bo$body");
         ToastMessage.showErrorToast(
             message: body["errors"]["detail"].toString());
         emit(ProfileError());

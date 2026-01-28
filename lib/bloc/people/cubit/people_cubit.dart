@@ -49,7 +49,6 @@ class PeopleCubit extends Cubit<PeopleState> {
           }
         }
         if (loggedInUser) {
-          log("here");
           emit(CurrentUser(user: SearchedUserProfile.fromJson(body['data'])));
         }
       } else {

@@ -19,6 +19,7 @@ class ApiConstants {
   static String followUserUrl({userId}) =>
       "$userProfileBaseUrl/follow-request/$userId/";
   static String get createProfileUrl => "$userProfileBaseUrl/profile/create/";
+  static String get updateProfileUrl => "$userProfileBaseUrl/profile/update/";
   static String aceeptOrDeclineFollowUrl({requestId}) =>
       "$userProfileBaseUrl/follow-request/handle/$requestId/";
   static String pendingFollowRequestUrl({page}) =>

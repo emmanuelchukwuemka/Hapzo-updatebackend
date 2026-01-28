@@ -10,7 +10,6 @@ export 'package:haptext_api/views/screen/chats/video_call.dart';
 export 'package:haptext_api/views/screen/chats/chat_screen.dart';
 
 // HOME
-export 'package:haptext_api/views/screen/home/home.dart';
 export 'package:haptext_api/views/screen/home/notifications.dart';
 export 'package:haptext_api/views/screen/home/individual_profile.dart';
 
@@ -18,7 +17,7 @@ export 'package:haptext_api/views/screen/home/individual_profile.dart';
 export 'package:haptext_api/widgets/favourites.dart';
 export 'package:haptext_api/widgets/recent_chats.dart';
 export 'package:haptext_api/widgets/custom_button.dart';
-export 'package:haptext_api/widgets/chats_user_data.dart'; 
+export 'package:haptext_api/widgets/chats_user_data.dart';
 export 'package:haptext_api/widgets/text_input_widget.dart';
 export 'package:haptext_api/widgets/app_text.dart';
 export './widgets/appshadowcontainer.dart';

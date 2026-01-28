@@ -94,14 +94,20 @@ class HomeRepo {
     return await request.send();
   }
 
-  Future<StreamedResponse> createImagePost(
-      {required File image,
-      String? caption,
-      String? scheduledAt,
-      String? taggedUser}) async {
+  Future<StreamedResponse> createImagePost({
+    required List<File> images,
+    String? caption,
+    String? scheduledAt,
+    String? taggedUser,
+  }) async {
     var request = MultipartRequest('POST', Uri.parse(ApiConstants.postBaseUrl));
-    request.files.add(await MultipartFile.fromPath('image_content', image.path,
-        filename: image.path.split('/').last));
+
+    // Loop through images and add each one
+    for (var image in images) {
+      request.files.add(await MultipartFile.fromPath('image_files', image.path,
+          filename: image.path.split('/').last));
+    }
+
     request.fields.addAll({
       "post_format": "image",
       "text_content": caption ?? '',
@@ -109,10 +115,29 @@ class HomeRepo {
       if (scheduledAt != null) "scheduled_at": scheduledAt,
       if (taggedUser != null) "tagged_user_ids": taggedUser,
     });
+
     request.headers.addAll(ApiHeaders.aunthenticatedHeader);
-    log("Payload ${request.fields.entries} media${request.files.first.field}");
     return await request.send();
   }
+  // Future<StreamedResponse> createImagePost(
+  //     {required List <File> image,
+  //     String? caption,
+  //     String? scheduledAt,
+  //     String? taggedUser}) async {
+
+  //   var request = MultipartRequest('POST', Uri.parse(ApiConstants.postBaseUrl));
+  //   request.files.add(await MultipartFile.fromPath('image_files', image.path,
+  //       filename: image.path.split('/').last));
+  //   request.fields.addAll({
+  //     "post_format": "image",
+  //     "text_content": caption ?? '',
+  //     "is_reply": "false",
+  //     if (scheduledAt != null) "scheduled_at": scheduledAt,
+  //     if (taggedUser != null) "tagged_user_ids": taggedUser
+  //   });
+  //   request.headers.addAll(ApiHeaders.aunthenticatedHeader);
+  //   return await request.send();
+  // }
 
   Future<StreamedResponse> createVideoPost(
       {required File videoFile,

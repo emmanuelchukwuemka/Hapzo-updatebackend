@@ -35,13 +35,11 @@ export 'package:haptext_api/views/Bottom_Nav/People/picture_container.dart';
 export 'package:haptext_api/views/Bottom_Nav/People/friend_profile_page.dart';
 
 // PROFILE
-
-export 'package:haptext_api/views/Bottom_Nav/Profile/profile_tab_widget.dart';
 export 'package:haptext_api/views/Bottom_Nav/Profile/profile_page.dart';
-export 'package:haptext_api/views/Bottom_Nav/Profile/profileTab1.dart';
-export 'package:haptext_api/views/Bottom_Nav/Profile/profileTab2.dart';
-export 'package:haptext_api/views/Bottom_Nav/Profile/profileTab3.dart';
-export 'package:haptext_api/views/Bottom_Nav/Profile/profileTab4.dart';
+export 'package:haptext_api/views/Bottom_Nav/Profile/profile_picture_tab.dart';
+export 'package:haptext_api/views/Bottom_Nav/Profile/profile_video_tab.dart';
+export 'package:haptext_api/views/Bottom_Nav/Profile/profile_text_tab.dart';
+export 'package:haptext_api/views/Bottom_Nav/Profile/profile_audio_tab.dart';
 export 'package:haptext_api/views/Bottom_Nav/Profile/profileTab5.dart';
 export 'package:haptext_api/views/Bottom_Nav/Profile/edit_profile.dart';
 export 'package:haptext_api/views/Bottom_Nav/Profile/pics_change.dart';

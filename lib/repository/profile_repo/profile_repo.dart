@@ -11,39 +11,113 @@ class ProfileRepo {
         headers: ApiHeaders.aunthenticatedHeader);
   }
 
-  Future<StreamedResponse> createProfile(
-      {required String userId,
-      required String birthDate,
-      required String ethnicity,
-      required String relationshipStatus,
-      required String firstName,
-      required String lastName,
-      required String bio,
-      required String occupation,
-      required File profilePicture,
-      required String location,
-      required String height,
-      required String weight}) async {
+  Future<StreamedResponse> createProfile({
+    required String userId,
+    String? birthDate,
+    String? ethnicity,
+    String? relationshipStatus,
+    String? firstName,
+    String? lastName,
+    String? bio,
+    String? occupation,
+    File? profilePicture,
+    String? location,
+    String? height,
+    String? weight,
+  }) async {
     var request =
         MultipartRequest('POST', Uri.parse(ApiConstants.createProfileUrl));
-    request.files.add(await MultipartFile.fromPath(
-        'profile_picture', profilePicture.path,
-        filename: profilePicture.path.split('/').last));
-    String date = birthDate.replaceAll('/', '-').toString();
-    request.fields.addAll({
-      "user_id": userId,
-      "birth_date": date,
-      "ethnicity": ethnicity,
-      "relationship_status": relationshipStatus,
-      "first_name": firstName,
-      "last_name": firstName,
-      "bio": bio,
-      "location": location,
-      "height": height,
-      "weight": weight
-    });
+
+    // 1. Only add the file if it's not null and exists
+    if (profilePicture != null && await profilePicture.exists()) {
+      request.files.add(await MultipartFile.fromPath(
+        'profile_picture',
+        profilePicture.path,
+        filename: profilePicture.path.split('/').last,
+      ));
+    }
+
+    // 2. Add fields (using a safer map building approach)
+    final Map<String, String> fields = {"user_id": userId};
+
+    if (birthDate != null)
+      fields["birth_date"] = birthDate.replaceAll('/', '-');
+    if (ethnicity != null) fields["ethnicity"] = ethnicity;
+    if (relationshipStatus != null)
+      fields["relationship_status"] = relationshipStatus;
+    if (firstName != null) fields["first_name"] = firstName;
+    if (lastName != null) fields["last_name"] = lastName;
+    if (bio != null) fields["bio"] = bio;
+    if (occupation != null)
+      fields["occupation"] = occupation; // Added missing occupation
+    if (location != null) fields["location"] = location;
+    if (height != null) fields["height"] = height;
+    if (weight != null) fields["weight"] = weight;
+
+    request.fields.addAll(fields);
     request.headers.addAll(ApiHeaders.aunthenticatedHeader);
-    log("Payload ${request.fields.entries} media${request.files.first.field} heade${ApiHeaders.aunthenticatedHeader.entries}");
+
+    // 3. Safe Logging
+    String fileLog = request.files.isNotEmpty
+        ? request.files.first.filename ?? 'file'
+        : 'None';
+    log("Request to: ${ApiConstants.createProfileUrl}");
+    log("Fields: ${request.fields}");
+    log("Image Attached: $fileLog");
+
     return await request.send();
+  }
+
+  Future<StreamedResponse> updateProfile(
+      {required String userId,
+      String? birthDate,
+      String? ethnicity,
+      String? relationshipStatus,
+      String? firstName,
+      String? lastName,
+      String? bio,
+      String? occupation,
+      File? profilePicture,
+      String? location,
+      String? height,
+      String? weight}) async {
+    var request =
+        MultipartRequest('PUT', Uri.parse(ApiConstants.updateProfileUrl));
+    if (profilePicture != null && await profilePicture.exists()) {
+      request.files.add(await MultipartFile.fromPath(
+        'profile_picture',
+        profilePicture.path,
+        filename: profilePicture.path.split('/').last,
+      ));
+    }
+    final Map<String, String> fields = {};
+    if (birthDate != null) {
+      fields["birth_date"] = birthDate.replaceAll('/', '-');
+    }
+    if (ethnicity != null) fields["ethnicity"] = ethnicity;
+    if (relationshipStatus != null) {
+      fields["relationship_status"] = relationshipStatus;
+    }
+    if (firstName != null) fields["first_name"] = firstName;
+    if (lastName != null) fields["last_name"] = lastName;
+    if (bio != null) fields["bio"] = bio;
+    if (occupation != null) {
+      fields["occupation"] = occupation;
+    }
+    if (location != null) fields["location"] = location;
+    if (height != null) fields["height"] = height;
+    if (weight != null) fields["weight"] = weight;
+    request.fields.addAll(fields);
+    request.headers.addAll(ApiHeaders.aunthenticatedHeader);
+    // 3. Safe Logging
+    String fileLog = request.files.isNotEmpty
+        ? request.files.first.filename ?? 'file'
+        : 'None';
+    log("Request to: ${ApiConstants.updateProfileUrl}");
+    log("Fields: ${request.fields}");
+    log("Image Attached: $fileLog");
+    final response = await request.send();
+    log("respomse  ${response.statusCode}");
+    return response;
   }
 }

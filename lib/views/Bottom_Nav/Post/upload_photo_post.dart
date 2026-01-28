@@ -22,6 +22,7 @@ class _CreatePhotoPostState extends State<CreatePhotoPost> {
   SearchedUserModel? taggedUsers;
 
   List<PlatformFile>? pickedFiles;
+  List<File>? images;
 
   Future _selectPhoto() async {
     final result = await FilePicker.platform.pickFiles(
@@ -31,6 +32,7 @@ class _CreatePhotoPostState extends State<CreatePhotoPost> {
     if (result != null && result.files.isNotEmpty) {
       setState(() {
         pickedFiles = result.files;
+        images = pickedFiles?.map((file) => File(file.path!)).toList();
       });
     } else {
       debugPrint('Image selecting failed');
@@ -144,8 +146,7 @@ class _CreatePhotoPostState extends State<CreatePhotoPost> {
                                       taggedUser: taggedUsers?.id,
                                       scheduledAt:
                                           _scheduledDate?.toIso8601String(),
-                                      image: File(
-                                          pickedFiles?.firstOrNull?.path ?? ''),
+                                      image: images!,
                                       caption: _captionController.text);
                                 }
                               })

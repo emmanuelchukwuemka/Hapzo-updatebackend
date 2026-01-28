@@ -1,63 +1,23 @@
-import 'package:flutter/material.dart';
+import 'package:haptext_api/exports.dart';
 
-class Tab1 extends StatefulWidget {
-  const Tab1({Key? key}) : super(key: key);
+class Tab1 extends StatelessWidget {
+  final List<ResultPostModel> photoPosts;
 
-  @override
-  State<Tab1> createState() => _Tab1State();
-}
-
-class _Tab1State extends State<Tab1> {
-  List<String> myPictures = [
-    'assets/images/me.jpg',
-    'assets/images/asta.jpg',
-    'assets/images/sasuke.jpg',
-    'assets/images/yuno.jpg',
-    'assets/images/vegeta.jpg',
-    'assets/images/me.jpg',
-    'assets/images/me.jpg',
-    'assets/images/sasuke.jpg',
-    'assets/images/asta.jpg',
-    'assets/images/yuno.jpg',
-    'assets/images/vegeta.jpg',
-    'assets/images/me.jpg',
-    'assets/images/me.jpg',
-    'assets/images/sasuke.jpg',
-    'assets/images/asta.jpg',
-    'assets/images/yuno.jpg',
-    'assets/images/vegeta.jpg',
-    'assets/images/me.jpg',
-    'assets/images/me.jpg',
-    'assets/images/sasuke.jpg',
-    'assets/images/asta.jpg',
-    'assets/images/yuno.jpg',
-    'assets/images/vegeta.jpg',
-    'assets/images/me.jpg',
-    'assets/images/me.jpg',
-    'assets/images/asta.jpg',
-    'assets/images/sasuke.jpg',
-    'assets/images/yuno.jpg',
-  ];
-
+  const Tab1({super.key, required this.photoPosts});
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 1,
-        crossAxisSpacing: 1.2,
-        mainAxisSpacing: 1.2,
-      ),
-      itemCount: myPictures.length,
-      itemBuilder: (BuildContext context, int index) => Container(
-        // height: 185,
-        // width: 158,
-        child: Image(
-          image: AssetImage(myPictures[index]),
-          fit: BoxFit.cover,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 1,
+          crossAxisSpacing: 1.2,
+          mainAxisSpacing: 1.2,
         ),
-      ),
-    );
+        itemCount: photoPosts.length,
+        itemBuilder: (BuildContext context, int index) => AppNetwokImage(
+            height: 20,
+            width: 20,
+            imageUrl: photoPosts[index].mediaFiles?.first.imageFile ?? ''));
     // children: [
     //   Row(
     //     children: [

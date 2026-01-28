@@ -61,6 +61,9 @@ class SearchedUserProfile {
   String? profilePicture;
   String? location;
   dynamic height;
+  dynamic postCount;
+  dynamic followerCount;
+  dynamic followingCount;
   dynamic weight;
   String? id;
   String? createdAt;
@@ -81,12 +84,18 @@ class SearchedUserProfile {
       this.weight,
       this.id,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.followerCount,
+      this.followingCount,
+      this.postCount});
 
   SearchedUserProfile.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
     birthDate = json['birth_date'];
     ethnicity = json['ethnicity'];
+    postCount = json['post_count'];
+    followerCount = json['follower_count'];
+    followingCount = json['following_count'];
     relationshipStatus = json['relationship_status'];
     firstName = json['first_name'];
     lastName = json['last_name'];

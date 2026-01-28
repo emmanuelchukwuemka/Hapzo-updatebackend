@@ -208,14 +208,14 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   createImagePost(
-      {required File image,
+      {required List<File> image,
       required caption,
       String? scheduledAt,
       String? taggedUser}) async {
     emit(HomeLoading());
     try {
       final response = await homeRepo.createImagePost(
-          image: image,
+          images: image,
           caption: caption,
           taggedUser: taggedUser,
           scheduledAt: scheduledAt);

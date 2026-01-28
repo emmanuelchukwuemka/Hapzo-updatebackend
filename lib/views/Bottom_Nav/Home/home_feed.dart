@@ -417,13 +417,13 @@ class _VideoPostState extends State<VideoPost> {
   void initState() {
     super.initState();
     try {
-      _controller =
-          VideoPlayerController.networkUrl(Uri.parse(widget.post.videoContent))
-            ..initialize().then((_) {
-              setState(() {
-                _controller.play();
-              });
-            });
+      _controller = VideoPlayerController.networkUrl(
+          Uri.parse(widget.post.videoContent ?? ''))
+        ..initialize().then((_) {
+          setState(() {
+            _controller.play();
+          });
+        });
     } catch (e) {
       d.log("failed video $e");
     }
@@ -511,7 +511,7 @@ class AudioPostState extends State<AudioPost>
   }
 
   initAudio() async {
-    await player.setUrl(widget.post.audioContent);
+    await player.setUrl(widget.post.audioContent ?? '');
   }
 
   void togglePlay() {
@@ -639,7 +639,7 @@ class TextPost extends StatelessWidget {
               const Spacer(),
               AppText(
                   text:
-                      '1k view ${post.taggedUserIds.length > 1 ? "${post.taggedUserIds.length} tagged" : ""}',
+                      '1k view ${(post.taggedUserIds?.length ?? 0) > 1 ? "${(post.taggedUserIds?.length ?? 0)} tagged" : ""}',
                   color: Colors.white70,
                   fontWeight: FontWeight.bold)
             ]),
