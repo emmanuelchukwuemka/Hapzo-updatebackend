@@ -18,19 +18,20 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     final watchAuth = context.watch<AuthCubit>();
-    return BlocListener<AuthCubit, AuthState>(
-      listener: (context, state) {
-        if (state is AuthLoginState) {
-          context.go(RouteName.bottomNav.path);
-          context.read<HomeCubit>().fetchPosts();
-        }
-        if (state is AuthVerifyOtpSentState) {
-          context.go(RouteName.otpScreen.path);
-        }
-      },
-      child: AbsorbPointer(
-        absorbing: watchAuth.state is AuthLoadingState,
-        child: Scaffold(
+    // return BlocListener<AuthCubit, AuthState>(
+    //   listener: (context, state) {
+    //     if (state is AuthLoginState) {
+    //       context.go(RouteName.bottomNav.path);
+    //       context.read<HomeCubit>().fetchPosts();
+    //     }
+    //     if (state is AuthVerifyOtpSentState) {
+    //       context.go(RouteName.otpScreen.path);
+    //     }
+    //   },
+    //   child: AbsorbPointer(
+    //     absorbing: watchAuth.state is AuthLoadingState,
+    //     child: Scaffold(
+    return Scaffold(
           body: SingleChildScrollView(
             child: Column(
               children: [
@@ -89,12 +90,14 @@ class _SignInState extends State<SignIn> {
                                     color: Colors.white))),
                         const SizedBox(height: 60.0),
                         Appbutton(
-                            isLoading: watchAuth.state is AuthLoadingState,
+                            // isLoading: watchAuth.state is AuthLoadingState,
                             label: "Login",
                             onTap: () {
-                              if (_formKey.currentState?.validate() ?? false) {
-                                context.read<AuthCubit>().loginUser();
-                              }
+                              // if (_formKey.currentState?.validate() ?? false) {
+                              //   context.read<AuthCubit>().loginUser();
+                              // }
+                              context.go(RouteName.bottomNav.path);
+                              context.read<HomeCubit>().fetchPosts();
                             })
                       ],
                     ),
@@ -118,8 +121,6 @@ class _SignInState extends State<SignIn> {
               ],
             ),
           ),
-        ),
-      ),
-    );
+        );
   }
 }

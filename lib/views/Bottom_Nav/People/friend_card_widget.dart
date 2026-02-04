@@ -1,60 +1,90 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 
-friendCardWidget(context, String text, String img) {
+Widget friendCardWidget(BuildContext context, String text, String img) {
   return GestureDetector(
     onTap: () {
-      // Navigator.push(context, MaterialPageRoute(builder: (_) => const FriendProfilePage()),);
+      // Navigation logic will be added when FriendProfilePage is ready
     },
     child: Container(
-      // height: 250,
-      // width: 105,
-      // margin: EdgeInsets.all(1.5),
-      // color: context.theme.bgColor,
       decoration: BoxDecoration(
-          color: Colors.white,
-          // color: Color(0xFF111B21),
-          borderRadius: BorderRadius.circular(3.5),
-          boxShadow: const [
-            BoxShadow(
-                color: Colors.black38, blurRadius: 1.0, offset: Offset(1, 0.5))
-          ]),
-      child: Stack(children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        color: context.theme.surfaceColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Stack(
           children: [
-            Center(
-              child: CircleAvatar(
-                radius: 35.0,
-                backgroundImage: AssetImage(img),
-                // fit: BoxFit.cover,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
+                      ),
+                    ),
+                    child: CircleAvatar(
+                      radius: 32.0,
+                      backgroundColor: context.theme.bgColor,
+                      backgroundImage: AssetImage(img),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    text,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.roboto(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                   'View Profile',
+                   style: GoogleFonts.roboto(
+                     color: const Color(0xFF8B5CF6),
+                     fontSize: 11,
+                     fontWeight: FontWeight.w500,
+                   ),
+                ),
+              ],
+            ),
+            // Status indicator
+            Positioned(
+              top: 12,
+              right: 12,
+              child: Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  color: Colors.greenAccent,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: context.theme.surfaceColor!, width: 2),
+                ),
               ),
             ),
-            const SizedBox(height: 3),
-            Text(
-              text,
-              style: const TextStyle(
-                  color: Color(0xFFFD6104), fontWeight: FontWeight.w400),
-            )
           ],
         ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Container(
-              height: 15,
-              width: 15,
-              margin: const EdgeInsets.only(right: 8.5, bottom: 6.0),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFD6104),
-                borderRadius: BorderRadius.circular(7.5),
-              ),
-              child: const Center(
-                child: Text(
-                  '4',
-                  style: TextStyle(color: Colors.white, fontSize: 10.0),
-                ),
-              )),
-        )
-      ]),
+      ),
     ),
   );
 }

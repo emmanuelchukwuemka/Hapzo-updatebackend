@@ -1,82 +1,74 @@
-import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 import 'package:haptext_api/exports.dart';
 
 class Followers extends StatefulWidget {
-  const Followers({Key? key}) : super(key: key);
+  const Followers({super.key});
 
   @override
   State<Followers> createState() => _FollowersState();
 }
 
 class _FollowersState extends State<Followers> {
-  Future<void> getData() async {
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getData();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      // SEARCH CONTAINER
-      Container(
-          margin: const EdgeInsets.all(8),
-          padding: const EdgeInsets.symmetric(horizontal: 18.0),
-          width: double.infinity,
-          height: 45.0,
-          decoration: BoxDecoration(
-              // color: context.theme.appBarColor,
-              // border: Border.all(
-              //   color: Colors.orange,
-              //   // (0xFFFD6104),
-              //   width: 1.5,
-              //   style: BorderStyle.solid
-              // ),
-              borderRadius: BorderRadius.circular(7.0)),
-          child: Row(
-            children: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.search,
-                  // color: context.theme.greyColor,
-                ),
-              ),
-              const SizedBox(width: 10.0),
-              const AppText(text: 'Search', color: Colors.white)
-            ],
-          )),
-      // BODY CONTAINER
-      true
-          ? const Expanded(
-              child: Center(
-                  child: AppText(
-                      text: 'Your followers will appear here.',
-                      color: Colors.orange,
-                      textAlign: TextAlign.center,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 28)),
-            )
-          : Expanded(
-              child: Padding(
-                padding:
-                    const EdgeInsets.only(bottom: 7.50, left: 5.0, right: 5.0),
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 5.0,
-                      mainAxisSpacing: 5.0,
-                      childAspectRatio: 0.8),
-                  itemCount: 0,
-                  itemBuilder: (context, index) => friendCardWidget(context,
-                      "_userData!.followers![index]", 'assets/images/me.jpg'),
-                ),
-              ),
+    return Column(
+      children: [
+        // SEARCH CONTAINER
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            height: 48.0,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(12.0),
             ),
-    ]);
+            child: Row(
+              children: [
+                Icon(Icons.search, color: Colors.white.withValues(alpha: 0.3)),
+                const SizedBox(width: 12.0),
+                Expanded(
+                  child: TextField(
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                    decoration: InputDecoration(
+                      hintText: 'Search followers...',
+                      hintStyle: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.3),
+                        fontSize: 14,
+                      ),
+                      border: InputBorder.none,
+                      isDense: true,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        // BODY CONTAINER
+        const Expanded(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.people_outline, size: 64, color: Colors.white24),
+                SizedBox(height: 16),
+                AppText(
+                  text: 'No followers yet',
+                  color: Colors.white54,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                SizedBox(height: 8),
+                AppText(
+                  text: 'Share your profile to get discovered!',
+                  color: Colors.white24,
+                  fontSize: 14,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
+import 'package:haptext_api/views/chat_ui/chats_home.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key? key}) : super(key: key);
@@ -13,6 +14,7 @@ class _NavigationState extends State<Navigation> {
   final List<Widget> screens = [
     HomePage(),
     const Explore(),
+    const ChatsHome(),
     const Posts(),
     const FollowingPage(),
     const ProfilePage(),
@@ -54,9 +56,13 @@ class _NavigationState extends State<Navigation> {
             label: 'Explore',
             icon: Icon(Icons.directions_walk),
           ),
+          const BottomNavigationBarItem(
+            label: 'Chat',
+            icon: Icon(Icons.chat_bubble_outline),
+          ),
           BottomNavigationBarItem(
             label: 'Post',
-            icon: CustomIcon(Icons.add, 2),
+            icon: CustomIcon(Icons.add, 3),
           ),
           const BottomNavigationBarItem(
             label: 'People',

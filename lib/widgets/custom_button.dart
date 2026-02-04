@@ -31,22 +31,29 @@ class Appbutton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    return AppshadowContainer(
-        onTap: onTap,
-        shadowcolour: Colors.transparent,
+    final primaryGradient = const LinearGradient(colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)]);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
         width: width ?? size.width,
-        border: border ?? false,
-        borderColor: borderColor ?? Colors.transparent,
-        height: height ?? size.height * 0.065,
-        radius: size.width * 0.02,
-        color: buttonColor ?? Theme.of(context).primaryColor,
+        height: height ?? 54,
+        decoration: BoxDecoration(
+          color: gradient ? null : (buttonColor ?? Theme.of(context).primaryColor),
+          gradient: gradient ? primaryGradient : null,
+          borderRadius: BorderRadius.circular(12),
+          border: (border ?? false) ? Border.all(color: borderColor ?? Colors.transparent) : null,
+        ),
+        alignment: Alignment.center,
         child: isLoading
-            ? LoadingAnimationWidget.beat(color: Colors.white, size: 30.sp)
+            ? LoadingAnimationWidget.beat(color: Colors.white, size: 24)
             : child ??
                 AppText(
                     text: label ?? '',
                     color: labelColor ?? Colors.white,
                     fontSize: labelSize ?? 16,
-                    fontWeight: labelWeight ?? FontWeight.bold));
+                    fontWeight: labelWeight ?? FontWeight.bold),
+      ),
+    );
   }
 }

@@ -369,6 +369,8 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<Message> messages = [];
   final TextEditingController _controller = TextEditingController();
   bool recordingMock = false;
+  Duration _recordDuration = Duration.zero;
+  Timer? _recordTimer;
 
   @override
   void initState() {
@@ -457,23 +459,58 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _toggleRecord() {
-    setState(() => recordingMock = !recordingMock);
-    if (!recordingMock) {
-      final msg = Message(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        text: 'Voice note (3s)',
-        me: true,
-        isVoice: true,
-        timestamp: DateTime.now(),
-      );
-      setState(() {
-        messages.insert(0, msg);
-        chat.lastMessage = 'You: Voice note (3s)';
-      });
+    if (recordingMock) {
+      _stopAndSendRecord();
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Recording (mock)...')));
+      _startRecord();
     }
+  }
+
+  void _startRecord() {
+    setState(() {
+      recordingMock = true;
+      _recordDuration = Duration.zero;
+    });
+    _recordTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        _recordDuration += const Duration(seconds: 1);
+      });
+    });
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Recording started...')));
+  }
+
+  void _stopAndSendRecord() {
+    _recordTimer?.cancel();
+    final msg = Message(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      text: 'Voice note (${_formatDuration(_recordDuration)})',
+      me: true,
+      isVoice: true,
+      timestamp: DateTime.now(),
+    );
+    setState(() {
+      recordingMock = false;
+      messages.insert(0, msg);
+      chat.lastMessage = 'You: Voice note (${_formatDuration(_recordDuration)})';
+    });
+  }
+
+  void _cancelRecord() {
+    _recordTimer?.cancel();
+    setState(() {
+      recordingMock = false;
+      _recordDuration = Duration.zero;
+    });
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Recording cancelled')));
+  }
+
+  String _formatDuration(Duration d) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
   }
 
   void _openProfilePanel() async {
@@ -770,28 +807,54 @@ class _ChatScreenState extends State<ChatScreen> {
                           color: recordingMock ? Colors.red : Colors.white),
                       onPressed: canSendVoice ? _toggleRecord : null),
                   Expanded(
-                    child: TextField(
-                      enabled: canSendText,
-                      decoration: InputDecoration(
-                          hintText: canSendText
-                              ? (chat.autoClearEnabled
-                                  ? 'Message (auto-clear active)'
-                                  : 'Message')
-                              : 'Text disabled by mode',
-                          filled: true,
-                          fillColor: Colors.white12,
-                          border: OutlineInputBorder(
+                    child: recordingMock
+                        ? Container(
+                            height: 48,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            decoration: BoxDecoration(
+                              color: Colors.white12,
                               borderRadius: BorderRadius.circular(24),
-                              borderSide: BorderSide.none),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 12)),
-                      onSubmitted: (v) {},
-                    ),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.circle, color: Colors.red, size: 12),
+                                const SizedBox(width: 8),
+                                Text(_formatDuration(_recordDuration),
+                                    style: const TextStyle(color: Colors.white)),
+                                const Spacer(),
+                                GestureDetector(
+                                  onTap: _cancelRecord,
+                                  child: const Text("Cancel",
+                                      style: TextStyle(color: Colors.redAccent)),
+                                ),
+                              ],
+                            ),
+                          )
+                        : TextField(
+                            controller: _controller,
+                            enabled: canSendText,
+                            decoration: InputDecoration(
+                                hintText: canSendText
+                                    ? (chat.autoClearEnabled
+                                        ? 'Message (auto-clear active)'
+                                        : 'Message')
+                                    : 'Text disabled by mode',
+                                filled: true,
+                                fillColor: Colors.white12,
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                    borderSide: BorderSide.none),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 12)),
+                            onSubmitted: (v) {},
+                          ),
                   ),
                   const SizedBox(width: 8),
                   IconButton(
                       icon: const Icon(Icons.send),
-                      onPressed: canSendText ? _sendText : null),
+                      onPressed: recordingMock
+                          ? _stopAndSendRecord
+                          : (canSendText ? _sendText : null)),
                   const SizedBox(width: 6),
                   PopupMenuButton<String>(
                       onSelected: (v) {

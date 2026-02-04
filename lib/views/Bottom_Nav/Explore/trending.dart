@@ -1,6 +1,8 @@
+import 'package:haptext_api/common/coloors.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
+import 'package:haptext_api/views/Bottom_Nav/Explore/explore_carousel.dart';
 
 class Trending extends StatefulWidget {
   const Trending({Key? key}) : super(key: key);
@@ -23,15 +25,15 @@ class _TrendingState extends State<Trending> {
               color: context.theme.primaryColor,
               fontWeight: FontWeight.bold)),
       body: GridView.builder(
-          padding: const EdgeInsets.all(5),
+          padding: const EdgeInsets.all(12),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 0.7,
-              crossAxisSpacing: 2.5,
-              mainAxisSpacing: 2.5),
-          itemCount: 6,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8),
+          itemCount: 10,
           itemBuilder: (context, index) =>
-              PostCard(relation: "follow", index: index)),
+              SocialPostCard(height: 240, isTrending: index < 2)),
     );
   }
 }

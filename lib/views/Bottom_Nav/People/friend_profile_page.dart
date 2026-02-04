@@ -1,9 +1,14 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/bloc/people/cubit/people_cubit.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/models/searched_user_model.dart';
 import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
+import 'package:haptext_api/config/page_route/route_name.dart';
 
 class FriendProfilePage extends StatefulWidget {
   final SearchedUserModel user;
@@ -21,15 +26,16 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
       final posts = await context
           .read<HomeCubit>()
           .fetchUserPosts(userId: widget.user.id ?? '');
-      if (posts != null) {
+      if (posts != null && mounted) {
         setState(() {
           widget.user.userPhotoPost =
               posts.where((e) => e.postFormat == "photo").toList();
           widget.user.userTextPost =
               posts.where((e) => e.postFormat == "text").toList();
-          widget.user.userPhotoPost =
+          // Fixed potential copy-paste error in previous logic
+          widget.user.userAudioPost =
               posts.where((e) => e.postFormat == "audio").toList();
-          widget.user.userPhotoPost =
+          widget.user.userVideoPost =
               posts.where((e) => e.postFormat == "video").toList();
         });
       }
@@ -39,178 +45,222 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final watchPeople = context.watch<PeopleCubit>();
-    return AbsorbPointer(
-      absorbing: watchPeople.state is PeopleFollowing,
-      child: Opacity(
-        opacity: watchPeople.state is PeopleFollowing ? 0.5 : 1.0,
-        child: Scaffold(
-          backgroundColor: context.theme.bgColor,
-          appBar: AppBar(
-              iconTheme: IconThemeData(color: context.theme.primaryColor),
-              backgroundColor: context.theme.appBarColor,
-              title: AppText(
-                  text: '@${widget.user.username ?? ''}',
-                  color: context.theme.titleTextColor,
-                  fontWeight: FontWeight.bold),
-              elevation: 0),
-          body: ListView(
-            children: [
-              PictureContainer(user: widget.user),
-              Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: AppText(
-                      text: '${widget.user.profile?.bio ?? ''}  ',
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: context.theme.titleTextColor)),
-              Row(
+    return Scaffold(
+      backgroundColor: context.theme.bgColor,
+      body: CustomScrollView(
+        slivers: [
+          // PROFESSIONAL HEADER
+          SliverAppBar(
+            expandedHeight: 240,
+            pinned: true,
+            backgroundColor: context.theme.bgColor,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => context.pop(),
+            ),
+            flexibleSpace: FlexibleSpaceBar(
+              background: Stack(
+                fit: StackFit.expand,
                 children: [
-                  const SizedBox(width: 12),
-                  AppText(
-                      text: '${widget.user.followingCount ?? 0} following',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.blueGrey),
-                  const SizedBox(width: 15),
-                  AppText(
-                      text: '${widget.user.followerCount ?? 0}followers',
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.blueGrey),
-                  const SizedBox(width: 15),
-                  AppText(
-                      text: '${widget.user.mentionCount ?? 0}Mutual',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.blueGrey),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Row(
-                  children: [
-                    Appbutton(
-                        isLoading: watchPeople.state is PeopleFollowing,
-                        onTap: () {
-                          context
-                              .read<PeopleCubit>()
-                              .followUser(userId: widget.user.id ?? '');
-                        },
-                        width: 120,
-                        height: 40,
-                        buttonColor: context.theme.greyColor,
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.library_add,
-                                  color: Colors.white),
-                              const SizedBox(width: 10),
-                              AppText(
-                                  text: widget.user.following
-                                      ? "Unfollow"
-                                      : 'Follow',
-                                  color: Colors.white)
-                            ])),
-                    const SizedBox(width: 10),
-                    Appbutton(
-                        onTap: () {
-                          context.push(RouteName.chatPage.path);
-                        },
-                        width: 120,
-                        height: 40,
-                        buttonColor: context.theme.primaryColor,
-                        child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.chat, color: Colors.white),
-                              SizedBox(width: 10),
-                              AppText(text: 'Message', color: Colors.white)
-                            ]))
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Column(
-                  children: [
-                    TitleAndValueWidget(
-                        title: "Name",
-                        value:
-                            "${widget.user.profile?.firstName ?? ""} ${widget.user.profile?.lastName ?? ""}"),
-                    TitleAndValueWidget(
-                        title: "Tag Name",
-                        value: "@${widget.user.username ?? ""}"),
-                    TitleAndValueWidget(
-                        title: "Birthday",
-                        value: "@${widget.user.profile?.birthDate ?? ""}"),
-                    TitleAndValueWidget(
-                        title: "Occupation",
-                        value: widget.user.profile?.occupation ?? ""),
-                    TitleAndValueWidget(
-                        title: "Height",
-                        value: "${widget.user.profile?.height ?? ""}"),
-                    TitleAndValueWidget(
-                        title: "Ethnicity",
-                        value: widget.user.profile?.ethnicity ?? ""),
-                    TitleAndValueWidget(
-                        title: "Religion",
-                        value: widget.user.profile?.ethnicity ?? ""),
-                    TitleAndValueWidget(
-                        title: "Relationship status",
-                        value: widget.user.profile?.relationshipStatus ?? ""),
-                    TitleAndValueWidget(
-                        title: "Relationship status",
-                        value: widget.user.profile?.relationshipStatus ?? ""),
-                    TitleAndValueWidget(
-                        title: "Location",
-                        value: widget.user.profile?.location ?? ""),
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      height: 50,
-                      width: double.infinity,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Looking for',
-                              style: TextStyle(
-                                  color: context.theme.greyColor,
-                                  fontWeight: FontWeight.w500)),
-                          const Text('Anime, Football',
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w500)),
-                        ],
+                  // BANNER
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  // AVATAR OVERLAP
+                  Positioned(
+                    bottom: 20,
+                    left: 20,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: context.theme.bgColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(widget.user.profilePicture ?? ''),
+                        backgroundColor: context.theme.surfaceColor,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // USERNAME & BIO
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "@${widget.user.username ?? ''}",
+                            style: GoogleFonts.roboto(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            widget.user.profile?.bio ?? 'No bio yet',
+                            style: GoogleFonts.roboto(
+                              color: Colors.white70,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // ACTION BUTTONS
+                      Row(
+                        children: [
+                          _buildActionButton(
+                            icon: widget.user.following ? Icons.person_remove : Icons.person_add,
+                            color: widget.user.following ? Colors.white12 : const Color(0xFF8B5CF6),
+                            onTap: () => context.read<PeopleCubit>().followUser(userId: widget.user.id ?? ''),
+                          ),
+                          const SizedBox(width: 12),
+                          _buildActionButton(
+                            icon: Icons.chat_bubble_outline,
+                            color: Colors.white12,
+                            onTap: () => context.push(RouteName.chatPage.path),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // STATS BAR
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    decoration: BoxDecoration(
+                      color: context.theme.surfaceColor,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildStat('Posts', '124'),
+                        _buildStat('Followers', '${widget.user.followerCount ?? 0}'),
+                        _buildStat('Following', '${widget.user.followingCount ?? 0}'),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  // ABOUT SECTION
+                  Text(
+                    'About',
+                    style: GoogleFonts.roboto(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildDetailCard([
+                    _buildDetailRow(Icons.person_outline, 'Name', "${widget.user.profile?.firstName ?? ""} ${widget.user.profile?.lastName ?? ""}"),
+                    _buildDetailRow(Icons.work_outline, 'Occupation', widget.user.profile?.occupation ?? "Unspecified"),
+                    _buildDetailRow(Icons.cake_outlined, 'Birthday', widget.user.profile?.birthDate ?? "Unspecified"),
+                    _buildDetailRow(Icons.location_on_outlined, 'Location', widget.user.profile?.location ?? "Unspecified"),
+                    _buildDetailRow(Icons.favorite_border, 'Relationship', widget.user.profile?.relationshipStatus ?? "Unspecified"),
+                  ]),
+
+                  const SizedBox(height: 40),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
-}
 
-class TitleAndValueWidget extends StatelessWidget {
-  const TitleAndValueWidget(
-      {super.key, required this.title, required this.value});
-  final String title, value;
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildActionButton({required IconData icon, required Color color, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(icon, color: Colors.white, size: 20),
+      ),
+    );
+  }
+
+  Widget _buildStat(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: GoogleFonts.roboto(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: GoogleFonts.roboto(
+            color: Colors.white54,
+            fontSize: 12,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDetailCard(List<Widget> children) {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.theme.surfaceColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+      ),
+      child: Column(
+        children: children,
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(IconData icon, String label, String value) {
     return Padding(
-        padding: const EdgeInsets.only(bottom: 30),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          AppText(
-              text: title,
-              color: context.theme.greyColor,
-              fontWeight: FontWeight.w500),
-          AppText(text: value, color: Colors.grey, fontWeight: FontWeight.w500)
-        ]));
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          Icon(icon, color: const Color(0xFF8B5CF6), size: 20),
+          const SizedBox(width: 16),
+          Text(
+            label,
+            style: GoogleFonts.roboto(color: Colors.white54, fontSize: 14),
+          ),
+          const Spacer(),
+          Text(
+            value,
+            style: GoogleFonts.roboto(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -13,6 +13,7 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
     primaryColor: Coloors.orangeLight,
     buttonColor: Coloors.lightButton,
     bgColor: Coloors.lightBackground,
+    surfaceColor: Colors.white,
     textColor: Coloors.lightText,
     titleTextColor: Coloors.lightTitleText,
     chatTitleColor: Coloors.lightChatTitleText,
@@ -28,6 +29,7 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
     primaryColor: Coloors.orangeDark,
     buttonColor: Coloors.darkButton,
     bgColor: Coloors.darkBackground,
+    surfaceColor: Coloors.surface,
     textColor: Coloors.darkText,
     titleTextColor: Coloors.darkTitleText,
     chatTitleColor: Coloors.darkChatTitleText,
@@ -42,6 +44,7 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
   final Color? primaryColor;
   final Color? buttonColor;
   final Color? bgColor;
+  final Color? surfaceColor;
   final Color? textColor;
   final Color? titleTextColor;
   final Color? chatTitleColor;
@@ -57,6 +60,7 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
     Color? primaryColor,
     Color? buttonColor,
     Color? bgColor,
+    Color? surfaceColor,
     Color? textColor,
     Color? titleTextColor,
     Color? chatTitleColor,
@@ -71,6 +75,7 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
       primaryColor: primaryColor ?? this.primaryColor,
       buttonColor: buttonColor ?? this.buttonColor,
       bgColor: bgColor ?? this.bgColor,
+      surfaceColor: surfaceColor ?? this.surfaceColor,
       textColor: textColor ?? this.textColor,
       titleTextColor: titleTextColor ?? this.titleTextColor,
       chatTitleColor: chatTitleColor ?? this.chatTitleColor,
@@ -82,12 +87,12 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
     );
   }
 
-
   const CustomThemeExtension({
     this.greyColor,
     this.primaryColor,
     this.buttonColor,
     this.bgColor,
+    this.surfaceColor,
     this.textColor,
     this.titleTextColor,
     this.chatTitleColor,
@@ -99,20 +104,25 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
   });
 
   @override
-  ThemeExtension<CustomThemeExtension> lerp(covariant ThemeExtension<CustomThemeExtension>? other, double t) {
+  ThemeExtension<CustomThemeExtension> lerp(
+      covariant ThemeExtension<CustomThemeExtension>? other, double t) {
     if (other is! CustomThemeExtension) return this;
     return CustomThemeExtension(
       greyColor: Color.lerp(greyColor, other.greyColor, t),
       primaryColor: Color.lerp(primaryColor, other.primaryColor, t),
       buttonColor: Color.lerp(buttonColor, other.buttonColor, t),
       bgColor: Color.lerp(bgColor, other.bgColor, t),
+      surfaceColor: Color.lerp(surfaceColor, other.surfaceColor, t),
       textColor: Color.lerp(textColor, other.textColor, t),
       titleTextColor: Color.lerp(titleTextColor, other.titleTextColor, t),
       chatTitleColor: Color.lerp(chatTitleColor, other.chatTitleColor, t),
       appBarColor: Color.lerp(appBarColor, other.appBarColor, t),
       readMessageColor: Color.lerp(readMessageColor, other.readMessageColor, t),
-      unreadMessageColor: Color.lerp(unreadMessageColor, other.unreadMessageColor, t),
+      unreadMessageColor:
+          Color.lerp(unreadMessageColor, other.unreadMessageColor, t),
       userChatBoxColor: Color.lerp(userChatBoxColor, other.userChatBoxColor, t),
-      friendChatBoxColor: Color.lerp(friendChatBoxColor, other.friendChatBoxColor, t),
+      friendChatBoxColor:
+          Color.lerp(friendChatBoxColor, other.friendChatBoxColor, t),
     );
-  }}
+  }
+}

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 
 class Friend extends StatefulWidget {
-  const Friend({Key? key}) : super(key: key);
+  const Friend({super.key});
 
   @override
   State<Friend> createState() => _FriendState();
@@ -11,57 +11,59 @@ class Friend extends StatefulWidget {
 class _FriendState extends State<Friend> {
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      // SEARCH CONTAINER
-      Container(
-        margin: const EdgeInsets.all(8),
-        padding: const EdgeInsets.symmetric(horizontal: 18.0),
-        width: double.infinity,
-        height: 45.0,
-        decoration: BoxDecoration(
-            // color: context.theme.appBarColor,
-            // border: Border.all(
-            //   color: Colors.orange,
-            //   // (0xFFFD6104),
-            //   width: 1.5,
-            //   style: BorderStyle.solid
-            // ),
-            borderRadius: BorderRadius.circular(7.0)),
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.search,
-                // color: context.theme.greyColor,
-              ),
+    return Column(
+      children: [
+        // SEARCH CONTAINER
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            height: 48.0,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(12.0),
             ),
-            const SizedBox(width: 10.0),
-            const Text(
-              'Search',
-              style: TextStyle(
-                  // color: context.theme.greyColor,
+            child: Row(
+              children: [
+                Icon(Icons.search, color: Colors.white.withValues(alpha: 0.3)),
+                const SizedBox(width: 12.0),
+                Expanded(
+                  child: TextField(
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                    decoration: InputDecoration(
+                      hintText: 'Search friends...',
+                      hintStyle: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.3),
+                        fontSize: 14,
+                      ),
+                      border: InputBorder.none,
+                      isDense: true,
+                    ),
                   ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-      // CONTENT
-      Expanded(
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 5.0, left: 5.0, right: 5.0),
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 5.0,
-                mainAxisSpacing: 5.0,
-                childAspectRatio: 0.8),
-            itemCount: 17,
-            itemBuilder: (context, index) =>
-                friendCardWidget(context, 'Sasuke', 'assets/images/sasuke.jpg'),
           ),
         ),
-      ),
-    ]);
+        // CONTENT
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: GridView.builder(
+              padding: const EdgeInsets.only(bottom: 20),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 12.0,
+                mainAxisSpacing: 12.0,
+                childAspectRatio: 0.75,
+              ),
+              itemCount: 12, // Mock count
+              itemBuilder: (context, index) =>
+                  friendCardWidget(context, 'Sasuke Uchiha', 'assets/images/placeholder.jpg'),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

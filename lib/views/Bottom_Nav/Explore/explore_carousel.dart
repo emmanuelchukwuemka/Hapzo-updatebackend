@@ -1,3 +1,4 @@
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
@@ -13,131 +14,133 @@ class ExploreCarousel extends StatefulWidget {
 }
 
 class _ExploreCarouselState extends State<ExploreCarousel> {
-  final List<String> _imgs = [
-    'assets/images/sasuke.jpg',
-    'assets/images/me.jpg',
-    'assets/images/asta.jpg',
-    'assets/images/chukwuchi.jpg',
-    'assets/images/yuno.jpg',
-    'assets/images/me.jpg',
-    'assets/images/asta.jpg',
-    'assets/images/chukwuchi.jpg'
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: size.height * 0.01),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
             mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              10.verticalSpace,
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 AppText(
                     text: widget.title,
-                    color: context.theme.titleTextColor,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500),
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
                 GestureDetector(
                     onTap: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (_) => const Trending()));
                     },
-                    child: const AppText(text: "See more", color: Colors.white
-                        // fontSize: 15,
-                        ))
+                    child: AppText(
+                        text: "See more",
+                        color: context.theme.primaryColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600))
               ]),
-              15.verticalSpace,
-              SizedBox(
-                  height: size.height * 0.63,
-                  child: GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 0.7,
-                              crossAxisSpacing: 2.5,
-                              mainAxisSpacing: 2.5),
-                      itemCount: _imgs.length,
-                      itemBuilder: (context, index) => PostCard(
-                          index: index,
-                          relation: widget.tabIndex == 0
-                              ? "follow"
-                              : widget.tabIndex == 1
-                                  ? "followsYou"
-                                  : "contact"))),
-              20.verticalSpace
+              const SizedBox(height: 12),
+              MasonryGridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 3,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                itemCount: 9,
+                itemBuilder: (context, index) {
+                  // Simulate different heights for masonry effect
+                  double height = (index % 3 == 0) ? 180 : (index % 3 == 1) ? 240 : 150;
+                  return SocialPostCard(
+                    height: height,
+                    isTrending: index == 0,
+                  );
+                },
+              ),
+              const SizedBox(height: 24)
             ]));
   }
 }
 
-class PostCard extends StatelessWidget {
-  final String relation;
-  final int index;
+class SocialPostCard extends StatelessWidget {
+  final double height;
+  final bool isTrending;
 
-  const PostCard({super.key, required this.relation, required this.index});
+  const SocialPostCard({super.key, required this.height, this.isTrending = false});
 
   @override
   Widget build(BuildContext context) {
-    // Glow border color
-    Color glowColor;
-    switch (relation) {
-      case "follow":
-        glowColor = Colors.blueAccent;
-        break;
-      case "followsYou":
-        glowColor = Colors.pinkAccent;
-        break;
-      case "contact":
-        glowColor = Colors.greenAccent;
-        break;
-      default:
-        glowColor = Colors.transparent;
-    }
-
     return GestureDetector(
       onTap: () {},
       child: Container(
+        height: height,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            if (relation.isNotEmpty)
-              BoxShadow(
-                  color: glowColor.withOpacity(0.6),
-                  blurRadius: 12,
-                  spreadRadius: 1),
-          ],
+          color: context.theme.surfaceColor,
+          borderRadius: BorderRadius.circular(12),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           child: Stack(
             children: [
-              AppshadowContainer(
-                  color: Colors.grey[850],
+              // 1. Media Display Placeholder
+              Positioned.fill(
+                child: Container(
+                  color: Colors.white.withOpacity(0.05),
                   child: const Center(
-                      child:
-                          Icon(Icons.image, size: 60, color: Colors.white54))),
+                    child: Icon(Icons.play_circle_outline, color: Colors.white24, size: 30),
+                  ),
+                ),
+              ),
+
+              // 2. Trending Badge
+              if (isTrending)
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text(
+                      "TRENDING",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 8,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+
+              // 3. Metrics Overlay & Gradient
               Positioned(
                 bottom: 0,
                 left: 0,
                 right: 0,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                    Colors.black.withOpacity(0.7),
-                    Colors.transparent
-                  ], begin: Alignment.bottomCenter, end: Alignment.topCenter)),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.black.withOpacity(0.8),
+                        Colors.transparent,
+                      ],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                    ),
+                  ),
+                  child: const Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      _OverlayIcon(icon: Icons.favorite, count: "1.2k"),
-                      _OverlayIcon(icon: Icons.comment, count: "300"),
-                      _OverlayIcon(icon: Icons.share, count: "150"),
-                      _OverlayIcon(icon: Icons.download, count: "90"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _MetricItem(icon: Icons.favorite_border, count: "1.2k"),
+                          _MetricItem(icon: Icons.repeat, count: "450"),
+                          _MetricItem(icon: Icons.chat_bubble_outline, count: "120"),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -150,18 +153,23 @@ class PostCard extends StatelessWidget {
   }
 }
 
-class _OverlayIcon extends StatelessWidget {
+class _MetricItem extends StatelessWidget {
   final IconData icon;
   final String count;
 
-  const _OverlayIcon({required this.icon, required this.count});
+  const _MetricItem({required this.icon, required this.count});
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      Icon(icon, color: Colors.white70, size: 18),
-      const SizedBox(width: 4),
-      AppText(text: count, fontSize: 12, color: Colors.white70)
-    ]);
+    return Row(
+      children: [
+        Icon(icon, color: Colors.white, size: 10),
+        const SizedBox(width: 2),
+        Text(
+          count,
+          style: const TextStyle(color: Colors.white, fontSize: 8),
+        ),
+      ],
+    );
   }
 }

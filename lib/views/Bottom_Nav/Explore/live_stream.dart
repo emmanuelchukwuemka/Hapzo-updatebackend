@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:haptext_api/common/coloors.dart';
 import 'package:haptext_api/exports.dart';
 
 class LiveStreamApp extends StatelessWidget {
@@ -23,213 +24,311 @@ class LiveStreamPage extends StatefulWidget {
 
 class _LiveStreamPageState extends State<LiveStreamPage>
     with SingleTickerProviderStateMixin {
-  bool _expanded = false;
-  late AnimationController _controller;
+  bool _isStreamer = false; // Mock toggle for streamer/viewer view
+  final List<Map<String, dynamic>> _comments = [
+    {"user": "Alex", "text": "Great stream!", "type": "text"},
+    {"user": "Sam", "text": "🔊 Voice Note 2s", "type": "voice", "duration": "2s"},
+    {"user": "Taylor", "text": "Can you show that again?", "type": "text"},
+    {"user": "Chris", "text": "Sent a Rose! 🌹", "type": "gift"},
+  ];
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 300));
-  }
-
-  void _toggleMenu() {
-    setState(() {
-      _expanded = !_expanded;
-      _expanded ? _controller.forward() : _controller.reverse();
-    });
-  }
+  // Recording State
+  bool _isRecording = false;
+  Duration _recordDuration = Duration.zero;
+  Timer? _recordTimer;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        const AppshadowContainer(
-            color: Colors.black,
-            child: Icon(Icons.videocam, color: Colors.white24, size: 120)),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          // 1. Main Video Stream Placeholder
+          Positioned.fill(
+            child: Container(
+              color: Colors.black,
+              child: const Center(
+                child: Icon(Icons.videocam_off, color: Colors.white10, size: 100),
+              ),
+            ),
+          ),
 
-        // Gradient overlay
-        Align(
-            alignment: Alignment.bottomCenter,
-            child: AppshadowContainer(
-                height: 250,
-                gradient: LinearGradient(colors: [
-                  Colors.black.withValues(alpha: 0.8),
-                  Colors.transparent
-                ], begin: Alignment.bottomCenter, end: Alignment.topCenter))),
-
-        // Top bar
-        SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            child: Row(
-              children: [
-                const CircleAvatar(
-                    radius: 20,
-                    backgroundImage:
-                        NetworkImage("https://i.pravatar.cc/150?img=32")),
-                const SizedBox(width: 8),
-                const AppText(
-                    text: "StreamerName",
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18),
-                const SizedBox(width: 8),
-                Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          // 2. Top Bar (Live Badge & Viewer Count)
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(12),
+                      color: Coloors.error,
+                      borderRadius: BorderRadius.circular(4),
                     ),
-                    child: const AppText(
-                        text: "LIVE",
+                    child: const Text(
+                      "LIVE",
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 12,
-                        fontWeight: FontWeight.bold)),
-                const Spacer(),
-                const Row(
-                  children: [
-                    Icon(Icons.remove_red_eye, size: 18, color: Colors.white),
-                    SizedBox(width: 4),
-                    AppText(
-                        text: "12.5k",
-                        fontSize: 14,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-
-        // Bottom area
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                // Comments
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _comment("alex", "This stream is fire 🔥"),
-                      _comment("jane", "Hii everyone 👋"),
-                      _comment("mark", "Drop the link pls"),
-                      const SizedBox(height: 8),
-                      _commentInput(),
-                    ],
-                  ),
-                ),
-
-                // Expandable action menu
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizeTransition(
-                      sizeFactor: CurvedAnimation(
-                        parent: _controller,
-                        curve: Curves.easeOut,
-                      ),
-                      axisAlignment: -1.0,
-                      child: Column(
-                        children: [
-                          _actionIcon(Icons.favorite, "12k"),
-                          _actionIcon(Icons.share, "2.1k"),
-                          _actionIcon(Icons.card_giftcard, "150"),
-                          _actionIcon(Icons.person, "Profile"),
-                        ],
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: _toggleMenu,
-                      child: CircleAvatar(
-                        radius: 26,
-                        backgroundColor: Colors.white.withValues(alpha: 0.2),
-                        child: AnimatedIcon(
-                          icon: AnimatedIcons.menu_close,
-                          progress: _controller,
-                          color: Colors.white,
-                          size: 28,
-                        ),
-                      ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    _isStreamer ? "Your Stream" : "StreamerName",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  const Spacer(),
+                  const Icon(Icons.remove_red_eye_outlined, color: Colors.white, size: 18),
+                  const SizedBox(width: 4),
+                  const Text(
+                    "2,543",
+                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                  if (_isStreamer) ...[
+                    const SizedBox(width: 16),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white),
+                      onPressed: () {},
+                    )
+                  ]
+                ],
+              ),
             ),
           ),
-        ),
-      ],
-    );
-  }
 
-  Widget _comment(String user, String text) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2),
-        child: Row(children: [
-          AppText(
-              text: "$user: ",
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 13),
-          AppText(text: text, color: Colors.white, fontSize: 13),
-        ]));
-  }
-
-  Widget _commentInput() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(24),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-        child: Container(
-          color: Colors.white.withValues(alpha: 0.1),
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Row(
-            children: [
-              IconButton(
-                  icon: const Icon(Icons.mic, color: Colors.white70, size: 20),
-                  onPressed: () {
-                    // Record voice note
-                  }),
-              const Expanded(
-                child: TextField(
-                  style: TextStyle(fontSize: 13),
-                  decoration: InputDecoration(
-                    hintText: "Say something...",
-                    border: InputBorder.none,
-                    hintStyle: TextStyle(color: Colors.white54),
-                  ),
+          // 3. Bottom Area (Live Chat & Controls)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.black.withOpacity(0.9),
+                    Colors.transparent,
+                  ],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
                 ),
               ),
-              IconButton(
-                  icon: const Icon(Icons.send, size: 18, color: Colors.white70),
-                  onPressed: () {}),
-            ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Live Chat (Scrollable placeholder)
+                  SizedBox(
+                    height: 180,
+                    child: ListView.builder(
+                      itemCount: _comments.length,
+                      itemBuilder: (context, index) {
+                        final comment = _comments[index];
+                        return _buildCommentItem(comment);
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Control Bar / Input Area
+                  if (_isStreamer)
+                    _buildStreamerControls()
+                  else
+                    _buildViewerInput(),
+                ],
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _actionIcon(IconData icon, String label) {
+  void _toggleRecording() {
+    if (_isRecording) {
+      _stopAndSendRecording();
+    } else {
+      _startRecording();
+    }
+  }
+
+  void _startRecording() {
+    setState(() {
+      _isRecording = true;
+      _recordDuration = Duration.zero;
+    });
+    _recordTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        _recordDuration += const Duration(seconds: 1);
+      });
+    });
+  }
+
+  void _stopAndSendRecording() {
+    _recordTimer?.cancel();
+    setState(() {
+      _isRecording = false;
+      _comments.add({
+        "user": "You",
+        "text": "🔊 Voice Note ${_formatDuration(_recordDuration)}",
+        "type": "voice",
+        "duration": _formatDuration(_recordDuration)
+      });
+    });
+  }
+
+  void _cancelRecording() {
+    _recordTimer?.cancel();
+    setState(() {
+      _isRecording = false;
+      _recordDuration = Duration.zero;
+    });
+  }
+
+  String _formatDuration(Duration d) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
+  }
+
+  Widget _buildCommentItem(Map<String, dynamic> comment) {
+    bool isGift = comment['type'] == 'gift';
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Column(children: [
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "${comment['user']}: ",
+            style: TextStyle(
+              color: isGift ? const Color(0xFFFFD700) : Colors.white70,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+          Expanded(
+            child: comment['type'] == 'voice'
+                ? Row(
+                    children: [
+                      const Icon(Icons.volume_up, color: Colors.white70, size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        "[Voice Note ${comment['duration']}]",
+                        style: const TextStyle(color: Colors.white70, fontSize: 14),
+                      ),
+                    ],
+                  )
+                : Text(
+                    comment['text'],
+                    style: TextStyle(
+                      color: isGift ? const Color(0xFFFFD700) : Colors.white,
+                      fontSize: 14,
+                    ),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStreamerControls() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildControlButton(Icons.mic, "Mic"),
+        _buildControlButton(Icons.videocam, "Camera"),
+        _buildControlButton(Icons.settings, "Settings"),
+        _buildControlButton(Icons.stop_circle, "END", color: Coloors.error),
+      ],
+    );
+  }
+
+  Widget _buildViewerInput() {
+    return Row(
+      children: [
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  color: Colors.white.withOpacity(0.1),
+                  child: Row(
+                    children: [
+                      if (_isRecording)
+                        Expanded(
+                          child: Row(
+                            children: [
+                              const Icon(Icons.circle, color: Colors.red, size: 12),
+                              const SizedBox(width: 8),
+                              Text(_formatDuration(_recordDuration),
+                                  style: const TextStyle(color: Colors.white)),
+                              const Spacer(),
+                              GestureDetector(
+                                onTap: _cancelRecording,
+                                child: const Text("Cancel",
+                                    style: TextStyle(color: Colors.redAccent)),
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        const Expanded(
+                          child: TextField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              hintText: "Type message...",
+                              hintStyle: TextStyle(color: Colors.white38),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      IconButton(
+                        onPressed: _toggleRecording,
+                        icon: Icon(
+                          _isRecording ? Icons.send : Icons.mic,
+                          color: _isRecording ? Colors.cyanAccent : Colors.white70,
+                          size: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        _buildSmallIconAction(Icons.card_giftcard, const Color(0xFFFFD700)),
+        const SizedBox(width: 12),
+        _buildSmallIconAction(Icons.favorite, Coloors.error),
+      ],
+    );
+  }
+
+  Widget _buildControlButton(IconData icon, String label, {Color? color}) {
+    return Column(
+      children: [
         CircleAvatar(
-            radius: 22,
-            backgroundColor: Colors.white.withValues(alpha: 0.1),
-            child: Icon(icon, color: Colors.white, size: 22)),
-        const SizedBox(height: 2),
-        AppText(text: label, fontSize: 12, color: Colors.white70),
-      ]),
+          backgroundColor: Colors.white.withOpacity(0.1),
+          child: Icon(icon, color: color ?? Colors.white),
+        ),
+        const SizedBox(height: 4),
+        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+      ],
+    );
+  }
+
+  Widget _buildSmallIconAction(IconData icon, Color color) {
+    return CircleAvatar(
+      radius: 20,
+      backgroundColor: Colors.white.withOpacity(0.1),
+      child: Icon(icon, color: color, size: 20),
     );
   }
 }

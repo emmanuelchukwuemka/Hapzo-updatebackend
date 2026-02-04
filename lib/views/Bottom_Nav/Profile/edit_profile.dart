@@ -1,8 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
 import 'package:haptext_api/bloc/profile/cubit/profile_cubit.dart';
+import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/utils/extensions.dart';
 import 'package:haptext_api/views/Bottom_Nav/exports.dart';
@@ -149,7 +151,8 @@ class _EditProfileState extends State<EditProfile> {
                               onTap: () {
                                 showModalBottomSheet(
                                     context: context,
-                                    backgroundColor: Colors.white,
+                                    backgroundColor: Colors.transparent,
+                                    isScrollControlled: true,
                                     builder: (_) {
                                       return EthicityModalSheet(
                                           ethicity: (value) {
@@ -171,7 +174,8 @@ class _EditProfileState extends State<EditProfile> {
                               onTap: () {
                                 showModalBottomSheet(
                                     context: context,
-                                    backgroundColor: Colors.white,
+                                    backgroundColor: Colors.transparent,
+                                    isScrollControlled: true,
                                     builder: (_) {
                                       return RelationshipModalSheet(
                                           status: (String value) {
@@ -193,8 +197,9 @@ class _EditProfileState extends State<EditProfile> {
                               hintText: 'lagos , Nigeria',
                               controller: locationController),
                           60.verticalSpace,
-                          Appbutton(
+                              Appbutton(
                               isLoading: watchProfile.state is ProfileLoading,
+                              gradient: true,
                               onTap: () {
                                 final user = context.read<AuthCubit>().useInfo;
                                 // if (formkey.currentState?.validate() ?? false) {
@@ -232,50 +237,66 @@ class EthicityModalSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    return SizedBox(
+    return Container(
       width: size.width,
+      decoration: BoxDecoration(
+        color: context.theme.surfaceColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       child: Padding(
-        padding: EdgeInsets.all(size.width * 0.04),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Center(
-              child: AppText(
-                  text: "Select Ethnicity",
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500)),
-          30.verticalSpace,
-          Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: List.generate(
-                  items.length,
-                  (index) => GestureDetector(
-                        onTap: () {
-                          ethicity(items[index]);
-                          Navigator.pop(context);
-                        },
-                        child: Padding(
-                          padding: EdgeInsetsGeometry.only(
-                              bottom: size.width * 0.04),
-                          child: AppText(
-                              text: items[index].capitalizeFirstChar(),
-                              fontSize: 16),
-                        ),
-                      )))
-        ]),
+        padding: EdgeInsets.all(size.width * 0.06),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start, 
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            const AppText(
+              text: "Select Ethnicity",
+              fontSize: 20,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+            const SizedBox(height: 24),
+            Flexible(
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: items.length,
+                separatorBuilder: (context, index) => Divider(color: Colors.white.withOpacity(0.05)),
+                itemBuilder: (context, index) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: AppText(
+                    text: items[index].capitalizeFirstChar(),
+                    fontSize: 16,
+                    color: Colors.white70,
+                  ),
+                  trailing: const Icon(Icons.chevron_right, color: Colors.white24, size: 20),
+                  onTap: () {
+                    ethicity(items[index]);
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
 
   static List<String> items = [
-    "african",
-    "asian",
-    "caucasian",
-    "hispanic",
-    "middle eastern",
-    "mixed",
-    "native american",
-    " pacific islander",
-    "prefer not say",
-    "other"
+    "african", "asian", "caucasian", "hispanic", "middle eastern",
+    "mixed", "native american", " pacific islander", "prefer not say", "other"
   ];
 }
 
@@ -285,47 +306,65 @@ class RelationshipModalSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    return SizedBox(
+    return Container(
       width: size.width,
+      decoration: BoxDecoration(
+        color: context.theme.surfaceColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       child: Padding(
-        padding: EdgeInsets.all(size.width * 0.04),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Center(
-              child: AppText(
-                  text: "Select RelationShip Status",
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500)),
-          30.verticalSpace,
-          Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: List.generate(
-                  items.length,
-                  (index) => GestureDetector(
-                        onTap: () {
-                          status(items[index]);
-                          Navigator.pop(context);
-                        },
-                        child: Padding(
-                          padding: EdgeInsetsGeometry.only(
-                              bottom: size.width * 0.04),
-                          child: AppText(
-                              text: items[index].capitalizeFirstChar(),
-                              fontSize: 16),
-                        ),
-                      )))
-        ]),
+        padding: EdgeInsets.all(size.width * 0.06),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            const AppText(
+              text: "Relationship Status",
+              fontSize: 20,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+            const SizedBox(height: 24),
+            Flexible(
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: items.length,
+                separatorBuilder: (context, index) => Divider(color: Colors.white.withOpacity(0.05)),
+                itemBuilder: (context, index) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: AppText(
+                    text: items[index].capitalizeFirstChar(),
+                    fontSize: 16,
+                    color: Colors.white70,
+                  ),
+                  trailing: const Icon(Icons.chevron_right, color: Colors.white24, size: 20),
+                  onTap: () {
+                    status(items[index]);
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
 
   static List<String> items = [
-    "single",
-    "in relationship",
-    "engaged",
-    "married",
-    "divorced",
-    "widowed",
-    "complicated",
-    "prefer not say"
+    "single", "in relationship", "engaged", "married",
+    "divorced", "widowed", "complicated", "prefer not say"
   ];
 }

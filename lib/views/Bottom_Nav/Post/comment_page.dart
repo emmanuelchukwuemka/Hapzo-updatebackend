@@ -32,6 +32,11 @@ class _CommentScreenState extends State<CommentScreen>
   // Scroll controller for comments (keeps viewport stable)
   final ScrollController _scrollController = ScrollController();
 
+  // Recording State
+  bool _isRecording = false;
+  Duration _recordDuration = Duration.zero;
+  Timer? _recordTimer;
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +48,7 @@ class _CommentScreenState extends State<CommentScreen>
     _textController.dispose();
     _inputFocus.dispose();
     _scrollController.dispose();
+    _recordTimer?.cancel();
     super.dispose();
   }
 
@@ -135,11 +141,51 @@ class _CommentScreenState extends State<CommentScreen>
     });
   }
 
-  // Mock voice recording from input (creates a voice comment)
-  Future<void> _recordVoiceNote() async {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Recording... (mock)')));
-    await Future.delayed(const Duration(milliseconds: 900));
+  // Audio recording logic
+  void _toggleRecording() {
+    if (_isRecording) {
+      _stopAndSendRecording();
+    } else {
+      _startRecording();
+    }
+  }
+
+  void _startRecording() {
+    setState(() {
+      _isRecording = true;
+      _recordDuration = Duration.zero;
+    });
+    _recordTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        _recordDuration += const Duration(seconds: 1);
+      });
+    });
+  }
+
+  void _stopAndSendRecording() {
+    _recordTimer?.cancel();
+    setState(() {
+      _isRecording = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Voice note sent (simulated)')));
+  }
+
+  void _cancelRecording() {
+    _recordTimer?.cancel();
+    setState(() {
+      _isRecording = false;
+      _recordDuration = Duration.zero;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Recording cancelled')));
+  }
+
+  String _formatDuration(Duration d) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
   }
 
   // Build a comment tile recursively
@@ -498,61 +544,95 @@ class _CommentScreenState extends State<CommentScreen>
 
                   if (_replyTo != null) const SizedBox(height: 8),
                   Row(children: [
-                    // mic button (voice reply mock)
-                    InkWell(
-                      onTap: _recordVoiceNote,
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                          padding: const EdgeInsets.all(10),
+                    if (_isRecording)
+                      Expanded(
+                        child: Container(
+                          height: 50,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           decoration: BoxDecoration(
-                              color: const Color(0xFF161616),
-                              borderRadius: BorderRadius.circular(20)),
-                          child:
-                              const Icon(Icons.mic, color: Colors.cyanAccent)),
-                    ),
-                    const SizedBox(width: 8),
-
-                    Expanded(
-                        child: TextField(
-                            controller: _textController,
-                            focusNode: _inputFocus,
-                            maxLines: null,
-                            style: const TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 14, vertical: 12),
-                                hintText: _replyTo != null
-                                    ? 'Reply to ${_replyTo?.senderUsername ?? ''}…'
-                                    : 'Add a comment',
-                                hintStyle:
-                                    const TextStyle(color: Colors.white54),
-                                filled: true,
-                                fillColor: const Color(0xFF161616),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(24),
-                                    borderSide: BorderSide.none)),
-                            onSubmitted: (_) {})),
+                            color: const Color(0xFF161616),
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.circle, color: Colors.red, size: 12),
+                              const SizedBox(width: 8),
+                              AppText(
+                                  text: _formatDuration(_recordDuration),
+                                  color: Colors.white,
+                                  fontSize: 14),
+                              const Spacer(),
+                              GestureDetector(
+                                onTap: _cancelRecording,
+                                child: const AppText(
+                                    text: "Cancel", color: Colors.red, fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    else ...[
+                      // mic button
+                      InkWell(
+                        onTap: _toggleRecording,
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                color: const Color(0xFF161616),
+                                borderRadius: BorderRadius.circular(20)),
+                            child: const Icon(Icons.mic, color: Colors.cyanAccent)),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                          child: TextField(
+                              controller: _textController,
+                              focusNode: _inputFocus,
+                              maxLines: null,
+                              style: const TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 14, vertical: 12),
+                                  hintText: _replyTo != null
+                                      ? 'Reply to ${_replyTo?.senderUsername ?? ''}…'
+                                      : 'Add a comment',
+                                  hintStyle:
+                                      const TextStyle(color: Colors.white54),
+                                  filled: true,
+                                  fillColor: const Color(0xFF161616),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(24),
+                                      borderSide: BorderSide.none)),
+                              onSubmitted: (_) {})),
+                    ],
                     const SizedBox(width: 8),
                     // quick emoji chooser / send
-                    IconButton(
-                        onPressed: () => _openQuickEmojiPicker(),
-                        icon: const Icon(Icons.emoji_emotions_outlined,
-                            color: Colors.white70)),
-                    watchHome.state is PostCommenting
-                        ? Padding(
-                            padding: EdgeInsets.only(right: size.width * 0.02),
-                            child: LoadingAnimationWidget.inkDrop(
-                                color: Theme.of(context).primaryColor,
-                                size: 20))
-                        : IconButton(
-                            onPressed: () {
-                              readHome.commentOnPost(
-                                  postId: _replyTo?.id ?? "",
-                                  post: _replyTo != null ? null : widget.post,
-                                  comment: _textController.text);
-                            },
-                            icon: const Icon(Icons.send,
-                                color: Colors.cyanAccent)),
+                    if (!_isRecording)
+                      IconButton(
+                          onPressed: () => _openQuickEmojiPicker(),
+                          icon: const Icon(Icons.emoji_emotions_outlined,
+                              color: Colors.white70)),
+                    if (_isRecording)
+                      IconButton(
+                        onPressed: _stopAndSendRecording,
+                        icon: const Icon(Icons.send, color: Colors.cyanAccent),
+                      )
+                    else
+                      watchHome.state is PostCommenting
+                          ? Padding(
+                              padding: EdgeInsets.only(right: size.width * 0.02),
+                              child: LoadingAnimationWidget.inkDrop(
+                                  color: Theme.of(context).primaryColor,
+                                  size: 20))
+                          : IconButton(
+                              onPressed: () {
+                                readHome.commentOnPost(
+                                    postId: _replyTo?.id ?? "",
+                                    post: _replyTo != null ? null : widget.post,
+                                    comment: _textController.text);
+                              },
+                              icon: const Icon(Icons.send,
+                                  color: Colors.cyanAccent)),
                   ]),
                 ])),
           ]),

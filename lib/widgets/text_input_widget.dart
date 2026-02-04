@@ -69,10 +69,10 @@ class _InputFieldState extends State<InputField> {
         if (widget.title != null) ...[
           AppText(
               text: widget.title!,
-              color: Colors.white,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w700),
-          3.verticalSpace
+              color: Colors.white70,
+              fontSize: 14,
+              fontWeight: FontWeight.w600),
+          const SizedBox(height: 8),
         ],
         TextFormField(
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -80,7 +80,7 @@ class _InputFieldState extends State<InputField> {
           textCapitalization: TextCapitalization.sentences,
           onTapOutside: (_) => FocusScope.of(context).unfocus(),
           maxLines: widget.maxLines ?? 1,
-          cursorColor: Colors.black,
+          cursorColor: Colors.white,
           onTap: widget.onTap,
           onEditingComplete: widget.onEditingComplete,
           obscureText: hidePassword && widget.isPassword,
@@ -90,27 +90,29 @@ class _InputFieldState extends State<InputField> {
           inputFormatters: widget.inputFormatters,
           readOnly: widget.isReadOnly,
           validator: widget.validator,
-          style: GoogleFonts.itim(
+          style: GoogleFonts.roboto(
               fontWeight: FontWeight.w400,
-              color: widget.hintTextColor ?? Colors.white,
-              fontSize: widget.hintFontSize ?? 14.sp),
+              color: Colors.white,
+              fontSize: 14),
           decoration: InputDecoration(
             hintText: widget.hintText,
-            fillColor: widget.fillColor,
-            filled: widget.isFilled,
-            hintStyle: GoogleFonts.itim(
-                fontWeight: FontWeight.w300,
-                color: widget.hintTextColor ?? Colors.white,
-                fontSize: widget.hintFontSize ?? 12.sp),
-            contentPadding: EdgeInsets.symmetric(horizontal: size.width * 0.02),
-            errorStyle: GoogleFonts.itim(
-                fontWeight: FontWeight.w300,
-                // color: widget.hintTextColor ?? Colors.white,
-                fontSize: widget.hintFontSize ?? 10.sp),
+            fillColor: widget.fillColor ?? Colors.white.withOpacity(0.05),
+            filled: true,
+            hintStyle: GoogleFonts.roboto(
+                fontWeight: FontWeight.w400,
+                color: Colors.white24,
+                fontSize: 14),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            errorStyle: GoogleFonts.roboto(
+                fontWeight: FontWeight.w400,
+                color: Colors.redAccent,
+                fontSize: 12),
             prefixIcon: widget.prefix,
             border: _border,
             enabledBorder: _border,
             focusedBorder: _focusborder,
+            errorBorder: _errorborder,
+            focusedErrorBorder: _errorborder,
             suffixIcon: widget.isPassword
                 ? GestureDetector(
                     onTap: () {
@@ -123,7 +125,8 @@ class _InputFieldState extends State<InputField> {
                         hidePassword
                             ? Icons.visibility_outlined
                             : Icons.visibility_off_outlined,
-                        size: 20.sp),
+                        color: Colors.white38,
+                        size: 20),
                   )
                 : widget.suffix,
           ),
@@ -134,13 +137,19 @@ class _InputFieldState extends State<InputField> {
 
   OutlineInputBorder get _border {
     return OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.grey.withAlpha(80)),
-        borderRadius: BorderRadius.circular(5.r));
+        borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+        borderRadius: BorderRadius.circular(12));
   }
 
   OutlineInputBorder get _focusborder {
     return OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.orange),
-        borderRadius: BorderRadius.circular(5.r));
+        borderSide: const BorderSide(color: Color(0xFF8B5CF6)), // primaryStart
+        borderRadius: BorderRadius.circular(12));
+  }
+
+  OutlineInputBorder get _errorborder {
+    return OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.redAccent),
+        borderRadius: BorderRadius.circular(12));
   }
 }

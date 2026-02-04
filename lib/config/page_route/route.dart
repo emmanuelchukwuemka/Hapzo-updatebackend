@@ -1,5 +1,6 @@
-import 'package:haptext_api/exports.dart';
+import 'package:haptext_api/exports.dart' hide ChatsHome, ChatScreen;
 import 'package:haptext_api/main.dart';
+import 'package:haptext_api/views/chat_ui/chats_home.dart';
 import 'package:haptext_api/models/searched_user_model.dart';
 import 'package:haptext_api/views/Bottom_Nav/People/friend_profile_page.dart';
 import 'package:haptext_api/views/Bottom_Nav/Post/comment_page.dart';

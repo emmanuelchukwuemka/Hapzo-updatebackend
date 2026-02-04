@@ -10,6 +10,8 @@ import 'package:haptext_api/repository/people_repo/people_repo.dart';
 import 'package:haptext_api/repository/profile_repo/profile_repo.dart';
 import 'common/theme/dark_theme.dart';
 import 'common/theme/light_theme.dart';
+import 'package:provider/provider.dart';
+import 'package:haptext_api/services/chat_ui/auth_provider.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -28,7 +30,11 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => ProfileCubit(ProfileRepo())),
           BlocProvider(create: (context) => PeopleCubit(PeopleRepo())),
         ],
-        child: ScreenUtilInit(
+        child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => AuthProvider()),
+          ],
+          child: ScreenUtilInit(
             designSize: MediaQuery.sizeOf(context),
             minTextAdapt: true,
             splitScreenMode: true,
@@ -44,6 +50,6 @@ class MyApp extends StatelessWidget {
                       data: MediaQuery.of(context)
                           .copyWith(textScaler: const TextScaler.linear(1.0)),
                       child: child!);
-                })));
+                }))));
   }
 }

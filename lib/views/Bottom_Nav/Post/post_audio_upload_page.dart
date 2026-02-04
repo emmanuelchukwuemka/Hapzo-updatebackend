@@ -26,6 +26,8 @@ class _PostAudioUploadPageState extends State<PostAudioUploadPage> {
 
   DateTime? _scheduledDate;
   bool isRecording = false;
+  Duration _recordDuration = Duration.zero;
+  Timer? _recordTimer;
   SearchedUserModel? taggedUsers;
   String? selectedAudioPath;
 
@@ -68,6 +70,7 @@ class _PostAudioUploadPageState extends State<PostAudioUploadPage> {
   @override
   void dispose() {
     _player.dispose();
+    _recordTimer?.cancel();
     super.dispose();
   }
 
@@ -78,14 +81,38 @@ class _PostAudioUploadPageState extends State<PostAudioUploadPage> {
     await _audioRecorder.startRecording(filePath);
     setState(() {
       isRecording = true;
+      _recordDuration = Duration.zero;
+    });
+    _recordTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        _recordDuration += const Duration(seconds: 1);
+      });
     });
   }
 
   Future<void> stopRecording() async {
+    _recordTimer?.cancel();
     selectedAudioPath = await _audioRecorder.stopRecording();
     setState(() {
       isRecording = false;
     });
+  }
+
+  Future<void> cancelRecording() async {
+    _recordTimer?.cancel();
+    await _audioRecorder.stopRecording();
+    setState(() {
+      isRecording = false;
+      selectedAudioPath = null;
+      _recordDuration = Duration.zero;
+    });
+  }
+
+  String _formatDuration(Duration d) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
   }
 
   @override
@@ -115,32 +142,52 @@ class _PostAudioUploadPageState extends State<PostAudioUploadPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Audio container
                     AppshadowContainer(
                         height: 120,
                         color: selectedColor,
                         child: Center(
-                            child: selectedAudioPath == null
-                                ? const AppText(
-                                    text: "No audio selected",
-                                    fontSize: 18,
-                                    color: Colors.white)
-                                : Column(
+                            child: isRecording
+                                ? Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                        AppText(
-                                            text: selectedAudioPath!,
-                                            textAlign: TextAlign.center,
-                                            fontSize: 16),
-                                        IconButton(
-                                            icon: Icon(
-                                                _player.playing
-                                                    ? Icons.pause_circle
-                                                    : Icons.play_circle,
-                                                size: 40,
-                                                color: Colors.black87),
-                                            onPressed: _playPauseAudio)
-                                      ]))),
+                                      const Icon(Icons.circle,
+                                          color: Colors.red, size: 24),
+                                      const SizedBox(height: 8),
+                                      AppText(
+                                          text:
+                                              "Recording: ${_formatDuration(_recordDuration)}",
+                                          fontSize: 18,
+                                          color: Colors.white),
+                                      const SizedBox(height: 8),
+                                      TextButton(
+                                          onPressed: cancelRecording,
+                                          child: const AppText(
+                                              text: "Cancel",
+                                              color: Colors.redAccent))
+                                    ],
+                                  )
+                                : selectedAudioPath == null
+                                    ? const AppText(
+                                        text: "No audio selected",
+                                        fontSize: 18,
+                                        color: Colors.white)
+                                    : Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                            AppText(
+                                                text: "Recording ready",
+                                                textAlign: TextAlign.center,
+                                                fontSize: 16),
+                                            IconButton(
+                                                icon: Icon(
+                                                    _player.playing
+                                                        ? Icons.pause_circle
+                                                        : Icons.play_circle,
+                                                    size: 40,
+                                                    color: Colors.black87),
+                                                onPressed: _playPauseAudio)
+                                          ]))),
                     const SizedBox(height: 20),
 
                     // Record & Select buttons

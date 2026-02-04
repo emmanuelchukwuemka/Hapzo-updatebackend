@@ -4,6 +4,7 @@ import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/bloc/people/cubit/people_cubit.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
+import 'package:haptext_api/common/coloors.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/network/export_network.dart';
 import 'package:haptext_api/views/Bottom_Nav/exports.dart';
@@ -64,212 +65,83 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final watchPeople = context.watch<PeopleCubit>();
     final user = context.watch<AuthCubit>().useInfo;
-    return BlocListener<PeopleCubit, PeopleState>(
-      listener: (context, state) {
-        if (state is CurrentUser) {
-          setState(() {
-            user.profile = state.user;
-          });
-        }
-      },
-      child: Scaffold(
-          appBar: AppBar(
-              automaticallyImplyLeading: false,
-              title: const AppText(
-                  text: '  Profile',
-                  fontSize: 20,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold),
-              elevation: 0,
-              actions: [
-                const Icon(Icons.remove_red_eye_rounded, size: 20),
-                const SizedBox(width: 15.0),
-                PopupMenuButton(
-                    position: PopupMenuPosition.under,
-                    icon: const Icon(Icons.more_vert, size: 22),
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(0.0),
-                            bottomRight: Radius.circular(30),
-                            bottomLeft: Radius.circular(30))),
-                    itemBuilder: (BuildContext context) => [
-                          PopupMenuItem(
-                              child: InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => const PostTest()));
-                                  },
-                                  child: const AppText(
-                                      text: 'Posts',
-                                      fontSize: 16,
-                                      color: Colors.white))),
-                          PopupMenuItem(
-                              child: InkWell(
-                                  onTap: () {},
-                                  child: const AppText(
-                                      text: 'Settings',
-                                      fontSize: 16,
-                                      color: Colors.white))),
-                          PopupMenuItem(
-                              child: InkWell(
-                                  onTap: () {
-                                    context.go(RouteName.login.path);
-                                  },
-                                  child: const AppText(
-                                      text: 'Log out',
-                                      fontSize: 16,
-                                      color: Colors.white)))
-                        ]),
-                const SizedBox(width: 5.0)
-              ]),
-          body: Padding(
-            padding: const EdgeInsets.only(top: 10, left: 5, right: 5),
-            child: RefreshIndicator(
-              onRefresh: () async {
-                await context.read<PeopleCubit>().fetchUserProfileById(
-                    userId: user.id ?? '', loggedInUser: true);
-                userPosts = await context
-                        .read<HomeCubit>()
-                        .fetchUserPosts(userId: user.id ?? "") ??
-                    [];
-              },
-              child: ListView(children: [
-                Container(
-                  height: size.height * .375,
-                  width: double.infinity,
-                  color: Colors.black12,
-                  child: Stack(
+    final primaryGradient = const LinearGradient(colors: [Coloors.primaryStart, Coloors.primaryEnd]);
+
+    return Scaffold(
+      backgroundColor: context.theme.bgColor,
+      body: BlocListener<PeopleCubit, PeopleState>(
+        listener: (context, state) {
+          if (state is CurrentUser) {
+            setState(() {
+              user.profile = state.user;
+            });
+          }
+        },
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await context.read<PeopleCubit>().fetchUserProfileById(
+                userId: user.id ?? '', loggedInUser: true);
+            userPosts = await context
+                    .read<HomeCubit>()
+                    .fetchUserPosts(userId: user.id ?? "") ??
+                [];
+          },
+          child: CustomScrollView(
+            slivers: [
+              // 1. Dynamic AppBar
+              SliverAppBar(
+                expandedHeight: 240,
+                pinned: true,
+                stretch: true,
+                backgroundColor: context.theme.bgColor,
+                elevation: 0,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Stack(
+                    fit: StackFit.expand,
                     children: [
-                      AppNetwokImage(
+                      // Banner Gradient Background
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Coloors.primaryStart.withOpacity(0.8),
+                              Coloors.primaryEnd.withOpacity(0.4),
+                              Coloors.background,
+                            ],
+                          ),
+                        ),
+                      ),
+                      // Backdrop image if available (using profile pic as placeholder)
+                      Opacity(
+                        opacity: 0.3,
+                        child: AppNetwokImage(
+                          height: 240,
                           width: size.width,
-                          height: size.height * .17,
                           imageUrl: user.profile?.profilePicture ?? "",
-                          fit: BoxFit.cover),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      // Overlay for name/username inside flexible space
+                      Positioned(
+                        bottom: 40,
+                        left: 20,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
-                              width: size.width * .35,
-                              height: double.infinity,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  InkWell(
-                                      onTap: () {},
-                                      child: AppNetwokImage(
-                                          width: size.width * .250,
-                                          height: size.width * .250,
-                                          radius: size.width * 0.7,
-                                          fit: BoxFit.cover,
-                                          imageUrl:
-                                              "${ApiConstants.baseUrl}/${user.profile?.profilePicture ?? ""}")),
-                                  AppText(
-                                      text:
-                                          "${user.profile?.firstName ?? ''} ${user.profile?.lastName ?? ''}",
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                  AppText(
-                                      text: '@${user.username}',
-                                      fontSize: 12,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                  const SizedBox(height: 15.0),
-                                ],
-                              ),
+                            AppText(
+                              text: "${user.profile?.firstName ?? ''} ${user.profile?.lastName ?? ''}",
+                              fontSize: 24,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
                             ),
-                            SizedBox(
-                              width: size.width * .6,
-                              height: double.infinity,
-                              // color: Colors.orange,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  SizedBox(height: size.height * .175),
-                                  Expanded(
-                                      // width: double.infinity,
-                                      // height: size.height * .1,
-                                      // color: Colors.blueAccent,
-                                      child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 4, bottom: 5.0),
-                                          child: InkWell(
-                                              onTap: () =>
-                                                  _showOptionsDialog(context),
-                                              child: AppText(
-                                                  text: user.profile?.bio ?? '',
-                                                  fontSize: 16.0,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w400,
-                                                  textAlign: TextAlign.justify,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  maxLines: 3)))),
-                                  SizedBox(
-                                      width: double.infinity,
-                                      height: 65.0,
-                                      // color: Colors.orange,
-                                      child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Column(children: [
-                                              AppText(
-                                                  text:
-                                                      '${user.profile?.postCount ?? 0}',
-                                                  fontSize: 20,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold),
-                                              const AppText(
-                                                  text: 'Posts',
-                                                  fontSize: 12.0,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold)
-                                            ]),
-                                            Column(
-                                              children: [
-                                                AppText(
-                                                    text:
-                                                        '${user.profile?.followerCount ?? 0}',
-                                                    fontSize: 20,
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                                const AppText(
-                                                    text: 'Followers',
-                                                    color: Colors.white,
-                                                    fontSize: 12.0,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ],
-                                            ),
-                                            Column(children: [
-                                              AppText(
-                                                  text:
-                                                      '${user.profile?.followingCount ?? 0}',
-                                                  fontSize: 20,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold),
-                                              const AppText(
-                                                  text: 'Following',
-                                                  fontSize: 12.0,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold)
-                                            ])
-                                          ])),
-                                ],
-                              ),
+                            AppText(
+                              text: "@${user.username}",
+                              fontSize: 14,
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w500,
                             ),
                           ],
                         ),
@@ -277,94 +149,224 @@ class _ProfilePageState extends State<ProfilePage>
                     ],
                   ),
                 ),
-                const SizedBox(height: 20.0),
-                // Edit Profile
-                GestureDetector(
-                    onTap: () {
-                      context.push(RouteName.editProfile.path);
-                    },
-                    child: Container(
-                        color: Colors.black12,
-                        height: 35,
-                        width: double.infinity,
-                        child: const Center(
-                            child: AppText(
-                                text: 'Edit profile', color: Colors.white)))),
-                // TABS
-                Column(
-                  children: [
-                    SizedBox(
-                        height: 40,
-                        width: double.infinity,
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: List.generate(items.length, (index) {
-                              return GestureDetector(
-                                  onTap: () async {
-                                    setState(() {
-                                      current = index;
-                                    });
-                                  },
-                                  child: Column(children: [
-                                    5.verticalSpace,
-                                    Center(
-                                        child: AppText(
-                                            text: items[index],
-                                            fontWeight: FontWeight.w500,
-                                            color: current == index
-                                                ? context.theme.primaryColor
-                                                : context.theme.greyColor,
-                                            fontSize: 12.5)),
-                                    10.verticalSpace,
-                                    AnimatedContainer(
-                                        duration:
-                                            const Duration(milliseconds: 450),
-                                        color: current == index
-                                            ? context.theme.primaryColor
-                                            : Colors.transparent,
-                                        height: 5,
-                                        width: 75)
-                                  ]));
-                            }))),
-                    Container(
-                        margin: const EdgeInsets.only(top: 7.5),
-                        height: size.height * .40,
-                        width: double.infinity,
-                        child: current == 0
-                            ? Tab1(
-                                photoPosts: userPosts
-                                    .where((e) => e.postFormat == 'image')
-                                    .toList())
-                            : current == 1
-                                ? ProfileVideoTab(
-                                    videposts: userPosts
-                                        .where((e) => e.postFormat == 'video')
-                                        .toList())
-                                : current == 2
-                                    ? ProfileTextTab(
-                                        textPosts: userPosts
-                                            .where(
-                                                (e) => e.postFormat == 'text')
-                                            .toList())
-                                    : ProfileAudioTab(
-                                        audioPosts: userPosts
-                                            .where(
-                                                (e) => e.postFormat == 'text')
-                                            .toList())
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.settings_outlined, color: Colors.white),
+                    onPressed: () {},
+                  ),
+                  const SizedBox(width: 8),
+                ],
+              ),
 
-                        // child: tabss[current],
+              // 2. Profile Info Section
+              SliverToBoxAdapter(
+                child: Container(
+                  transform: Matrix4.translationValues(0, -30, 0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Overlapping Avatar
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: context.theme.bgColor!, width: 4),
+                              boxShadow: [
+                                BoxShadow(color: Colors.black26, blurRadius: 10, offset: const Offset(0, 4))
+                              ],
+                            ),
+                            child: AppNetwokImage(
+                              width: 90,
+                              height: 90,
+                              radius: 45,
+                              fit: BoxFit.cover,
+                              imageUrl: user.profile?.profilePicture ?? "",
+                            ),
+                          ),
+                          // Edit Button
+                          GestureDetector(
+                            onTap: () => context.push(RouteName.editProfile.path),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                              decoration: BoxDecoration(
+                                gradient: primaryGradient,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: const Text(
+                                "Edit Profile",
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Bio
+                      if (user.profile?.bio?.isNotEmpty ?? false)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Text(
+                            user.profile?.bio ?? '',
+                            style: const TextStyle(color: Colors.white70, fontSize: 14, height: 1.5),
+                          ),
                         ),
-                  ],
+
+                      // Location/Info Badges
+                      Row(
+                        children: [
+                          _infoBadge(Icons.location_on_outlined, user.profile?.location ?? "Global"),
+                          const SizedBox(width: 16),
+                          _infoBadge(Icons.calendar_month_outlined, "Joined Jan 2024"),
+                        ],
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // Stats Row
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: context.theme.surfaceColor,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.white.withOpacity(0.05)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            _statItem("${user.profile?.postCount ?? 0}", "Posts"),
+                            _statDivider(),
+                            _statItem("${user.profile?.followerCount ?? 0}", "Followers"),
+                            _statDivider(),
+                            _statItem("${user.profile?.followingCount ?? 0}", "Following"),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+                    ],
+                  ),
                 ),
-              ]),
-            ),
-          )
-          // const Visibility(
-          //   visible: true,
-          //   replacement: Center(child: CircularProgressIndicator(),),
-          //   child: AppText(text:''),
-          // ),
+              ),
+
+              // 3. Sticky Tabs Indicator
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _SliverAppBarDelegate(
+                  child: Container(
+                    color: context.theme.bgColor,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: List.generate(items.length, (index) {
+                          bool isActive = current == index;
+                          return GestureDetector(
+                            onTap: () => setState(() => current = index),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  items[index],
+                                  style: TextStyle(
+                                    color: isActive ? Colors.white : Colors.white38,
+                                    fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  height: 3,
+                                  width: isActive ? 40 : 0,
+                                  decoration: BoxDecoration(
+                                    gradient: primaryGradient,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // 4. Content Grid
+              SliverPadding(
+                padding: const EdgeInsets.only(top: 8),
+                sliver: SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: size.height * 0.6,
+                    child: _buildTabContent(user),
+                  ),
+                ),
+              ),
+            ],
           ),
+        ),
+      ),
     );
   }
+
+  Widget _infoBadge(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, size: 14, color: Colors.white38),
+        const SizedBox(width: 4),
+        Text(text, style: const TextStyle(color: Colors.white38, fontSize: 12)),
+      ],
+    );
+  }
+
+  Widget _statItem(String count, String label) {
+    return Column(
+      children: [
+        Text(count, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 4),
+        Text(label, style: const TextStyle(color: Colors.white38, fontSize: 12)),
+      ],
+    );
+  }
+
+  Widget _statDivider() {
+    return Container(height: 30, width: 1, color: Colors.white10);
+  }
+
+  Widget _buildTabContent(user) {
+    if (current == 0) {
+      return Tab1(photoPosts: userPosts.where((e) => e.postFormat == 'image').toList());
+    } else if (current == 1) {
+      return ProfileVideoTab(videposts: userPosts.where((e) => e.postFormat == 'video').toList());
+    } else if (current == 2) {
+      return ProfileTextTab(textPosts: userPosts.where((e) => e.postFormat == 'text').toList());
+    } else {
+      return ProfileAudioTab(audioPosts: userPosts.where((e) => e.postFormat == 'text').toList());
+    }
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate({required this.child});
+  final Widget child;
+
+  @override
+  double get minExtent => 50;
+  @override
+  double get maxExtent => 50;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return child;
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) => false;
 }
