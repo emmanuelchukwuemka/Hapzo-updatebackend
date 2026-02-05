@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
+import 'package:haptext_api/models/searched_user_model.dart';
+import 'package:haptext_api/views/Bottom_Nav/People/friend_profile_page.dart';
 
-Widget friendCardWidget(BuildContext context, String text, String img) {
+Widget friendCardWidget(BuildContext context, String text, String img, {SearchedUserModel? user}) {
   return GestureDetector(
     onTap: () {
-      // Navigation logic will be added when FriendProfilePage is ready
+      if (user != null) {
+        context.push('/friend-profile', extra: user);
+      }
     },
     child: Container(
       decoration: BoxDecoration(

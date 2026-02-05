@@ -123,6 +123,12 @@ class AppRoute {
             final SearchedUserModel user = state.extra as SearchedUserModel;
             return FriendProfilePage(user: user);
           }),
+      GoRoute(
+          path: '/friend-profile',
+          builder: (context, state) {
+            final SearchedUserModel user = state.extra as SearchedUserModel;
+            return FriendProfilePage(user: user);
+          }),
     ],
   );
 }

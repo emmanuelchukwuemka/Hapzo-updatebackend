@@ -95,7 +95,8 @@ class _FollowingsState extends State<Followings> {
                       return friendCardWidget(
                         context,
                         "${user.lastName ?? ""} ${user.firstName ?? ""}".trim(),
-                        user.profilePicture ?? 'assets/images/placeholder.jpg', // Should use AppNetworkImage internally ideally
+                        user.profilePicture ?? 'assets/images/placeholder.jpg',
+                        user: user,
                       );
                     },
                   ),
