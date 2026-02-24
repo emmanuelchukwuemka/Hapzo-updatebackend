@@ -28,63 +28,18 @@ class _ChatsHomeState extends State<ChatsHome> {
     super.initState();
     _chatApiService = ChatApiService(_apiService);
     
-    // Initialize with some mock data first or empty
-    _chats = [
-      ChatItem(
-        id: '1',
-        name: 'Tech Enthusiasts',
-        lastMessage: 'The new Flutter update is amazing! 🚀',
-        unread: 3,
-        pinned: true,
-        chatMode: ChatMode.mixed,
-        themeIndex: 0,
-      ),
-      ChatItem(
-        id: '2',
-        name: 'Sarah Wilson',
-        lastMessage: 'Voice Note (0:45)',
-        unread: 1,
-        pinned: true,
-        chatMode: ChatMode.voiceOnly,
-        themeIndex: 1,
-      ),
-      ChatItem(
-        id: '3',
-        name: 'Project Alpha',
-        lastMessage: 'Meeting moved to 3 PM tomorrow.',
-        unread: 0,
-        pinned: false,
-        chatMode: ChatMode.textOnly,
-        themeIndex: 2,
-      ),
-      ChatItem(
-        id: '4',
-        name: 'Crypto Chat',
-        lastMessage: 'Check out the new market trends! 📈',
-        unread: 12,
-        pinned: false,
-        chatMode: ChatMode.mixed,
-        themeIndex: 3,
-      ),
-      ChatItem(
-        id: '5',
-        name: 'Family Group',
-        lastMessage: 'Dinner at 7?',
-        unread: 0,
-        pinned: false,
-        chatMode: ChatMode.callsOnly,
-        themeIndex: 0,
-      ),
-      ChatItem(
-        id: '6',
-        name: 'Design Team',
-        lastMessage: 'Sent a prototype link.',
-        unread: 0,
-        pinned: false,
-        chatMode: ChatMode.mixed,
-        themeIndex: 1,
-      ),
-    ];
+    // Initialize with empty list
+    _chats = [];
+
+    // Inject auth token and load real data
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      if (authProvider.currentUserToken != null) {
+        _apiService.setToken(authProvider.currentUserToken!);
+        _apiService.currentUserId = authProvider.currentUserId;
+        _loadConversations();
+      }
+    });
   }
 
   Future<void> _loadConversations() async {

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:haptext_api/views/Bottom_Nav/exports.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:haptext_api/bloc/people/cubit/people_cubit.dart';
+import 'package:haptext_api/exports.dart';
 
 class Friend extends StatefulWidget {
   const Friend({super.key});
@@ -49,17 +52,31 @@ class _FriendState extends State<Friend> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: GridView.builder(
-              padding: const EdgeInsets.only(bottom: 20),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 12.0,
-                mainAxisSpacing: 12.0,
-                childAspectRatio: 0.75,
-              ),
-              itemCount: 12, // Mock count
-              itemBuilder: (context, index) =>
-                  friendCardWidget(context, 'Sasuke Uchiha', 'assets/images/placeholder.jpg'),
+            child: BlocBuilder<PeopleCubit, PeopleState>(
+              builder: (context, state) {
+                final friends = context.read<PeopleCubit>().friends;
+                if (friends.isEmpty) {
+                  return Center(child: AppText(text: 'No friends found'));
+                }
+                return GridView.builder(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 12.0,
+                    mainAxisSpacing: 12.0,
+                    childAspectRatio: 0.75,
+                  ),
+                  itemCount: friends.length,
+                  itemBuilder: (context, index) {
+                    final friend = friends[index];
+                    return friendCardWidget(
+                      context,
+                      '${friend.firstName} ${friend.lastName}',
+                      friend.profilePicture ?? 'assets/images/placeholder.jpg',
+                    );
+                  },
+                );
+              },
             ),
           ),
         ),

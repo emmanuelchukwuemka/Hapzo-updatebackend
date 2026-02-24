@@ -10,6 +10,20 @@ class AuthProvider with ChangeNotifier {
   bool get isAuthenticated => _isAuthenticated;
   String? get currentUserToken => _currentUserToken;
   String? get currentUserId => _currentUserId;
+  HapzTextApiService get apiService => _apiService;
+
+  /// Sync token from the main auth system (SessionManager/AuthCubit)
+  /// Call this after login or when restoring a session from splash screen.
+  void setTokenFromSession(String token, String? userId) {
+    if (token.isNotEmpty) {
+      _currentUserToken = token;
+      _currentUserId = userId;
+      _isAuthenticated = true;
+      _apiService.setToken(token);
+      _apiService.currentUserId = userId;
+      notifyListeners();
+    }
+  }
 
   // Register a new user
   Future<bool> register({

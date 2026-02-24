@@ -115,71 +115,8 @@ class _ChatScreenState extends State<ChatScreen> {
       _loadMessagesFromApi();
     });
     
-    // Initialize with sample messages (cleared by _loadMessagesFromApi)
-    _messages = [
-      Message(
-        id: '1',
-        text: 'Hey! Did you see the new UI designs?',
-        me: false,
-        timestamp: DateTime.now().subtract(const Duration(hours: 2, minutes: 30)),
-      ),
-      Message(
-        id: '2',
-        text: 'Yes! They look absolutely stunning. The gradients are a nice touch.',
-        me: true,
-        timestamp: DateTime.now().subtract(const Duration(hours: 2, minutes: 28)),
-        viewed: true,
-      ),
-      Message(
-        id: '3',
-        text: 'I especially like the new message bubbles.',
-        me: true,
-        timestamp: DateTime.now().subtract(const Duration(hours: 2, minutes: 27)),
-        viewed: true,
-      ),
-      Message(
-        id: '4',
-        text: 'Check out this inspiration I found!',
-        me: false,
-        timestamp: DateTime.now().subtract(const Duration(hours: 1, minutes: 15)),
-      ),
-      Message(
-        id: '5',
-         text: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop',
-        me: false,
-        isImage: true,
-        imageUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop',
-        timestamp: DateTime.now().subtract(const Duration(hours: 1, minutes: 14)),
-      ),
-      Message(
-        id: '6',
-        text: 'That looks great! Fits the vibe perfectly.',
-        me: true,
-        timestamp: DateTime.now().subtract(const Duration(hours: 1, minutes: 10)),
-        viewed: true,
-      ),
-       Message(
-        id: '7',
-        text: 'Voice Note',
-        me: false,
-        isVoice: true,
-        audioPath: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-        timestamp: DateTime.now().subtract(const Duration(minutes: 45)),
-      ),
-      Message(
-        id: '8',
-        text: 'I agree completely. Let\'s go with this direction.',
-        me: false,
-        timestamp: DateTime.now().subtract(const Duration(minutes: 40)),
-      ),
-      Message(
-        id: '9',
-        text: 'Awesome! 🚀',
-        me: true,
-        timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
-        viewed: false,
-      ),
-    ];
+    // Initialize with empty list and load from API
+    _messages = [];
   }
 
   bool _isWithinAutoClearWindow() {
@@ -506,14 +443,24 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _startVoiceCall() {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const VoiceCallScreen(isVideoCall: false)),
+      MaterialPageRoute(
+        builder: (context) => VoiceCallScreen(
+          isVideoCall: false,
+          channelName: _chat.id,
+        ),
+      ),
     );
   }
 
 
   void _startVideoCall() {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const VoiceCallScreen(isVideoCall: true)),
+      MaterialPageRoute(
+        builder: (context) => VoiceCallScreen(
+          isVideoCall: true,
+          channelName: _chat.id,
+        ),
+      ),
     );
   }
 

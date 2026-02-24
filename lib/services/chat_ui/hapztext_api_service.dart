@@ -221,7 +221,7 @@ class HapzTextApiService {
       };
 
       final response = await http.post(
-        Uri.parse('$baseUrl/api/v1/auth/register/'),
+        Uri.parse('$baseUrl/api/v1/authentication/register/'),
         headers: _headers,
         body: json.encode(userData),
       );
@@ -251,7 +251,7 @@ class HapzTextApiService {
       };
 
       final response = await http.post(
-        Uri.parse('$baseUrl/api/v1/auth/login/'),
+        Uri.parse('$baseUrl/api/v1/authentication/login/'),
         headers: _headers,
         body: json.encode(loginData),
       );

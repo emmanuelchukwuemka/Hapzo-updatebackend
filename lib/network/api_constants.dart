@@ -22,6 +22,7 @@ class ApiConstants {
   static String get updateProfileUrl => "$userProfileBaseUrl/profile/update/";
   static String aceeptOrDeclineFollowUrl({requestId}) =>
       "$userProfileBaseUrl/follow-request/handle/$requestId/";
+  // TODO: Backend returned 404 for this URL pattern. Verify correct endpoint with backend team.
   static String pendingFollowRequestUrl({page}) =>
       "$userProfileBaseUrl/follow-requests/pending/$page/20/";
   static String getFriendsUrl({page}) =>

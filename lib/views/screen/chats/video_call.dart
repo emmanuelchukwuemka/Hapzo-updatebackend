@@ -2,51 +2,34 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:haptext_api/services/chat_ui/agora_call_service.dart';
 
-class Participant {
+class _GCallParticipant {
   final String id;
   String name;
   bool muted;
   bool videoOn;
-  bool sharing; // is screen-sharing
-  bool speaking; // active speaker highlight
+  bool sharing;
+  bool speaking;
+  int? remoteUid;
 
-  Participant({
+  _GCallParticipant({
     required this.id,
     required this.name,
     this.muted = false,
     this.videoOn = true,
     this.sharing = false,
     this.speaking = false,
+    this.remoteUid,
   });
-
-  Participant copyWith({
-    String? name,
-    bool? muted,
-    bool? videoOn,
-    bool? sharing,
-    bool? speaking,
-  }) {
-    return Participant(
-      id: id,
-      name: name ?? this.name,
-      muted: muted ?? this.muted,
-      videoOn: videoOn ?? this.videoOn,
-      sharing: sharing ?? this.sharing,
-      speaking: speaking ?? this.speaking,
-    );
-  }
-}
-
-class FloatingBubble {
-  final String id;
-  final String text;
-  final Color color;
-  FloatingBubble({required this.id, required this.text, required this.color});
 }
 
 class GroupCallPage extends StatefulWidget {
-  const GroupCallPage({super.key});
+  final String? channelName;
+  final int? localUid;
+
+  const GroupCallPage({super.key, this.channelName, this.localUid});
 
   @override
   State<GroupCallPage> createState() => _GroupCallPageState();
@@ -54,193 +37,172 @@ class GroupCallPage extends StatefulWidget {
 
 class _GroupCallPageState extends State<GroupCallPage>
     with TickerProviderStateMixin {
-  final List<Participant> _participants = [];
+  // Agora
+  late final AgoraCallService _agoraService;
+  bool _isJoining = true;
+  bool _isConnected = false;
+
+  final List<_GCallParticipant> _participants = [];
   String myId = 'me';
   bool _muted = false;
   bool _videoOn = true;
 
   // UI state
-  String? focusParticipantId; // if set, show full screen focus
-  bool isScreenSharing = false; // if any participant is sharing we adapt layout
-  String? screenSharingId;
-  Offset myPreviewOffset =
-      const Offset(18, 18); // draggable self preview offset
-  final List<FloatingBubble> _bubbles = [];
-  final GlobalKey _gridKey = GlobalKey();
+  String? focusParticipantId;
+  Offset myPreviewOffset = const Offset(18, 18);
+
+  // Call timer
+  final Stopwatch _callStopwatch = Stopwatch();
+  Timer? _timerUpdate;
+  String _callDuration = '00:00';
 
   @override
   void initState() {
     super.initState();
-    // Seed participants (mock)
-    _participants.addAll([
-      Participant(id: 'me', name: 'You', muted: false, videoOn: true),
-      Participant(id: 'alice', name: 'Alice', muted: false, videoOn: true),
-      Participant(id: 'bob', name: 'Bob', muted: true, videoOn: false),
-      Participant(id: 'carol', name: 'Carol', muted: false, videoOn: true),
-    ]);
-    // Simulate a random speaker occasionally
-    Timer.periodic(const Duration(seconds: 3), (_) => _randomSpeakPulse());
+    _participants.add(
+      _GCallParticipant(id: 'me', name: 'You', muted: false, videoOn: true),
+    );
+
+    _agoraService = AgoraCallService();
+    _initializeAgora();
   }
 
-  void _randomSpeakPulse() {
-    if (!mounted) return;
-    setState(() {
-      for (var p in _participants) {
-        p.speaking = false;
-      }
-      final idx = Random().nextInt(_participants.length);
-      _participants[idx].speaking = true;
-    });
-  }
-
-  // Add participant
-  void _showAddParticipants() {
-    final candidates = [
-      Participant(id: 'dan', name: 'Dan'),
-      Participant(id: 'erin', name: 'Erin'),
-      Participant(id: 'femi', name: 'Femi'),
-      Participant(id: 'gina', name: 'Gina'),
-      Participant(id: 'harry', name: 'Harry'),
-    ];
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.black87,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
-      builder: (ctx) {
-        return Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Container(
-                height: 6,
-                width: 60,
-                decoration: BoxDecoration(
-                    color: Colors.white10,
-                    borderRadius: BorderRadius.circular(6))),
-            const SizedBox(height: 12),
-            const Text('Add participants',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            ...candidates.map((c) {
-              final already = _participants.any((p) => p.id == c.id);
-              return ListTile(
-                leading: CircleAvatar(child: Text(c.name[0])),
-                title: Text(c.name),
-                trailing: ElevatedButton(
-                  onPressed: already
-                      ? null
-                      : () {
-                          setState(() => _participants.add(c));
-                          Navigator.pop(ctx);
-                          // Animate join: briefly highlight
-                          _showToast('${c.name} added');
-                        },
-                  child: Text(already ? 'Added' : 'Add'),
-                ),
-              );
-            }).toList(),
-            const SizedBox(height: 12),
-            OutlinedButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('Close')),
-            const SizedBox(height: 8),
-          ]),
+  Future<void> _initializeAgora() async {
+    final success = await _agoraService.initialize();
+    if (!success) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to initialize call'), backgroundColor: Colors.red),
         );
-      },
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) Navigator.of(context).pop();
+        });
+      }
+      return;
+    }
+
+    _agoraService.onUserJoined = (int remoteUid) {
+      if (mounted) {
+        setState(() {
+          if (!_participants.any((p) => p.remoteUid == remoteUid)) {
+            _participants.add(_GCallParticipant(
+              id: 'user_$remoteUid',
+              name: 'User $remoteUid',
+              remoteUid: remoteUid,
+            ));
+          }
+        });
+        _showToast('User $remoteUid joined');
+      }
+    };
+
+    _agoraService.onUserOffline = (int remoteUid) {
+      if (mounted) {
+        setState(() {
+          _participants.removeWhere((p) => p.remoteUid == remoteUid);
+          if (focusParticipantId == 'user_$remoteUid') focusParticipantId = null;
+        });
+        _showToast('User $remoteUid left');
+      }
+    };
+
+    _agoraService.onJoinChannelSuccess = () {
+      if (mounted) {
+        setState(() {
+          _isJoining = false;
+          _isConnected = true;
+        });
+        _callStopwatch.start();
+        _timerUpdate = Timer.periodic(const Duration(seconds: 1), (_) {
+          if (mounted) {
+            final elapsed = _callStopwatch.elapsed;
+            setState(() {
+              _callDuration =
+                  '${elapsed.inMinutes.toString().padLeft(2, '0')}:${(elapsed.inSeconds % 60).toString().padLeft(2, '0')}';
+            });
+          }
+        });
+      }
+    };
+
+    _agoraService.onAudioVolumeIndication = (speakers, totalVolume) {
+      if (mounted) {
+        setState(() {
+          // Reset speaking state
+          for (var p in _participants) {
+            p.speaking = false;
+          }
+          // Mark active speaker
+          for (final s in speakers) {
+            if ((s.volume ?? 0) > 50) {
+              final uid = s.uid;
+              if (uid == 0) {
+                _participants.firstWhere((p) => p.id == 'me').speaking = true;
+              } else {
+                final p = _participants.where((p) => p.remoteUid == uid);
+                if (p.isNotEmpty) p.first.speaking = true;
+              }
+            }
+          }
+        });
+      }
+    };
+
+    final channel = widget.channelName ?? 'hapzo_group_test';
+    await _agoraService.joinChannel(
+      AgoraCallService.channelFromConversation(channel),
+      uid: widget.localUid ?? 0,
+      enableVideo: true,
     );
   }
 
-  // Toggle screen share for me (mock)
-  void _toggleScreenShare() {
-    setState(() {
-      if (isScreenSharing && screenSharingId == myId) {
-        isScreenSharing = false;
-        screenSharingId = null;
-        _showToast('Stopped screen sharing');
-      } else {
-        // stop others
-        for (var p in _participants) {
-          p.sharing = (p.id == myId);
-        }
-        isScreenSharing = true;
-        screenSharingId = myId;
-        _showToast('You started screen sharing');
-      }
-    });
-  }
-
-  // Example: allow selecting which participant to pin as focus
   void _setFocus(String? id) {
     setState(() {
-      if (focusParticipantId == id) {
-        focusParticipantId = null;
-      } else {
-        focusParticipantId = id;
-      }
-    });
-  }
-
-  // Remove participant
-  void _removeParticipant(String id) {
-    setState(() {
-      _participants.removeWhere((p) => p.id == id);
-      if (focusParticipantId == id) focusParticipantId = null;
-      _showToast('Removed participant');
-    });
-  }
-
-  // Floating ephemeral messages
-  void _sendFloatingMessage(String text) {
-    final id = DateTime.now().millisecondsSinceEpoch.toString();
-    final color = Colors.primaries[Random().nextInt(Colors.primaries.length)]
-        .withOpacity(0.9);
-    final bubble = FloatingBubble(id: id, text: text, color: color);
-    setState(() => _bubbles.add(bubble));
-    // remove after 3s
-    Future.delayed(const Duration(seconds: 3), () {
-      if (!mounted) return;
-      setState(() => _bubbles.removeWhere((b) => b.id == id));
+      focusParticipantId = focusParticipantId == id ? null : id;
     });
   }
 
   void _toggleMute() {
+    _agoraService.toggleMute();
     setState(() {
-      _muted = !_muted;
-      final me = _participants.firstWhere((p) => p.id == myId,
-          orElse: () => _participants.first);
+      _muted = _agoraService.isMuted;
+      final me = _participants.firstWhere((p) => p.id == myId);
       me.muted = _muted;
-      _showToast(_muted ? 'Muted' : 'Unmuted');
     });
+    _showToast(_muted ? 'Muted' : 'Unmuted');
   }
 
   void _toggleVideo() {
+    _agoraService.toggleVideo();
     setState(() {
-      _videoOn = !_videoOn;
-      final me = _participants.firstWhere((p) => p.id == myId,
-          orElse: () => _participants.first);
+      _videoOn = _agoraService.isVideoEnabled;
+      final me = _participants.firstWhere((p) => p.id == myId);
       me.videoOn = _videoOn;
-      _showToast(_videoOn ? 'Camera on' : 'Camera off');
     });
+    _showToast(_videoOn ? 'Camera on' : 'Camera off');
   }
 
-  void _leaveCall() {
-    // for mock just pop
-    showDialog(
+  void _switchCamera() {
+    _agoraService.switchCamera();
+  }
+
+  Future<void> _leaveCall() async {
+    final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
         title: const Text('End Call?'),
         actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel')),
-          ElevatedButton(
-              onPressed: () =>
-                  Navigator.of(context).popUntil((route) => route.isFirst),
-              child: const Text('End')),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+          ElevatedButton(onPressed: () => Navigator.pop(context, true), child: const Text('End')),
         ],
       ),
     );
+    if (confirm == true) {
+      _callStopwatch.stop();
+      _timerUpdate?.cancel();
+      await _agoraService.leaveChannel();
+      if (mounted) Navigator.of(context).popUntil((route) => route.isFirst);
+    }
   }
 
   void _showToast(String text) {
@@ -249,102 +211,121 @@ class _GroupCallPageState extends State<GroupCallPage>
         SnackBar(content: Text(text), behavior: SnackBarBehavior.floating));
   }
 
-  // Layout helpers
-  List<Participant> get _others =>
+  List<_GCallParticipant> get _others =>
       _participants.where((p) => p.id != myId).toList();
-  Participant get _me => _participants.firstWhere((p) => p.id == myId);
+  _GCallParticipant get _me => _participants.firstWhere((p) => p.id == myId);
+
+  @override
+  void dispose() {
+    _timerUpdate?.cancel();
+    _callStopwatch.stop();
+    _agoraService.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // If someone is screen-sharing, prefer that as main view.
-    final sharing = _participants.where((p) => p.sharing).toList();
-    final hasSharing = sharing.isNotEmpty;
-    final sharingParticipant = hasSharing ? sharing.first : null;
-
     return Scaffold(
       body: SafeArea(
         child: Stack(
           children: [
-            // Background / main area
-            Positioned.fill(
-                child: _buildMainArea(hasSharing, sharingParticipant)),
-            // draggable self-preview
-            // Positioned(
-            //   left: myPreviewOffset.dx,
-            //   top: myPreviewOffset.dy,
-            //   child: Draggable(
-            //     feedback: _miniTile(_me, highlight: true, size: 120),
-            //     childWhenDragging:
-            //         Opacity(opacity: 0.25, child: _miniTile(_me)),
-            //     onDragEnd: (details) {
-            //       final media = MediaQuery.of(context);
-            //       final clampedX =
-            //           details.offset.dx.clamp(8.0, media.size.width - 120.0);
-            //       final clampedY = details.offset.dy.clamp(
-            //           media.padding.top + 8.0, media.size.height - 160.0);
-            //       setState(() => myPreviewOffset = Offset(clampedX, clampedY));
-            //     },
-            //     child: GestureDetector(
-            //       onDoubleTap: () => _setFocus(myId),
-            //       onTap: () => _showParticipantMenu(_me),
-            //       child: _miniTile(_me, highlight: true),
-            //     ),
-            //   ),
-            // ),
+            Positioned.fill(child: _buildMainArea()),
 
-            // floating chat bubbles overlay
-            // Positioned.fill(
-            //     child: IgnorePointer(child: _buildFloatingBubbles())),
+            // Joining overlay
+            if (_isJoining)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black54,
+                  child: const Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(color: Colors.cyanAccent),
+                        SizedBox(height: 16),
+                        Text('Joining group call...', style: TextStyle(color: Colors.white70)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
 
-            // left-top back/info row
-            // Positioned(top: 12, left: 12, child: _buildTopLeftInfo()),
+            // Top info
+            Positioned(
+              top: 12,
+              left: 12,
+              child: Row(children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                      color: Colors.black54, borderRadius: BorderRadius.circular(20)),
+                  child: Row(children: [
+                    const Icon(Icons.videocam, size: 18, color: Colors.white),
+                    const SizedBox(width: 8),
+                    Text('${_participants.length} in call · $_callDuration',
+                        style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white)),
+                  ]),
+                ),
+              ]),
+            ),
 
-            // bottom controls
-            // Positioned(
-            //     left: 0, right: 0, bottom: 12, child: _buildBottomControls()),
-
-            // floating chat icon (open panel)
-            // Positioned(right: 12, bottom: 92, child: _chatButton()),
+            // Bottom controls
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 12,
+              child: Center(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                      color: Colors.black54, borderRadius: BorderRadius.circular(40)),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    IconButton(
+                      tooltip: 'Mute',
+                      icon: Icon(_muted ? Icons.mic_off : Icons.mic),
+                      color: _muted ? Colors.orangeAccent : Colors.white,
+                      onPressed: _toggleMute,
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      tooltip: 'Toggle Camera',
+                      icon: Icon(_videoOn ? Icons.videocam : Icons.videocam_off),
+                      color: Colors.white,
+                      onPressed: _toggleVideo,
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      tooltip: 'Switch Camera',
+                      icon: const Icon(Icons.cameraswitch),
+                      color: Colors.white,
+                      onPressed: _switchCamera,
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.redAccent,
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(14)),
+                      onPressed: _leaveCall,
+                      child: const Icon(Icons.call_end, color: Colors.white),
+                    ),
+                  ]),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTopLeftInfo() {
-    return Row(children: [
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-            color: Colors.black54, borderRadius: BorderRadius.circular(20)),
-        child: Row(children: [
-          const Icon(Icons.videocam, size: 18),
-          const SizedBox(width: 8),
-          Text('${_participants.length} in call',
-              style: const TextStyle(fontWeight: FontWeight.w600)),
-        ]),
-      ),
-      const SizedBox(width: 8),
-      if (isScreenSharing)
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-              color: Colors.orange.shade900.withOpacity(0.9),
-              borderRadius: BorderRadius.circular(20)),
-          child: const Row(children: [
-            Icon(Icons.screen_share, size: 16),
-            SizedBox(width: 8),
-            Text('Live screen')
-          ]),
-        ),
-    ]);
-  }
-
-  Widget _buildMainArea(bool hasSharing, Participant? sharingParticipant) {
-    // If focus mode active -> show the focused participant full screen
+  Widget _buildMainArea() {
+    // Focus mode: show focused participant full screen
     if (focusParticipantId != null) {
-      final focused = _participants
-          .firstWhere((p) => p.id == focusParticipantId, orElse: () => _me);
+      final focused = _participants.firstWhere(
+        (p) => p.id == focusParticipantId,
+        orElse: () => _me,
+      );
       return GestureDetector(
         onDoubleTap: () => _setFocus(null),
         child: AnimatedContainer(
@@ -358,18 +339,15 @@ class _GroupCallPageState extends State<GroupCallPage>
                 top: 12,
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Colors.white10,
-                      borderRadius: BorderRadius.circular(12)),
+                      color: Colors.white10, borderRadius: BorderRadius.circular(12)),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 6.0),
-                    child: Text(
-                        '${focused.name} · ${focused.muted ? 'muted' : 'live'}',
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                    child: Text('${focused.name} · ${focused.muted ? 'muted' : 'live'}',
                         style: const TextStyle(color: Colors.white)),
                   ),
                 ),
               ),
-              // small strip of other participants at bottom
+              // Strip of other participants
               Positioned(
                 left: 0,
                 right: 0,
@@ -385,8 +363,7 @@ class _GroupCallPageState extends State<GroupCallPage>
                             padding: const EdgeInsets.only(right: 8),
                             child: GestureDetector(
                                 onTap: () => _setFocus(p.id),
-                                child:
-                                    SizedBox(width: 100, child: _miniTile(p)))))
+                                child: SizedBox(width: 100, child: _miniTile(p)))))
                         .toList(),
                   ),
                 ),
@@ -397,65 +374,11 @@ class _GroupCallPageState extends State<GroupCallPage>
       );
     }
 
-    // If someone is sharing, show sharing area prominently and other tiles in a scrollable strip
-    if (hasSharing && sharingParticipant != null) {
-      return AnimatedContainer(
-        duration: const Duration(milliseconds: 350),
-        color: Colors.black,
-        child: Column(
-          children: [
-            // Shared content takes large portion
-            Expanded(
-              flex: 6,
-              child: Stack(children: [
-                Positioned.fill(child: _sharedScreenTile(sharingParticipant)),
-                Positioned(
-                  right: 12,
-                  top: 12,
-                  child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.black54,
-                          borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 6),
-                      child: Text('${sharingParticipant.name} is presenting',
-                          style: const TextStyle(color: Colors.white))),
-                ),
-              ]),
-            ),
-
-            // Scrollable row of participant tiles
-            SizedBox(
-              height: 160,
-              child: ListView(
-                key: _gridKey,
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.all(12),
-                children: _participants.map((p) {
-                  // shrink others slightly while sharing
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: GestureDetector(
-                      onDoubleTap: () => _setFocus(p.id),
-                      onTap: () => _showParticipantMenu(p),
-                      child: SizedBox(
-                          width: 140, child: _videoTile(p, mini: true)),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    // Default: dynamic grid (scrollable)
+    // Default: dynamic grid
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: LayoutBuilder(builder: (context, constraints) {
-        // decide number of columns based on width and count
         final width = constraints.maxWidth;
         final count = _participants.length;
         int crossAxisCount;
@@ -468,7 +391,6 @@ class _GroupCallPageState extends State<GroupCallPage>
         else
           crossAxisCount = 1;
 
-        // Build a GridView inside a SingleChildScrollView to make it scrollable
         return SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Padding(
@@ -477,13 +399,10 @@ class _GroupCallPageState extends State<GroupCallPage>
               spacing: 12,
               runSpacing: 12,
               children: _participants.map((p) {
-                final w =
-                    (width - (12 * (crossAxisCount + 1))) / crossAxisCount;
+                final w = (width - (12 * (crossAxisCount + 1))) / crossAxisCount;
                 return GestureDetector(
                   onDoubleTap: () => _setFocus(p.id),
-                  onTap: () => _showParticipantMenu(p),
-                  child: SizedBox(
-                      width: w, height: w * 0.65, child: _videoTile(p)),
+                  child: SizedBox(width: w, height: w * 0.65, child: _videoTile(p)),
                 );
               }).toList(),
             ),
@@ -493,34 +412,11 @@ class _GroupCallPageState extends State<GroupCallPage>
     );
   }
 
-  // Tile for a participant when screen-sharing
-  Widget _sharedScreenTile(Participant p) {
-    return Container(
-      margin: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-          color: Colors.grey.shade900,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white10)),
-      child: Center(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const Icon(Icons.desktop_windows, size: 56, color: Colors.white24),
-          const SizedBox(height: 12),
-          Text('${p.name} — Screen',
-              style:
-                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          const Text(
-              'This is a mock of a shared screen (replace with real stream)',
-              style: TextStyle(color: Colors.white70)),
-        ]),
-      ),
-    );
-  }
-
-  // Normal video tile: replace Container content with real RTC view later
-  Widget _videoTile(Participant p, {bool big = false, bool mini = false}) {
+  /// Video tile for a participant — uses AgoraVideoView for real video
+  Widget _videoTile(_GCallParticipant p, {bool big = false, bool mini = false}) {
     final border = p.speaking ? 3.5 : 0.5;
     final borderColor = p.speaking ? Colors.greenAccent : Colors.white12;
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
@@ -530,34 +426,14 @@ class _GroupCallPageState extends State<GroupCallPage>
       ),
       child: Stack(
         children: [
-          // video or placeholder
+          // Video or placeholder
           Positioned.fill(
-            child: p.videoOn
-                ? Container(
-                    decoration: BoxDecoration(
-                      color: Colors
-                          .primaries[
-                              (p.name.hashCode.abs()) % Colors.primaries.length]
-                          .shade700,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: Icon(Icons.videocam,
-                          size: big ? 84 : 40, color: Colors.white24),
-                    ),
-                  )
-                : Container(
-                    decoration: BoxDecoration(
-                        color: Colors.black54,
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Center(
-                        child: Text(p.name[0],
-                            style: const TextStyle(
-                                fontSize: 34, fontWeight: FontWeight.bold))),
-                  ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: _buildVideoContent(p, big: big),
+            ),
           ),
-
-          // name & status bar
+          // Name & status bar
           Positioned(
             left: 8,
             bottom: 8,
@@ -566,18 +442,9 @@ class _GroupCallPageState extends State<GroupCallPage>
               children: [
                 Expanded(
                     child: Text(p.name,
-                        style: const TextStyle(fontWeight: FontWeight.w700))),
-                if (p.muted) const Icon(Icons.mic_off, size: 18),
-                const SizedBox(width: 6),
-                if (p.sharing)
-                  Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                          color: Colors.orange.shade700,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: const Text('Sharing',
-                          style: TextStyle(fontSize: 11))),
+                        style: const TextStyle(fontWeight: FontWeight.w700, color: Colors.white))),
+                if (p.muted)
+                  const Icon(Icons.mic_off, size: 18, color: Colors.redAccent),
               ],
             ),
           ),
@@ -586,7 +453,47 @@ class _GroupCallPageState extends State<GroupCallPage>
     );
   }
 
-  Widget _miniTile(Participant p, {bool highlight = false, double size = 96}) {
+  Widget _buildVideoContent(_GCallParticipant p, {bool big = false}) {
+    if (p.id == 'me') {
+      // Local video
+      if (_videoOn && _agoraService.engine != null) {
+        return AgoraVideoView(
+          controller: VideoViewController(
+            rtcEngine: _agoraService.engine!,
+            canvas: const VideoCanvas(uid: 0),
+          ),
+        );
+      }
+    } else if (p.remoteUid != null && p.videoOn && _agoraService.engine != null) {
+      // Remote video
+      return AgoraVideoView(
+        controller: VideoViewController.remote(
+          rtcEngine: _agoraService.engine!,
+          canvas: VideoCanvas(uid: p.remoteUid!),
+          connection: RtcConnection(
+            channelId: AgoraCallService.channelFromConversation(
+                widget.channelName ?? 'hapzo_group_test'),
+          ),
+        ),
+      );
+    }
+
+    // Fallback: avatar
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.primaries[(p.name.hashCode.abs()) % Colors.primaries.length].shade700,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Center(
+        child: p.videoOn
+            ? Icon(Icons.videocam, size: big ? 84 : 40, color: Colors.white24)
+            : Text(p.name[0],
+                style: const TextStyle(fontSize: 34, fontWeight: FontWeight.bold, color: Colors.white)),
+      ),
+    );
+  }
+
+  Widget _miniTile(_GCallParticipant p, {bool highlight = false, double size = 96}) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
       width: size,
@@ -594,269 +501,34 @@ class _GroupCallPageState extends State<GroupCallPage>
       decoration: BoxDecoration(
         color: Colors.grey.shade900,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: highlight
-            ? [
-                BoxShadow(
-                    color: Colors.blueAccent.withOpacity(0.3),
-                    blurRadius: 8,
-                    spreadRadius: 1)
-              ]
-            : null,
         border: Border.all(
             color: p.speaking ? Colors.greenAccent : Colors.white12,
             width: p.speaking ? 2.2 : 0.6),
       ),
       child: Stack(children: [
         Positioned.fill(
-          child: p.videoOn
-              ? Container(
-                  decoration: BoxDecoration(
-                      color: Colors
-                          .primaries[
-                              (p.name.hashCode.abs()) % Colors.primaries.length]
-                          .shade600,
-                      borderRadius: BorderRadius.circular(12)),
-                  child: const Center(
-                      child: Icon(Icons.videocam,
-                          size: 28, color: Colors.white24)))
-              : Container(
-                  decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Center(
-                      child: Text(p.name[0],
-                          style: const TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold)))),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: _buildVideoContent(p),
+          ),
         ),
         Positioned(
             right: 8,
             top: 8,
             child: Row(children: [
-              if (p.muted) const Icon(Icons.mic_off, size: 16),
+              if (p.muted)
+                const Icon(Icons.mic_off, size: 16, color: Colors.redAccent),
               if (!p.videoOn) const SizedBox(width: 4),
-              if (!p.videoOn) const Icon(Icons.videocam_off, size: 16)
+              if (!p.videoOn)
+                const Icon(Icons.videocam_off, size: 16, color: Colors.white54),
             ])),
         Positioned(
             left: 8,
             bottom: 8,
             child: Text(p.name,
                 style: const TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.w600))),
+                    fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white))),
       ]),
     );
-  }
-
-  Widget _buildBottomControls() {
-    return Center(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-            color: Colors.black54, borderRadius: BorderRadius.circular(40)),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          IconButton(
-            tooltip: 'Mute',
-            icon: Icon(_muted ? Icons.mic_off : Icons.mic),
-            color: _muted ? Colors.orangeAccent : Colors.white,
-            onPressed: _toggleMute,
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            tooltip: 'Toggle Camera',
-            icon: Icon(_videoOn ? Icons.videocam : Icons.videocam_off),
-            onPressed: _toggleVideo,
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            tooltip: 'Add participant',
-            icon: const Icon(Icons.person_add),
-            onPressed: _showAddParticipants,
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            tooltip: 'Share screen',
-            icon: Icon(isScreenSharing && screenSharingId == myId
-                ? Icons.stop_screen_share
-                : Icons.screen_share),
-            onPressed: _toggleScreenShare,
-          ),
-          const SizedBox(width: 8),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.redAccent,
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(14)),
-            onPressed: _leaveCall,
-            child: const Icon(Icons.call_end, color: Colors.white),
-          ),
-        ]),
-      ),
-    );
-  }
-
-  Widget _chatButton() {
-    return FloatingActionButton.extended(
-      backgroundColor: Colors.white10,
-      onPressed: () => _openChatPanel(),
-      icon: const Icon(Icons.chat_bubble_outline),
-      label: const Text('Chat'),
-    );
-  }
-
-  Future<void> _openChatPanel() async {
-    final result = await showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.black87,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
-      builder: (ctx) {
-        return DraggableScrollableSheet(
-          expand: false,
-          initialChildSize: 0.5,
-          minChildSize: 0.25,
-          maxChildSize: 0.95,
-          builder: (_, controller) {
-            final TextEditingController txt = TextEditingController();
-            return Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(children: [
-                Container(
-                    height: 6,
-                    width: 60,
-                    decoration: BoxDecoration(
-                        color: Colors.white10,
-                        borderRadius: BorderRadius.circular(6))),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: ListView(
-                    controller: controller,
-                    children: [
-                      const Text('In-call chat',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 12),
-                      ...List.generate(
-                          6,
-                          (i) => ListTile(
-                              leading: CircleAvatar(child: Text('U${i + 1}')),
-                              title: Text('This is message #${i + 1}'),
-                              subtitle: const Text('In-call note'))),
-                    ],
-                  ),
-                ),
-                Row(children: [
-                  Expanded(
-                    child: TextField(
-                        controller: txt,
-                        decoration: InputDecoration(
-                            hintText: 'Type a short message (it will float)',
-                            filled: true,
-                            fillColor: Colors.white12,
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(24),
-                                borderSide: BorderSide.none))),
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    icon: const Icon(Icons.send),
-                    onPressed: () {
-                      if (txt.text.trim().isEmpty) return;
-                      Navigator.pop(ctx, txt.text.trim());
-                    },
-                  )
-                ]),
-                const SizedBox(height: 6),
-              ]),
-            );
-          },
-        );
-      },
-    );
-
-    if (result != null && result.isNotEmpty) {
-      _sendFloatingMessage(result);
-    }
-  }
-
-  // Participant menu (tap tile)
-  void _showParticipantMenu(Participant p) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.black87,
-      builder: (_) {
-        return SafeArea(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            ListTile(
-                leading: CircleAvatar(child: Text(p.name[0])),
-                title: Text(p.name),
-                subtitle: Text(p.muted ? 'Muted' : 'Live')),
-            const Divider(),
-            ListTile(
-                leading: const Icon(Icons.person),
-                title: const Text('Pin / Focus'),
-                onTap: () {
-                  Navigator.pop(context);
-                  _setFocus(p.id);
-                }),
-            ListTile(
-                leading: const Icon(Icons.volume_off),
-                title: Text(p.muted ? 'Unmute' : 'Mute'),
-                onTap: () {
-                  setState(() {
-                    final idx = _participants.indexWhere((x) => x.id == p.id);
-                    if (idx >= 0)
-                      _participants[idx] =
-                          _participants[idx].copyWith(muted: !p.muted);
-                  });
-                  Navigator.pop(context);
-                }),
-            ListTile(
-                leading: const Icon(Icons.remove_circle_outline),
-                title: const Text('Remove from call'),
-                onTap: () {
-                  Navigator.pop(context);
-                  _removeParticipant(p.id);
-                }),
-            ListTile(
-                leading: const Icon(Icons.close),
-                title: const Text('Close'),
-                onTap: () => Navigator.pop(context)),
-          ]),
-        );
-      },
-    );
-  }
-
-  Widget _buildFloatingBubbles() {
-    // Show bubbles positioned randomly near top-right to bottom-left
-    final rnd = Random();
-    final List<Widget> positioned = [];
-    for (var i = 0; i < _bubbles.length; i++) {
-      final b = _bubbles[i];
-      final top = 60.0 + (i * 40);
-      final left = 60.0 + (rnd.nextDouble() * 40 * (i + 1));
-      positioned.add(
-        Positioned(
-          left: left,
-          top: top,
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 300),
-            opacity: 1.0,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                  color: b.color,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(color: b.color.withOpacity(0.4), blurRadius: 8)
-                  ]),
-              child: Text(b.text, style: const TextStyle(color: Colors.white)),
-            ),
-          ),
-        ),
-      );
-    }
-    return Stack(children: positioned);
   }
 }

@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/bloc/people/cubit/people_cubit.dart';
 import 'package:haptext_api/exports.dart';
+import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
+import 'package:haptext_api/services/chat_ui/hapztext_api_service.dart';
 import 'package:haptext_api/models/searched_user_model.dart';
 import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
@@ -137,7 +139,24 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                           _buildActionButton(
                             icon: Icons.chat_bubble_outline,
                             color: Colors.white12,
-                            onTap: () => context.push(RouteName.chatPage.path),
+                            onTap: () async {
+                              final HapzTextApiService apiService = HapzTextApiService();
+                              final token = context.read<AuthCubit>().useInfo.tokens?.auth;
+                              if (token != null) {
+                                apiService.setToken(token);
+                                final result = await apiService.createConversation([widget.user.id!]);
+                                if (result != null && result['data'] != null) {
+                                  final conv = result['data'];
+                                  final chatItem = ChatItem(
+                                    id: conv['id'].toString(),
+                                    name: widget.user.username ?? 'User',
+                                    lastMessage: '',
+                                    chatMode: ChatMode.mixed,
+                                  );
+                                  context.push('/chat-screen', extra: chatItem);
+                                }
+                              }
+                            },
                           ),
                         ],
                       ),

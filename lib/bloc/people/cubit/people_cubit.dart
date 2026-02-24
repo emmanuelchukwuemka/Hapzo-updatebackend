@@ -16,14 +16,19 @@ class PeopleCubit extends Cubit<PeopleState> {
     fetchFollowers();
   }
 
+  List<SearchedUserProfile> friends = [];
   fetchFriends() async {
     emit(PeopleLoading());
     try {
       final response = await peopleRepo.fetchFriends(page: 1);
+      final body = jsonDecode(response.body);
       if (response.statusCode == 200) {
+        friends.clear();
+        for (var user in body['data']['result']) {
+          friends.add(SearchedUserProfile.fromJson(user));
+        }
         emit(PeopleLoaded());
       } else {
-        final body = jsonDecode(response.body);
         ToastMessage.showErrorToast(
             message: body["errors"]["detail"].toString());
         emit(PeopleError());
@@ -52,7 +57,6 @@ class PeopleCubit extends Cubit<PeopleState> {
           emit(CurrentUser(user: SearchedUserProfile.fromJson(body['data'])));
         }
       } else {
-        final body = jsonDecode(response.body);
         ToastMessage.showErrorToast(
             message: body["errors"]["detail"].toString());
         emit(PeopleError());
@@ -76,7 +80,6 @@ class PeopleCubit extends Cubit<PeopleState> {
         }
         emit(PeopleLoaded());
       } else {
-        final body = jsonDecode(response.body);
         ToastMessage.showErrorToast(
             message: body["errors"]["detail"].toString());
         emit(PeopleError());
@@ -87,14 +90,19 @@ class PeopleCubit extends Cubit<PeopleState> {
     }
   }
 
+  List<SearchedUserProfile> followers = [];
   fetchFollowers({userId}) async {
     emit(PeopleLoading());
     try {
       final response = await peopleRepo.fetchFollowers(page: 1, userId: userId);
+      final body = jsonDecode(response.body);
       if (response.statusCode == 200) {
+        followers.clear();
+        for (var user in body['data']['followers']) {
+          followers.add(SearchedUserProfile.fromJson(user));
+        }
         emit(PeopleLoaded());
       } else {
-        final body = jsonDecode(response.body);
         ToastMessage.showErrorToast(
             message: body["errors"]["detail"].toString());
         emit(PeopleError());

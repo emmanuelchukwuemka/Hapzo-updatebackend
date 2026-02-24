@@ -1,0 +1,218 @@
+﻿[
+    {
+        "Method":  "GET",
+        "ResponsePreview":  "",
+        "Url":  "https://hapztext-v2.onrender.com/schema/",
+        "StatusCode":  "N/A",
+        "Status":  "UNREACHABLE",
+        "Error":  "The operation has timed out.",
+        "Name":  "Schema (Base Connectivity)"
+    },
+    {
+        "Method":  "POST",
+        "ResponsePreview":  "",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/authentication/login/",
+        "StatusCode":  "N/A",
+        "Status":  "UNREACHABLE",
+        "Error":  "Unable to connect to the remote server",
+        "Name":  "Auth Login (authentication path)"
+    },
+    {
+        "Method":  "POST",
+        "ResponsePreview":  "",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/authentication/register/",
+        "StatusCode":  "N/A",
+        "Status":  "UNREACHABLE",
+        "Error":  "The remote name could not be resolved: \u0027hapztext-v2.onrender.com\u0027",
+        "Name":  "Auth Register (authentication path)"
+    },
+    {
+        "Method":  "POST",
+        "ResponsePreview":  "",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/authentication/password-reset/",
+        "StatusCode":  "N/A",
+        "Status":  "UNREACHABLE",
+        "Error":  "The remote name could not be resolved: \u0027hapztext-v2.onrender.com\u0027",
+        "Name":  "Password Reset (authentication path)"
+    },
+    {
+        "Method":  "POST",
+        "ResponsePreview":  "",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/authentication/verify-email/",
+        "StatusCode":  "N/A",
+        "Status":  "UNREACHABLE",
+        "Error":  "The remote name could not be resolved: \u0027hapztext-v2.onrender.com\u0027",
+        "Name":  "Verify Email (authentication path)"
+    },
+    {
+        "Method":  "POST",
+        "ResponsePreview":  "",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/authentication/verify-email/request/",
+        "StatusCode":  "N/A",
+        "Status":  "UNREACHABLE",
+        "Error":  "The remote name could not be resolved: \u0027hapztext-v2.onrender.com\u0027",
+        "Name":  "Verify Email Request (authentication path)"
+    },
+    {
+        "Method":  "POST",
+        "ResponsePreview":  "",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/auth/login/",
+        "StatusCode":  "N/A",
+        "Status":  "UNREACHABLE",
+        "Error":  "The operation has timed out",
+        "Name":  "Auth Login (auth path)"
+    },
+    {
+        "Method":  "POST",
+        "ResponsePreview":  "\u003c!DOCTYPE html\u003e\n\u003chtml lang=\"en\"\u003e\n\u003chead\u003e\n  \u003cmeta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"\u003e\n  \u003ctitle\u003ePage not found at /api/v1/auth/register/\u003c/title\u003e\n  \u003cmeta name=\"robots\" content=\"NONE,NOARCHIVE\"\u003e\n  \u003cstyle\u003e\n    html * { padding:0; margin:0; }\n    body * { padding:10px 20px; }\n    ...",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/auth/register/",
+        "StatusCode":  404,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (404) Not Found.",
+        "Name":  "Auth Register (auth path)"
+    },
+    {
+        "Method":  "GET",
+        "ResponsePreview":  "{\"success\":false,\"message\":\"Authentication required\",\"errors\":{\"detail\":\"Authentication credentials were not provided.\"},\"status_code\":401}",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/users/profile/1/",
+        "StatusCode":  401,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (401) Unauthorized.",
+        "Name":  "User Profile (no auth)"
+    },
+    {
+        "Method":  "GET",
+        "ResponsePreview":  "{\"success\":false,\"message\":\"Authentication required\",\"errors\":{\"detail\":\"Authentication credentials were not provided.\"},\"status_code\":401}",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/users/search?query=test\u0026limit=5\u0026offset=1",
+        "StatusCode":  401,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (401) Unauthorized.",
+        "Name":  "User Search (no auth)"
+    },
+    {
+        "Method":  "GET",
+        "ResponsePreview":  "{\"success\":false,\"message\":\"Authentication required\",\"errors\":{\"detail\":\"Authentication credentials were not provided.\"},\"status_code\":401}",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/users/friends/1/30/",
+        "StatusCode":  401,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (401) Unauthorized.",
+        "Name":  "User Friends (no auth)"
+    },
+    {
+        "Method":  "GET",
+        "ResponsePreview":  "{\"success\":false,\"message\":\"Authentication required\",\"errors\":{\"detail\":\"Authentication credentials were not provided.\"},\"status_code\":401}",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/users/followers/1/1/20/",
+        "StatusCode":  401,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (401) Unauthorized.",
+        "Name":  "User Followers (no auth)"
+    },
+    {
+        "Method":  "GET",
+        "ResponsePreview":  "{\"success\":false,\"message\":\"Authentication required\",\"errors\":{\"detail\":\"Authentication credentials were not provided.\"},\"status_code\":401}",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/users/followings/1/1/20/",
+        "StatusCode":  401,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (401) Unauthorized.",
+        "Name":  "User Followings (no auth)"
+    },
+    {
+        "Method":  "POST",
+        "ResponsePreview":  "{\"success\":false,\"message\":\"Authentication required\",\"errors\":{\"detail\":\"Authentication credentials were not provided.\"},\"status_code\":401}",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/users/profile/create/",
+        "StatusCode":  401,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (401) Unauthorized.",
+        "Name":  "Create Profile (no auth)"
+    },
+    {
+        "Method":  "POST",
+        "ResponsePreview":  "{\"success\":false,\"message\":\"Authentication required\",\"errors\":{\"detail\":\"Authentication credentials were not provided.\"},\"status_code\":401}",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/users/follow-request/1/",
+        "StatusCode":  401,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (401) Unauthorized.",
+        "Name":  "Follow Request (no auth)"
+    },
+    {
+        "Method":  "GET",
+        "ResponsePreview":  "\u003c!DOCTYPE html\u003e\n\u003chtml lang=\"en\"\u003e\n\u003chead\u003e\n  \u003cmeta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"\u003e\n  \u003ctitle\u003ePage not found at /api/v1/users/follow-requests/pending/1/20/\u003c/title\u003e\n  \u003cmeta name=\"robots\" content=\"NONE,NOARCHIVE\"\u003e\n  \u003cstyle\u003e\n    html * { padding:0; margin:0; }\n    body * { padd...",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/users/follow-requests/pending/1/20/",
+        "StatusCode":  404,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (404) Not Found.",
+        "Name":  "Pending Follow Requests (no auth)"
+    },
+    {
+        "Method":  "GET",
+        "ResponsePreview":  "{\"success\":false,\"message\":\"Authentication required\",\"errors\":{\"detail\":\"Authentication credentials were not provided.\"},\"status_code\":401}",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/posts/list/1/10/",
+        "StatusCode":  401,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (401) Unauthorized.",
+        "Name":  "Post List (no auth)"
+    },
+    {
+        "Method":  "POST",
+        "ResponsePreview":  "{\"success\":false,\"message\":\"Authentication required\",\"errors\":{\"detail\":\"Authentication credentials were not provided.\"},\"status_code\":401}",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/posts/",
+        "StatusCode":  401,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (401) Unauthorized.",
+        "Name":  "Create Post (no auth)"
+    },
+    {
+        "Method":  "GET",
+        "ResponsePreview":  "{\"success\":false,\"message\":\"Authentication required\",\"errors\":{\"detail\":\"Authentication credentials were not provided.\"},\"status_code\":401}",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/posts/1/replies/1/30",
+        "StatusCode":  401,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (401) Unauthorized.",
+        "Name":  "Post Comments (no auth)"
+    },
+    {
+        "Method":  "GET",
+        "ResponsePreview":  "{\"success\":false,\"message\":\"Authentication required\",\"errors\":{\"detail\":\"Authentication credentials were not provided.\"},\"status_code\":401}",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/chat/conversations/1/20/",
+        "StatusCode":  401,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (401) Unauthorized.",
+        "Name":  "Chat Conversations (no auth)"
+    },
+    {
+        "Method":  "POST",
+        "ResponsePreview":  "{\"success\":false,\"message\":\"Authentication required\",\"errors\":{\"detail\":\"Authentication credentials were not provided.\"},\"status_code\":401}",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/chat/conversations/",
+        "StatusCode":  401,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (401) Unauthorized.",
+        "Name":  "Create Conversation (no auth)"
+    },
+    {
+        "Method":  "POST",
+        "ResponsePreview":  "{\"success\":false,\"message\":\"Authentication required\",\"errors\":{\"detail\":\"Authentication credentials were not provided.\"},\"status_code\":401}",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/chat/media/upload/",
+        "StatusCode":  401,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (401) Unauthorized.",
+        "Name":  "Chat Media Upload (no auth)"
+    },
+    {
+        "Method":  "GET",
+        "ResponsePreview":  "{\"success\":false,\"message\":\"Authentication required\",\"errors\":{\"detail\":\"Authentication credentials were not provided.\"},\"status_code\":401}",
+        "Url":  "https://hapztext-v2.onrender.com/api/v1/notifications/1/20/",
+        "StatusCode":  401,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (401) Unauthorized.",
+        "Name":  "Notifications (no auth)"
+    },
+    {
+        "Method":  "GET",
+        "ResponsePreview":  "\u003c!DOCTYPE html\u003e\n\u003chtml lang=\"en\"\u003e\n\u003chead\u003e\n  \u003cmeta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"\u003e\n  \u003ctitle\u003ePage not found at /ws/chat/test-conv/\u003c/title\u003e\n  \u003cmeta name=\"robots\" content=\"NONE,NOARCHIVE\"\u003e\n  \u003cstyle\u003e\n    html * { padding:0; margin:0; }\n    body * { padding:10px 20px; }\n    bod...",
+        "Url":  "https://hapztext-v2.onrender.com/ws/chat/test-conv/?token=dummytoken",
+        "StatusCode":  404,
+        "Status":  "REACHABLE (Client Error)",
+        "Error":  "The remote server returned an error: (404) Not Found.",
+        "Name":  "WebSocket Endpoint (HTTP probe)"
+    }
+]

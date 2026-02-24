@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:async';
 import 'package:haptext_api/common/coloors.dart';
 import 'package:haptext_api/exports.dart';
 

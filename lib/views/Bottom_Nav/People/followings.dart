@@ -91,12 +91,19 @@ class _FollowingsState extends State<Followings> {
                     ),
                     itemCount: followings.length,
                     itemBuilder: (context, index) {
-                      final user = followings[index];
+                      final userProfile = followings[index];
+                      // Create a SearchedUserModel from the SearchedUserProfile data
+                      final userModel = SearchedUserModel(
+                        id: userProfile.id,
+                        username: "${userProfile.firstName ?? ""} ${userProfile.lastName ?? ""}".trim(),
+                        profilePicture: userProfile.profilePicture,
+                        profile: userProfile,
+                      );
                       return friendCardWidget(
                         context,
-                        "${user.lastName ?? ""} ${user.firstName ?? ""}".trim(),
-                        user.profilePicture ?? 'assets/images/placeholder.jpg',
-                        user: user,
+                        "${userProfile.lastName ?? ""} ${userProfile.firstName ?? ""}".trim(),
+                        userProfile.profilePicture ?? 'assets/images/placeholder.jpg',
+                        user: userModel,
                       );
                     },
                   ),

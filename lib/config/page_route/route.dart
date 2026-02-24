@@ -1,6 +1,8 @@
-import 'package:haptext_api/exports.dart' hide ChatsHome, ChatScreen;
+import 'package:haptext_api/exports.dart' hide ChatsHome, ChatScreen, ChatItem;
 import 'package:haptext_api/main.dart';
 import 'package:haptext_api/views/chat_ui/chats_home.dart';
+import 'package:haptext_api/views/chat_ui/chat_screen.dart' hide ChatItem;
+import 'package:haptext_api/models/chat_ui/chat_item.dart';
 import 'package:haptext_api/models/searched_user_model.dart';
 import 'package:haptext_api/views/Bottom_Nav/People/friend_profile_page.dart';
 import 'package:haptext_api/views/Bottom_Nav/Post/comment_page.dart';
@@ -113,6 +115,12 @@ class AppRoute {
             return const ChatsHome();
           }),
       GoRoute(
+          path: '/chat-screen',
+          builder: (context, state) {
+            final ChatItem chat = state.extra as ChatItem;
+            return ChatScreen(chat: chat);
+          }),
+      GoRoute(
           path: RouteName.notificationPage.path,
           builder: (context, state) {
             return const Notifications();
@@ -124,10 +132,10 @@ class AppRoute {
             return FriendProfilePage(user: user);
           }),
       GoRoute(
-          path: '/friend-profile',
+          path: RouteName.innerPost.path,
           builder: (context, state) {
-            final SearchedUserModel user = state.extra as SearchedUserModel;
-            return FriendProfilePage(user: user);
+            final ResultPostModel post = state.extra as ResultPostModel;
+            return CommentScreen(post: post);
           }),
     ],
   );

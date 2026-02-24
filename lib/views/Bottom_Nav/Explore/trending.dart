@@ -1,6 +1,8 @@
 import 'package:haptext_api/common/coloors.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/views/Bottom_Nav/exports.dart';
+import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 import 'package:haptext_api/views/Bottom_Nav/Explore/explore_carousel.dart';
 
@@ -24,16 +26,28 @@ class _TrendingState extends State<Trending> {
               text: '  Trending',
               color: context.theme.primaryColor,
               fontWeight: FontWeight.bold)),
-      body: GridView.builder(
-          padding: const EdgeInsets.all(12),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.7,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8),
-          itemCount: 10,
-          itemBuilder: (context, index) =>
-              SocialPostCard(height: 240, isTrending: index < 2)),
+      body: BlocBuilder<HomeCubit, HomeState>(
+        builder: (context, state) {
+          final posts = context.read<HomeCubit>().posts.result ?? [];
+          if (posts.isEmpty && state is HomeLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (posts.isEmpty) {
+            return const Center(child: AppText(text: 'No trending posts found'));
+          }
+          return GridView.builder(
+            padding: const EdgeInsets.all(12),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.7,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8),
+            itemCount: posts.length,
+            itemBuilder: (context, index) =>
+                SocialPostCard(height: 240, isTrending: index < 2, post: posts[index]),
+          );
+        },
+      ),
     );
   }
 }

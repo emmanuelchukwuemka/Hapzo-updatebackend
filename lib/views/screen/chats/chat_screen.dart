@@ -1,4 +1,6 @@
 import 'package:haptext_api/exports.dart';
+import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
+import 'package:haptext_api/services/chat_ui/hapztext_api_service.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 
@@ -158,24 +160,54 @@ class ChatsHome extends StatefulWidget {
 }
 
 class _ChatsHomeState extends State<ChatsHome> {
-  late List<ChatItem> chats;
+  List<ChatItem> chats = [];
   bool pinnedExpanded = true;
+  bool isLoading = false;
+  final HapzTextApiService _apiService = HapzTextApiService();
 
   @override
   void initState() {
     super.initState();
-    chats = initialChats();
+    _loadConversations();
+  }
+
+  Future<void> _loadConversations() async {
+    setState(() => isLoading = true);
+    final token = context.read<AuthCubit>().useInfo.tokens?.auth;
+    if (token != null) {
+      _apiService.setToken(token);
+      final result = await _apiService.getConversations(1, 20);
+      if (result != null && result['data'] != null && result['data']['result'] != null) {
+        setState(() {
+          chats = (result['data']['result'] as List).map((c) {
+            // Map API response to ChatItem model
+            // The API return might have different field names, adjusting accordingly
+            final participants = c['participants'] as List;
+            final otherUser = participants.firstWhere(
+              (p) => p['id'] != context.read<AuthCubit>().useInfo.id,
+              orElse: () => participants.first,
+            );
+            
+            return ChatItem(
+              id: c['id'].toString(),
+              name: otherUser['username'] ?? 'User',
+              lastMessage: c['last_message'] != null ? c['last_message']['text_content'] ?? '' : '',
+              unread: 0, // Backend might not provide unread count in this endpoint
+              chatMode: ChatMode.mixed,
+            );
+          }).toList();
+        });
+      }
+    }
+    setState(() => isLoading = false);
   }
 
   void openChat(ChatItem chat) async {
     final result = await Navigator.of(context).push<ChatItem>(
-      MaterialPageRoute(builder: (_) => ChatScreen(chat: chat)),
+      MaterialPageRoute(builder: (_) => ChatScreen(chat: chat, apiService: _apiService)),
     );
     if (result != null) {
-      setState(() {
-        final idx = chats.indexWhere((c) => c.id == result.id);
-        if (idx >= 0) chats[idx] = result;
-      });
+      _loadConversations(); // Refresh list on return
     }
   }
 
@@ -358,7 +390,8 @@ class _ChatsHomeState extends State<ChatsHome> {
 
 class ChatScreen extends StatefulWidget {
   final ChatItem chat;
-  const ChatScreen({super.key, required this.chat});
+  final HapzTextApiService apiService;
+  const ChatScreen({super.key, required this.chat, required this.apiService});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -371,41 +404,33 @@ class _ChatScreenState extends State<ChatScreen> {
   bool recordingMock = false;
   Duration _recordDuration = Duration.zero;
   Timer? _recordTimer;
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
     chat = widget.chat;
-    // Insert a feed-style notification message (clickable)
-    messages.insert(
-      0,
-      Message(
-        id: 'feed1',
-        text: '${chat.name} just uploaded this: gghhh',
-        me: false,
-        timestamp: DateTime.now(),
-        isFeedLink: true,
-      ),
-    );
-    // Insert some mock messages
-    messages.addAll([
-      Message(
-          id: 'm1',
-          text: 'Hey! 🎉',
-          me: false,
-          timestamp: DateTime.now().subtract(const Duration(minutes: 10))),
-      Message(
-          id: 'm2',
-          text: 'Hello — how\'s it going?',
-          me: true,
-          timestamp: DateTime.now().subtract(const Duration(minutes: 9))),
-      Message(
-          id: 'm3',
-          text: 'Voice note (2s)',
-          me: false,
-          isVoice: true,
-          timestamp: DateTime.now().subtract(const Duration(minutes: 7))),
-    ]);
+    _loadMessages();
+  }
+
+  Future<void> _loadMessages() async {
+    setState(() => isLoading = true);
+    final result = await widget.apiService.getMessages(chat.id, 1, 50);
+    if (result != null && result['data'] != null && result['data']['result'] != null) {
+      setState(() {
+        messages.clear();
+        messages.addAll((result['data']['result'] as List).map((m) {
+          return Message(
+            id: m['id'].toString(),
+            text: m['text_content'] ?? '',
+            me: m['sender_id'] == context.read<AuthCubit>().useInfo.id,
+            timestamp: DateTime.parse(m['created_at']),
+            isVoice: m['message_type'] == 'voice',
+          );
+        }));
+      });
+    }
+    setState(() => isLoading = false);
   }
 
   // Helpers: check if current time is within auto-clear window
@@ -427,34 +452,25 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  void _sendText() {
+  Future<void> _sendText() async {
     final txt = _controller.text.trim();
     if (txt.isEmpty) return;
-    final bool willViewOnce =
-        chat.autoClearEnabled && _isWithinAutoClearWindow();
-    final bool willDisappear =
-        chat.disappearing == DisappearOption.demo5s; // demo quick expiry
-    final msg = Message(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      text: txt,
-      me: true,
-      timestamp: DateTime.now(),
-      viewOnce: willViewOnce,
-      disappearing: willDisappear,
-    );
-    setState(() {
-      messages.insert(0, msg);
-      chat.lastMessage =
-          'You: ${txt.length > 30 ? '${txt.substring(0, 30)}…' : txt}';
-      _controller.clear();
-    });
-    // If disappearing set to demo5s, auto remove after 5s (demo)
-    if (willDisappear) {
-      Future.delayed(const Duration(seconds: 5), () {
-        setState(() {
-          messages.removeWhere((m) => m.id == msg.id);
-        });
+    
+    final result = await widget.apiService.sendMessage(chat.id, txt);
+    if (result != null && result['data'] != null) {
+      final m = result['data'];
+      setState(() {
+        messages.insert(0, Message(
+          id: m['id'].toString(),
+          text: m['text_content'] ?? '',
+          me: true,
+          timestamp: DateTime.parse(m['created_at']),
+        ));
+        chat.lastMessage = 'You: $txt';
+        _controller.clear();
       });
+    } else {
+       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to send message')));
     }
   }
 
@@ -480,19 +496,23 @@ class _ChatScreenState extends State<ChatScreen> {
         .showSnackBar(const SnackBar(content: Text('Recording started...')));
   }
 
-  void _stopAndSendRecord() {
+  Future<void> _stopAndSendRecord() async {
     _recordTimer?.cancel();
-    final msg = Message(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      text: 'Voice note (${_formatDuration(_recordDuration)})',
-      me: true,
-      isVoice: true,
-      timestamp: DateTime.now(),
-    );
+    // In a real app, this would be a real file.
+    // Since this is a demo recording, we simulate the API call.
+    final msgText = 'Voice note (${_formatDuration(_recordDuration)})';
+    
+    // Simulating API success for voice note
     setState(() {
       recordingMock = false;
-      messages.insert(0, msg);
-      chat.lastMessage = 'You: Voice note (${_formatDuration(_recordDuration)})';
+      messages.insert(0, Message(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        text: msgText,
+        me: true,
+        isVoice: true,
+        timestamp: DateTime.now(),
+      ));
+      chat.lastMessage = 'You: $msgText';
     });
   }
 
@@ -802,10 +822,25 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: Row(children: [
-                  IconButton(
-                      icon: Icon(recordingMock ? Icons.stop_circle : Icons.mic,
-                          color: recordingMock ? Colors.red : Colors.white),
-                      onPressed: canSendVoice ? _toggleRecord : null),
+                  GestureDetector(
+                    onLongPressDown: (_) {
+                      if (canSendVoice && !recordingMock) {
+                        _startRecord();
+                      }
+                    },
+                    onLongPressEnd: (_) {
+                      if (recordingMock) {
+                        _stopAndSendRecord();
+                      }
+                    },
+                    onLongPressCancel: () {
+                      if (recordingMock) {
+                        _cancelRecord();
+                      }
+                    },
+                    child: Icon(recordingMock ? Icons.stop_circle : Icons.mic,
+                        color: recordingMock ? Colors.red : Colors.white),
+                  ),
                   Expanded(
                     child: recordingMock
                         ? Container(

@@ -99,12 +99,11 @@ class _RegisterState extends State<Register> {
                         const SizedBox(height: 30.0),
                         Appbutton(
                           label: "Sign up",
-                          // isLoading: watchAuth.state is AuthLoadingState,
+                          isLoading: watchAuth.state is AuthLoadingState,
                           onTap: () {
-                            // if (_formKey.currentState?.validate() ?? false) {
-                            //   watchAuth.registerUser();
-                            // }
-                            context.go(RouteName.bottomNav.path);
+                            if (_formKey.currentState?.validate() ?? false) {
+                              watchAuth.registerUser();
+                            }
                           },
                         ),
                         const SizedBox(height: 30.0),

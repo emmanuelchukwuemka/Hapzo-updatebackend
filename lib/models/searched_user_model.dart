@@ -17,6 +17,8 @@ class SearchedUserModel {
   List<ResultPostModel> userVideoPost = [];
   List<ResultPostModel> userAudioPost = [];
   List<ResultPostModel> userPhotoPost = [];
+  String? firstName;
+  String? lastName;
   SearchedUserModel(
       {this.id,
       this.username,
@@ -33,7 +35,9 @@ class SearchedUserModel {
       this.userAudioPost = const [],
       this.userPhotoPost = const [],
       this.userTextPost = const [],
-      this.userVideoPost = const []});
+      this.userVideoPost = const [],
+      this.firstName,
+      this.lastName});
 
   SearchedUserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -108,5 +112,28 @@ class SearchedUserProfile {
     id = json['id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['user_id'] = userId;
+    data['birth_date'] = birthDate;
+    data['ethnicity'] = ethnicity;
+    data['post_count'] = postCount;
+    data['follower_count'] = followerCount;
+    data['following_count'] = followingCount;
+    data['relationship_status'] = relationshipStatus;
+    data['first_name'] = firstName;
+    data['last_name'] = lastName;
+    data['bio'] = bio;
+    data['occupation'] = occupation;
+    data['profile_picture'] = profilePicture;
+    data['location'] = location;
+    data['height'] = height;
+    data['weight'] = weight;
+    data['id'] = id;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    return data;
   }
 }

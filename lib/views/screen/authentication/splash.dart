@@ -3,6 +3,8 @@
 import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/utils/session_manager.dart';
+import 'package:provider/provider.dart';
+import 'package:haptext_api/services/chat_ui/auth_provider.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -16,9 +18,17 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(const Duration(seconds: 3));
-      if (await SessionManager.getUser() != null) {
+      final storedUser = await SessionManager.getUser();
+      if (storedUser != null) {
         context.read<AuthCubit>().fetchLocalUser();
-        await SessionManager().getToken();
+        final token = await SessionManager().getToken();
+
+        // Sync token to chat AuthProvider
+        if (token != null && token.isNotEmpty) {
+          final authProvider = context.read<AuthProvider>();
+          authProvider.setTokenFromSession(token, storedUser.id?.toString());
+        }
+
         context.go(RouteName.bottomNav.path);
       } else {
         context.go(RouteName.login.path);

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:async';
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';

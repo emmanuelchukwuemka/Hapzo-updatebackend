@@ -2,6 +2,8 @@ import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/utils/extensions.dart';
+import 'package:provider/provider.dart';
+import 'package:haptext_api/services/chat_ui/auth_provider.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -18,20 +20,25 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     final watchAuth = context.watch<AuthCubit>();
-    // return BlocListener<AuthCubit, AuthState>(
-    //   listener: (context, state) {
-    //     if (state is AuthLoginState) {
-    //       context.go(RouteName.bottomNav.path);
-    //       context.read<HomeCubit>().fetchPosts();
-    //     }
-    //     if (state is AuthVerifyOtpSentState) {
-    //       context.go(RouteName.otpScreen.path);
-    //     }
-    //   },
-    //   child: AbsorbPointer(
-    //     absorbing: watchAuth.state is AuthLoadingState,
-    //     child: Scaffold(
-    return Scaffold(
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthLoginState) {
+          // Sync token to chat AuthProvider
+          final authProvider = context.read<AuthProvider>();
+          final token = watchAuth.useInfo.tokens?.auth ?? '';
+          final userId = watchAuth.useInfo.id?.toString();
+          authProvider.setTokenFromSession(token, userId);
+
+          context.go(RouteName.bottomNav.path);
+          context.read<HomeCubit>().fetchPosts();
+        }
+        if (state is AuthVerifyOtpSentState) {
+          context.go(RouteName.otpScreen.path);
+        }
+      },
+      child: AbsorbPointer(
+        absorbing: watchAuth.state is AuthLoadingState,
+        child: Scaffold(
           body: SingleChildScrollView(
             child: Column(
               children: [
@@ -42,7 +49,6 @@ class _SignInState extends State<SignIn> {
                 const SizedBox(height: 30.0),
                 const AppText(
                     text: 'Welcome Back!',
-                    // color: context.theme.titleTextColor,
                     fontSize: 26.0,
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
@@ -58,7 +64,7 @@ class _SignInState extends State<SignIn> {
                     child: Column(
                       children: [
                         const SizedBox(height: 10),
-                        // USERNAME OR EMAIL TEXT INPUT
+                        // EMAIL TEXT INPUT
                         InputField(
                             controller: watchAuth.emailController,
                             keyboardType: TextInputType.emailAddress,
@@ -67,7 +73,7 @@ class _SignInState extends State<SignIn> {
                             prefix:
                                 const Icon(Icons.email, color: Colors.orange)),
                         const SizedBox(height: 20),
-                        //PASSWORD TEXT INPUT
+                        // PASSWORD TEXT INPUT
                         InputField(
                             controller: watchAuth.passwordController,
                             keyboardType: TextInputType.text,
@@ -90,14 +96,12 @@ class _SignInState extends State<SignIn> {
                                     color: Colors.white))),
                         const SizedBox(height: 60.0),
                         Appbutton(
-                            // isLoading: watchAuth.state is AuthLoadingState,
+                            isLoading: watchAuth.state is AuthLoadingState,
                             label: "Login",
                             onTap: () {
-                              // if (_formKey.currentState?.validate() ?? false) {
-                              //   context.read<AuthCubit>().loginUser();
-                              // }
-                              context.go(RouteName.bottomNav.path);
-                              context.read<HomeCubit>().fetchPosts();
+                              if (_formKey.currentState?.validate() ?? false) {
+                                context.read<AuthCubit>().loginUser();
+                              }
                             })
                       ],
                     ),
@@ -121,6 +125,8 @@ class _SignInState extends State<SignIn> {
               ],
             ),
           ),
-        );
+        ),
+      ),
+    );
   }
 }
