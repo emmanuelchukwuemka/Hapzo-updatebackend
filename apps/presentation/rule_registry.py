@@ -35,8 +35,11 @@ from apps.application.users.rules import (
     GetFriendsListRule,
     GetUserFollowersRule,
     GetUserFollowingsRule,
+    HandleFollowRequestRule,
+    ListPendingFollowRequestsRule,
     SearchFriendsRule,
     FollowUserRule,
+    UnfollowUserRule,
     UpdateUserProfileRule,
     UpdateUserRule,
     UserProfileListRule,
@@ -151,6 +154,24 @@ def get_user_followers_rule() -> GetUserFollowersRule:
 def get_user_followings_rule() -> GetUserFollowingsRule:
     return GetUserFollowingsRule(
         user_profile_repository=get_user_profile_repository(),
+    )
+
+
+def handle_follow_request_rule() -> HandleFollowRequestRule:
+    return HandleFollowRequestRule(
+        user_following_repository=get_user_following_repository(),
+    )
+
+
+def list_pending_follow_requests_rule() -> ListPendingFollowRequestsRule:
+    return ListPendingFollowRequestsRule(
+        user_following_repository=get_user_following_repository(),
+    )
+
+
+def unfollow_user_rule() -> UnfollowUserRule:
+    return UnfollowUserRule(
+        user_following_repository=get_user_following_repository(),
     )
 
 

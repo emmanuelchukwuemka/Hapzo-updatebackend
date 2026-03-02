@@ -2,6 +2,8 @@ from django.urls import path
 
 from apps.presentation.views.users import (
     create_user_profile,
+    handle_follow_request,
+    list_pending_follow_requests,
     search_users,
     fetch_profiles_list,
     fetch_user,
@@ -11,6 +13,7 @@ from apps.presentation.views.users import (
     get_user_followings,
     search_friends,
     send_follow_request,
+    unfollow_user,
     update_user,
     update_user_profile,
 )
@@ -33,6 +36,21 @@ urlpatterns = [
     ),
     path(
         "follow-request/<str:user_id>/", send_follow_request, name="send-follow-request"
+    ),
+    path(
+        "follow-request/handle/<str:request_id>/",
+        handle_follow_request,
+        name="handle-follow-request",
+    ),
+    path(
+        "follow-requests/pending/<int:page>/<int:page_size>/",
+        list_pending_follow_requests,
+        name="list-pending-follow-requests",
+    ),
+    path(
+        "unfollow/<str:user_id>/",
+        unfollow_user,
+        name="unfollow-user",
     ),
     path(
         "friends/<int:page>/<int:page_size>/", get_friends_list, name="get-friends-list"

@@ -107,7 +107,14 @@ class UserFollowing(models.Model):
     following = models.ForeignKey(
         "UserProfile", on_delete=models.CASCADE, related_name="follower_set"
     )
+    status = models.CharField(
+        max_length=10,
+        choices=FollowRequestStatus.choices(),
+        default=FollowRequestStatus.PENDING,
+        db_index=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "user_following"

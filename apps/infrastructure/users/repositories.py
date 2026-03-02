@@ -124,7 +124,9 @@ def to_domain_user_following_data(
         id=django_user_following.id,
         follower_id=django_user_following.follower.user_id,
         following_id=django_user_following.following.user_id,
+        status=django_user_following.status,
         created_at=django_user_following.created_at,
+        updated_at=django_user_following.updated_at,
     )
 
 
@@ -434,17 +436,128 @@ class DjangoUserFollowingRepository(UserFollowingRepositoryInterface):
             raise e
         return to_domain_user_following_data(created_user_following)
 
+    def find_by_id(self, request_id: str) -> DomainUserFollowing | None:
+        try:
+            django_following = UserFollowing.objects.select_related(
+                "follower", "following"
+            ).get(id=request_id)
+            return to_domain_user_following_data(django_following)
+        except UserFollowing.DoesNotExist:
+            return None
+
+    def find_existing_request(
+        self, follower_id: str, following_id: str
+    ) -> DomainUserFollowing | None:
+        try:
+            follower_profile = UserProfile.objects.get(user_id=follower_id)
+            following_profile = UserProfile.objects.get(user_id=following_id)
+            django_following = UserFollowing.objects.select_related(
+                "follower", "following"
+            ).get(follower=follower_profile, following=following_profile)
+            return to_domain_user_following_data(django_following)
+        except (UserFollowing.DoesNotExist, UserProfile.DoesNotExist):
+            return None
+
+    def update_status(self, request_id: str, status: str) -> DomainUserFollowing:
+        try:
+            django_following = UserFollowing.objects.select_related(
+                "follower", "following"
+            ).get(id=request_id)
+            django_following.status = status
+            django_following.save(update_fields=["status", "updated_at"])
+            return to_domain_user_following_data(django_following)
+        except UserFollowing.DoesNotExist:
+            raise ValueError(f"Follow request with id '{request_id}' does not exist.")
+
+    def get_received_requests(
+        self, user_id: str, page: int, page_size: int, status: str | None = None
+    ) -> Tuple[List[DomainUserFollowing], str | None, str | None]:
+        queryset = (
+            UserFollowing.objects.filter(following__user_id=user_id)
+            .select_related("follower", "following", "follower__user", "following__user")
+            .order_by("-created_at")
+        )
+        if status:
+            queryset = queryset.filter(status=status)
+
+        total = queryset.count()
+        offset = (page - 1) * page_size
+        end = offset + page_size
+
+        requests = [
+            to_domain_user_following_data(req)
+            for req in list(queryset[offset:end])
+        ]
+
+        previous_link = None
+        if page > 1:
+            previous_link = reverse(
+                "list-pending-follow-requests",
+                kwargs={"page": page - 1, "page_size": page_size},
+            )
+
+        next_link = None
+        if end < total:
+            next_link = reverse(
+                "list-pending-follow-requests",
+                kwargs={"page": page + 1, "page_size": page_size},
+            )
+
+        return requests, previous_link, next_link
+
+    def get_sent_requests(
+        self, user_id: str, page: int, page_size: int, status: str | None = None
+    ) -> Tuple[List[DomainUserFollowing], str | None, str | None]:
+        queryset = (
+            UserFollowing.objects.filter(follower__user_id=user_id)
+            .select_related("follower", "following", "follower__user", "following__user")
+            .order_by("-created_at")
+        )
+        if status:
+            queryset = queryset.filter(status=status)
+
+        total = queryset.count()
+        offset = (page - 1) * page_size
+        end = offset + page_size
+
+        requests = [
+            to_domain_user_following_data(req)
+            for req in list(queryset[offset:end])
+        ]
+
+        previous_link = None
+        if page > 1:
+            previous_link = f"?page={page - 1}&page_size={page_size}"
+
+        next_link = None
+        if end < total:
+            next_link = f"?page={page + 1}&page_size={page_size}"
+
+        return requests, previous_link, next_link
+
+    def delete(self, follower_id: str, following_id: str) -> bool:
+        try:
+            follower_profile = UserProfile.objects.get(user_id=follower_id)
+            following_profile = UserProfile.objects.get(user_id=following_id)
+            deleted_count, _ = UserFollowing.objects.filter(
+                follower=follower_profile, following=following_profile
+            ).delete()
+            return deleted_count > 0
+        except UserProfile.DoesNotExist:
+            return False
+
     def get_mutual_followers(
         self, user_id: str, page: int, page_size: int, query: str | None = None
     ) -> Tuple[List[Any], str | None, str | None]:
-        following = UserFollowing.objects.filter(follower__user_id=user_id).values_list(
-            "following__user_id", flat=True
-        )
+        following = UserFollowing.objects.filter(
+            follower__user_id=user_id, status="accepted"
+        ).values_list("following__user_id", flat=True)
 
         mutual_followers = (
             UserFollowing.objects.filter(
                 following__user_id=user_id,
                 follower__user_id__in=following,
+                status="accepted",
             )
             .select_related("follower__user")
             .order_by("-created_at")
@@ -477,11 +590,11 @@ class DjangoUserFollowingRepository(UserFollowingRepositoryInterface):
 
     def are_friends(self, user1_id: str, user2_id: str) -> bool:
         user1_follows_user2 = UserFollowing.objects.filter(
-            follower_id=user1_id, following_id=user2_id
+            follower_id=user1_id, following_id=user2_id, status="accepted"
         ).exists()
 
         user2_follows_user1 = UserFollowing.objects.filter(
-            follower_id=user2_id, following_id=user1_id
+            follower_id=user2_id, following_id=user1_id, status="accepted"
         ).exists()
 
         return user1_follows_user2 and user2_follows_user1

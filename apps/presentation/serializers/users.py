@@ -113,3 +113,26 @@ class FriendSearchSerializer(serializers.Serializer):
     def validate(self, attrs):
         attrs["user_id"] = self.context.get("user_id")
         return attrs
+
+
+class HandleFollowRequestSerializer(serializers.Serializer):
+    action = serializers.ChoiceField(
+        choices=["accept", "decline"],
+        required=True,
+        help_text="Action to perform: 'accept' or 'decline'",
+    )
+    request_id = serializers.CharField(read_only=True)
+
+    def validate(self, attrs):
+        attrs["request_id"] = self.context.get("request_id")
+        return attrs
+
+
+class PendingFollowRequestsSerializer(serializers.Serializer):
+    page = serializers.IntegerField(required=True)
+    page_size = serializers.IntegerField(required=True)
+    user_id = serializers.CharField(read_only=True)
+
+    def validate(self, attrs):
+        attrs["user_id"] = self.context.get("user_id")
+        return attrs

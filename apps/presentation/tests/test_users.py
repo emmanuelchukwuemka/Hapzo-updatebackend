@@ -1,7 +1,7 @@
 import pytest
 from django.urls import reverse
 from rest_framework import status
-from apps.presentation.tests.factories import UserFactory, UserProfileFactory
+from apps.presentation.tests.factories import UserFactory, UserProfileFactory, UserFollowingFactory
 
 @pytest.mark.django_db
 class TestUsersAPI:
@@ -67,3 +67,47 @@ class TestUsersAPI:
         response = authenticated_client.get(url, {'query': 'search_target'})
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data['data']['users']) >= 1
+
+    def test_handle_follow_request_accept(self, authenticated_client, user, second_user):
+        """Test accepting a follow request."""
+        user_profile = UserProfileFactory(user=user)
+        second_profile = UserProfileFactory(user=second_user)
+        follow = UserFollowingFactory(follower=second_profile, following=user_profile, status="pending")
+
+        url = reverse('handle-follow-request', kwargs={'request_id': follow.id})
+        response = authenticated_client.post(url, {"action": "accept"})
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data['data']['status'] == "accepted"
+
+    def test_handle_follow_request_decline(self, authenticated_client, user, second_user):
+        """Test declining a follow request."""
+        user_profile = UserProfileFactory(user=user)
+        second_profile = UserProfileFactory(user=second_user)
+        follow = UserFollowingFactory(follower=second_profile, following=user_profile, status="pending")
+
+        url = reverse('handle-follow-request', kwargs={'request_id': follow.id})
+        response = authenticated_client.post(url, {"action": "decline"})
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data['data']['status'] == "declined"
+
+    def test_list_pending_follow_requests(self, authenticated_client, user, second_user):
+        """Test listing pending follow requests received by the user."""
+        user_profile = UserProfileFactory(user=user)
+        second_profile = UserProfileFactory(user=second_user)
+        UserFollowingFactory(follower=second_profile, following=user_profile, status="pending")
+
+        url = reverse('list-pending-follow-requests', kwargs={'page': 1, 'page_size': 20})
+        response = authenticated_client.get(url)
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.data['data']['requests']) >= 1
+        assert response.data['data']['requests'][0]['status'] == "pending"
+
+    def test_unfollow_user_success(self, authenticated_client, user, second_user):
+        """Test unfollowing a user."""
+        user_profile = UserProfileFactory(user=user)
+        second_profile = UserProfileFactory(user=second_user)
+        UserFollowingFactory(follower=user_profile, following=second_profile, status="accepted")
+
+        url = reverse('unfollow-user', kwargs={'user_id': second_user.id})
+        response = authenticated_client.delete(url)
+        assert response.status_code == status.HTTP_204_NO_CONTENT

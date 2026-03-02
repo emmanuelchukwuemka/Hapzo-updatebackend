@@ -1,0 +1,31 @@
+[1m============================= test session starts =============================[0m
+[1mcollecting ... [0mcollected 12 items
+
+apps/presentation/tests/test_users.py::TestUsersAPI::test_fetch_user_success [32mPASSED[0m[33m [  8%][0m
+apps/presentation/tests/test_users.py::TestUsersAPI::test_update_user_success [32mPASSED[0m[33m [ 16%][0m
+apps/presentation/tests/test_users.py::TestUsersAPI::test_create_user_profile_success [32mPASSED[0m[33m [ 25%][0m
+apps/presentation/tests/test_users.py::TestUsersAPI::test_fetch_user_profile_success [32mPASSED[0m[33m [ 33%][0m
+apps/presentation/tests/test_users.py::TestUsersAPI::test_update_user_profile_success [32mPASSED[0m[33m [ 41%][0m
+apps/presentation/tests/test_users.py::TestUsersAPI::test_fetch_profiles_list_success [32mPASSED[0m[33m [ 50%][0m
+apps/presentation/tests/test_users.py::TestUsersAPI::test_send_follow_request_success 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m celery.app.trace:trace.py:128 Task apps.core.celery.send_follow_notification_task[6ae24cf8-1c9e-4c98-8ee9-a637f330777b] succeeded in 0.04762000001210254s: None
+[32mPASSED[0m[33m                                                                   [ 58%][0m
+apps/presentation/tests/test_users.py::TestUsersAPI::test_search_users_success [32mPASSED[0m[33m [ 66%][0m
+apps/presentation/tests/test_users.py::TestUsersAPI::test_handle_follow_request_accept [32mPASSED[0m[33m [ 75%][0m
+apps/presentation/tests/test_users.py::TestUsersAPI::test_handle_follow_request_decline [32mPASSED[0m[33m [ 83%][0m
+apps/presentation/tests/test_users.py::TestUsersAPI::test_list_pending_follow_requests [32mPASSED[0m[33m [ 91%][0m
+apps/presentation/tests/test_users.py::TestUsersAPI::test_unfollow_user_success [32mPASSED[0m[33m [100%][0m
+
+============================ slowest 10 durations =============================
+21.05s call     apps/presentation/tests/test_users.py::TestUsersAPI::test_fetch_profiles_list_success
+8.49s setup    apps/presentation/tests/test_users.py::TestUsersAPI::test_handle_follow_request_decline
+7.35s setup    apps/presentation/tests/test_users.py::TestUsersAPI::test_send_follow_request_success
+7.01s setup    apps/presentation/tests/test_users.py::TestUsersAPI::test_unfollow_user_success
+6.67s setup    apps/presentation/tests/test_users.py::TestUsersAPI::test_handle_follow_request_accept
+6.22s call     apps/presentation/tests/test_users.py::TestUsersAPI::test_search_users_success
+6.09s setup    apps/presentation/tests/test_users.py::TestUsersAPI::test_fetch_user_success
+5.96s setup    apps/presentation/tests/test_users.py::TestUsersAPI::test_list_pending_follow_requests
+3.57s setup    apps/presentation/tests/test_users.py::TestUsersAPI::test_search_users_success
+3.27s setup    apps/presentation/tests/test_users.py::TestUsersAPI::test_create_user_profile_success
+[33m================== [32m12 passed[0m, [33m[1m3 warnings[0m[33m in 87.13s (0:01:27)[0m[33m ==================[0m

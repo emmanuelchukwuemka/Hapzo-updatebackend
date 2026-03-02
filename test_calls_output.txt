@@ -1,0 +1,196 @@
+[1m============================= test session starts =============================[0m
+[1mcollecting ... [0mcollected 35 items
+
+apps/infrastructure/calls/tests/chat/test_models.py::TestCreateModels::test_call_record_creation <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_models.py [32mPASSED[0m[33m [  2%][0m
+apps/infrastructure/calls/tests/chat/test_models.py::TestCreateModels::test_call_participants <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_models.py [32mPASSED[0m[33m [  5%][0m
+apps/infrastructure/calls/tests/chat/test_repository.py::TestCallRecordRepository::test_a_create_group_call <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_repository.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call kdzyycLfPxyXYPDYWDLrO created by W-eoZf_X21UYVEnJLisrO with 3 participants
+[32mPASSED[0m[33m                                                                   [  8%][0m
+apps/infrastructure/calls/tests/chat/test_repository.py::TestCallRecordRepository::test_b_join_call <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_repository.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call 1OhpHdiJwipQPsM0fhWOo created by 5Y3TCW0B2PdxtOhElIPg3 with 1 participants
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:143 User hxMjly01Oy6pFyrerXHLJ joined call 1OhpHdiJwipQPsM0fhWOo
+[32mPASSED[0m[33m                                                                   [ 11%][0m
+apps/infrastructure/calls/tests/chat/test_repository.py::TestCallRecordRepository::test_c_leave_call_auto_end <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_repository.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call v_9HYU1uvI_iOPQRdtqU5 created by FYMYRIROcdiSTlhFHbSOD with 1 participants
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:209 Call v_9HYU1uvI_iOPQRdtqU5 automatically ended (no participants)
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:183 User FYMYRIROcdiSTlhFHbSOD left call v_9HYU1uvI_iOPQRdtqU5
+[32mPASSED[0m[33m                                                                   [ 14%][0m
+apps/infrastructure/calls/tests/chat/test_repository.py::TestCallRecordRepository::test_d_get_active_call <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_repository.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call 8iMeLrCm2RSV2pwNko4yx created by EES-hvoa6QOT_VavPk-a7 with 3 participants
+[32mPASSED[0m[33m                                                                   [ 17%][0m
+apps/infrastructure/calls/tests/chat/test_repository.py::TestCallRecordRepository::test_e_invite_to_call <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_repository.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call wfkfQyMFxRgTB0E7cfCWh created by acgd6CDv2mbfnANwSwMti with 2 participants
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:390 Invited 1 users to call wfkfQyMFxRgTB0E7cfCWh by acgd6CDv2mbfnANwSwMti
+[32mPASSED[0m[33m                                                                   [ 20%][0m
+apps/infrastructure/calls/tests/chat/test_repository.py::TestCallRecordRepository::test_f_update_participant_media_state <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_repository.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call N43vxPo15nQPXYvKW29rj created by f1Ziiswak9CN4wIIaR0XH with 1 participants
+[32mPASSED[0m[33m                                                                   [ 22%][0m
+apps/infrastructure/calls/tests/chat/test_repository.py::TestCallRecordRepository::test_g_get_recent_calls <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_repository.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call pjz649KkdEtGvwHh0kCoj created by OwlQpkptbSh0n8POos05n with 1 participants
+[32mPASSED[0m[33m                                                                   [ 25%][0m
+apps/infrastructure/calls/tests/chat/test_repository.py::TestCallRecordRepository::test_h_get_call_summary <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_repository.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call vj_2hMq8W5HEEDfeiGuUn created by qZ7RmronYiVv59Anf3mjA with 3 participants
+[32mPASSED[0m[33m                                                                   [ 28%][0m
+apps/infrastructure/calls/tests/chat/test_repository.py::TestCallRecordRepository::test_j_get_active_participants <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_repository.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call bpc_tdwLxIQAGmqg5qYwv created by C6qlfB-l4EkLOj6DbQeHm with 1 participants
+[32mPASSED[0m[33m                                                                   [ 31%][0m
+apps/infrastructure/calls/tests/chat/test_repository.py::TestCallRecordRepository::test_k_get_call_participants <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_repository.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call B6aP3iMwK7ngdIsaigbUc created by LHeGtewtpnZN_Ns5-bLjd with 3 participants
+[32mPASSED[0m[33m                                                                   [ 34%][0m
+apps/infrastructure/calls/tests/chat/test_repository.py::TestCallRecordRepository::test_l_get_user_call_history <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_repository.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call gBb5rKcEWYMXP6jNJrYOd created by y4ezE0ciX_QIPJmNp3Ujs with 1 participants
+[32mPASSED[0m[33m                                                                   [ 37%][0m
+apps/infrastructure/calls/tests/chat/test_repository.py::TestCallRecordRepository::test_m_get_user_call_statistics <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_repository.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call 5LPca96M16Xi5tbsqmpSx created by Gj_JArTwDrlWjfwXBbyJ7 with 1 participants
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:548 Call 5LPca96M16Xi5tbsqmpSx ended for all participants by Gj_JArTwDrlWjfwXBbyJ7
+[32mPASSED[0m[33m                                                                   [ 40%][0m
+apps/infrastructure/calls/tests/chat/test_repository.py::TestCallRecordRepository::test_i_end_call_for_all <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_repository.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call G80qhMZI8ih0Bp2Qil8xe created by S_cPZd5GPkafcthua56FO with 3 participants
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:548 Call G80qhMZI8ih0Bp2Qil8xe ended for all participants by S_cPZd5GPkafcthua56FO
+[32mPASSED[0m[33m                                                                   [ 42%][0m
+apps/infrastructure/calls/tests/chat/test_route.py::TestCallsRoute::test_a_create_call_returns_201 <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_route.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call bBMQjYwRha_8ds7_U6wu7 created by v4bSYjU8ABoEOL1-r3G0k with 2 participants
+[32mPASSED[0m[33m                                                                   [ 45%][0m
+apps/infrastructure/calls/tests/chat/test_route.py::TestCallsRoute::test_b_when_invalid_participant_returns_404 <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_route.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[31m[1mERROR   [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:98 Failed to create group call: Call Participant does not exist
+[31m[1mERROR   [0m apps.infrastructure.calls.service.call_record_service:call_record_service.py:107 CUstomCallParticipantForeignKeyError, Failed to create call: Call Participant does not exist
+[33mWARNING [0m django.request:log.py:249 Not Found: /api/v1/calls
+[32mPASSED[0m[33m                                                                   [ 48%][0m
+apps/infrastructure/calls/tests/chat/test_route.py::TestCallsRoute::test_c_when_invalid_participant_id_too_short_returns_400 <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_route.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[31m[1mERROR   [0m apps.infrastructure.calls.service.call_record_service:call_record_service.py:96 ValidationError, Failed to create call: {'participant_ids': {0: [ErrorDetail(string='Ensure this field has at least 21 characters.', code='min_length')]}}
+[33mWARNING [0m django.request:log.py:249 Bad Request: /api/v1/calls
+[32mPASSED[0m[33m                                                                   [ 51%][0m
+apps/infrastructure/calls/tests/chat/test_route.py::TestCallsRoute::test_d_when_invalid_call_type_returns_400 <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_route.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[31m[1mERROR   [0m apps.infrastructure.calls.service.call_record_service:call_record_service.py:96 ValidationError, Failed to create call: {'call_type': [ErrorDetail(string='"123456789" is not a valid choice.', code='invalid_choice')]}
+[33mWARNING [0m django.request:log.py:249 Bad Request: /api/v1/calls
+[32mPASSED[0m[33m                                                                   [ 54%][0m
+apps/infrastructure/calls/tests/chat/test_route.py::TestCallsRoute::test_e_when_title_too_long_returns_400 <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_route.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[31m[1mERROR   [0m apps.infrastructure.calls.service.call_record_service:call_record_service.py:96 ValidationError, Failed to create call: {'title': [ErrorDetail(string='Ensure this field has no more than 100 characters.', code='max_length')]}
+[33mWARNING [0m django.request:log.py:249 Bad Request: /api/v1/calls
+[32mPASSED[0m[33m                                                                   [ 57%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_consumer.py::TestWebRTCConsumer::test_a_webrtc_connect_success <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_consumer.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call emiPpEHmhHgKy11k8ENpD created by xuo5eNOCUuzhRuVHbZDll with 3 participants
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User xuo5eNOCUuzhRuVHbZDll connected to call emiPpEHmhHgKy11k8ENpD
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User 72lqMuTW7YEb3m8k_kCV2 connected to call emiPpEHmhHgKy11k8ENpD
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User xuo5eNOCUuzhRuVHbZDll disconnected from call emiPpEHmhHgKy11k8ENpD
+[32mPASSED[0m[33m                                                                   [ 60%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_consumer.py::TestWebRTCConsumer::test_b_webrtc_reject_anonymous <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_consumer.py [32mPASSED[0m[33m [ 62%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_consumer.py::TestWebRTCConsumer::test_c_invalid_call_id_returns_4003 <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_consumer.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[33mWARNING [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:78 User fm4NTI-4ThS5iXc5uFF3M not allowed to access call
+[32mPASSED[0m[33m                                                                   [ 65%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_consumer.py::TestWebRTCConsumer::test_d_join_call <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_consumer.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call 0r012IDVX7ImyRDm0SFAJ created by KLJx_Msc3YZ4117G-0l6g with 3 participants
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User KLJx_Msc3YZ4117G-0l6g connected to call 0r012IDVX7ImyRDm0SFAJ
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User tbf-3TDfkWeGpAdrXVaG8 connected to call 0r012IDVX7ImyRDm0SFAJ
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:703 join call content: {'type': 'join_call'}
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:143 User tbf-3TDfkWeGpAdrXVaG8 joined call 0r012IDVX7ImyRDm0SFAJ
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User KLJx_Msc3YZ4117G-0l6g disconnected from call 0r012IDVX7ImyRDm0SFAJ
+[32mPASSED[0m[33m                                                                   [ 68%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_consumer.py::TestWebRTCConsumer::test_e_leave_call <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_consumer.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call 3D54AiRLS3IFLwNbIUh4q created by OgRHAmg1HaBlei4SsIb7D with 3 participants
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User OgRHAmg1HaBlei4SsIb7D connected to call 3D54AiRLS3IFLwNbIUh4q
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User 4vBbL274BhPCvjrZ8ZWyq connected to call 3D54AiRLS3IFLwNbIUh4q
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:776 leave call content: {'type': 'leave_call'}
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:183 User 4vBbL274BhPCvjrZ8ZWyq left call 3D54AiRLS3IFLwNbIUh4q
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User OgRHAmg1HaBlei4SsIb7D disconnected from call 3D54AiRLS3IFLwNbIUh4q
+[32mPASSED[0m[33m                                                                   [ 71%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_consumer.py::TestWebRTCConsumer::test_f_invite_to_call <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_consumer.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call gPPtv64OZw9uFVtXsfUjv created by Bv5JQ7ukM8TJ6xtQytY-b with 3 participants
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User Bv5JQ7ukM8TJ6xtQytY-b connected to call gPPtv64OZw9uFVtXsfUjv
+[31m[1mERROR   [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:400 Failed to create group call: Call Participant does not exist
+[31m[1mERROR   [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:337 Invited User not found: Call Participant does not exist
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User Bv5JQ7ukM8TJ6xtQytY-b disconnected from call gPPtv64OZw9uFVtXsfUjv
+[32mPASSED[0m[33m                                                                   [ 74%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_consumer.py::TestWebRTCConsumer::test_g_media_state <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_consumer.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call rBNJPnY64Q15ztuH5aMja created by hnShl_L2wOqF8uH2SroFh with 3 participants
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User hnShl_L2wOqF8uH2SroFh connected to call rBNJPnY64Q15ztuH5aMja
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User lyyX_TRjzkMGHsRUK42pe connected to call rBNJPnY64Q15ztuH5aMja
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User hnShl_L2wOqF8uH2SroFh disconnected from call rBNJPnY64Q15ztuH5aMja
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User lyyX_TRjzkMGHsRUK42pe disconnected from call rBNJPnY64Q15ztuH5aMja
+[32mPASSED[0m[33m                                                                   [ 77%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_consumer.py::TestWebRTCConsumer::test_h_offer <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_consumer.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call XCDegp7OSn4b2fW3C75KF created by uydv6q7O6Rj76QKiIM8dd with 3 participants
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User uydv6q7O6Rj76QKiIM8dd connected to call XCDegp7OSn4b2fW3C75KF
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User CFMu9KJk92jJyinx9SKXR connected to call XCDegp7OSn4b2fW3C75KF
+[33mWARNING [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:451 offer missing in webrtc offer. content: {'type': 'webrtc_offer'}
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User uydv6q7O6Rj76QKiIM8dd disconnected from call XCDegp7OSn4b2fW3C75KF
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User CFMu9KJk92jJyinx9SKXR disconnected from call XCDegp7OSn4b2fW3C75KF
+[32mPASSED[0m[33m                                                                   [ 80%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_consumer.py::TestWebRTCConsumer::test_i_answer <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_consumer.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call ngj2JsKzV0kxXaRIyqPAZ created by NG5CtQl-3fOwAC2XPd97y with 3 participants
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User NG5CtQl-3fOwAC2XPd97y connected to call ngj2JsKzV0kxXaRIyqPAZ
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User mLG09SEJlKmgNv_ame2wm connected to call ngj2JsKzV0kxXaRIyqPAZ
+[33mWARNING [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:503 answer missing in webrtc answer. content: {'type': 'webrtc_answer'}
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User NG5CtQl-3fOwAC2XPd97y disconnected from call ngj2JsKzV0kxXaRIyqPAZ
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User mLG09SEJlKmgNv_ame2wm disconnected from call ngj2JsKzV0kxXaRIyqPAZ
+[32mPASSED[0m[33m                                                                   [ 82%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_consumer.py::TestWebRTCConsumer::test_j_ice_candidate <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_consumer.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call 8Nx6mD6uKNsWfaQnCJZbB created by dFIXqkQkXUiU1ngq4HFlT with 3 participants
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User dFIXqkQkXUiU1ngq4HFlT connected to call 8Nx6mD6uKNsWfaQnCJZbB
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User 1AfIzNYga0EplKES9Q6t_ connected to call 8Nx6mD6uKNsWfaQnCJZbB
+[33mWARNING [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:554 ice_candidate missing in webrtc ice_candidate. content: {'type': 'ice_candidate'}
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User dFIXqkQkXUiU1ngq4HFlT disconnected from call 8Nx6mD6uKNsWfaQnCJZbB
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User 1AfIzNYga0EplKES9Q6t_ disconnected from call 8Nx6mD6uKNsWfaQnCJZbB
+[32mPASSED[0m[33m                                                                   [ 85%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_consumer.py::TestWebRTCConsumer::test_k_emoji_reactions <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_consumer.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call tPdISyZXUKbYBvMZsa_10 created by c8I7jotZp4l2EkpZIMT8O with 3 participants
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User c8I7jotZp4l2EkpZIMT8O connected to call tPdISyZXUKbYBvMZsa_10
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User brFgAwVQKd05-mzgka8yW connected to call tPdISyZXUKbYBvMZsa_10
+[33mWARNING [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:657 Invalid emoji used in reactions: emoji reaction is invalid
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User c8I7jotZp4l2EkpZIMT8O disconnected from call tPdISyZXUKbYBvMZsa_10
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User brFgAwVQKd05-mzgka8yW disconnected from call tPdISyZXUKbYBvMZsa_10
+[32mPASSED[0m[33m                                                                   [ 88%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_notify_consumer.py::TestWebRTCNotifyConsumer::test_a_connect_to_notify_channel <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_notify_consumer.py [32mPASSED[0m[33m [ 91%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_notify_consumer.py::TestWebRTCNotifyConsumer::test_b_webrtc_reject_anonymous <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_notify_consumer.py [32mPASSED[0m[33m [ 94%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_notify_consumer.py::TestWebRTCNotifyConsumer::test_c_accept_call <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_notify_consumer.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call JnhDNwEk_fcqTCIuQeRIr created by BoLpmHWeSKxjvY68U6g1H with 3 participants
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User BoLpmHWeSKxjvY68U6g1H connected to call JnhDNwEk_fcqTCIuQeRIr
+[32mPASSED[0m[33m                                                                   [ 97%][0m
+apps/infrastructure/calls/tests/chat/test_webrtc_notify_consumer.py::TestWebRTCNotifyConsumer::test_d_decline_call <- ..\..\backend\apps\infrastructure\calls\tests\chat\test_webrtc_notify_consumer.py 
+[1m-------------------------------- live log call --------------------------------[0m
+[32mINFO    [0m apps.infrastructure.calls.repository.call_record_repo:call_record_repo.py:89 Group call 81P8YVpZeCTZrwmpzS99j created by 7rDf1YhKz1MvGRjfJ832Z with 3 participants
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:121 User 7rDf1YhKz1MvGRjfJ832Z connected to call 81P8YVpZeCTZrwmpzS99j
+[32mINFO    [0m apps.infrastructure.calls.ws_consumer.webrtc_consumer:webrtc_consumer.py:149 User 7rDf1YhKz1MvGRjfJ832Z disconnected from call 81P8YVpZeCTZrwmpzS99j
+[32mPASSED[0m[33m                                                                   [100%][0m
+
+============================ slowest 10 durations =============================
+5.44s setup    apps/infrastructure/calls/tests/chat/test_route.py::TestCallsRoute::test_e_when_title_too_long_returns_400
+3.42s setup    apps/infrastructure/calls/tests/chat/test_route.py::TestCallsRoute::test_d_when_invalid_call_type_returns_400
+2.82s setup    apps/infrastructure/calls/tests/chat/test_route.py::TestCallsRoute::test_a_create_call_returns_201
+2.75s setup    apps/infrastructure/calls/tests/chat/test_route.py::TestCallsRoute::test_b_when_invalid_participant_returns_404
+2.54s setup    apps/infrastructure/calls/tests/chat/test_models.py::TestCreateModels::test_call_record_creation
+2.53s setup    apps/infrastructure/calls/tests/chat/test_route.py::TestCallsRoute::test_c_when_invalid_participant_id_too_short_returns_400
+1.06s call     apps/infrastructure/calls/tests/chat/test_webrtc_consumer.py::TestWebRTCConsumer::test_d_join_call
+1.05s call     apps/infrastructure/calls/tests/chat/test_webrtc_consumer.py::TestWebRTCConsumer::test_e_leave_call
+1.04s call     apps/infrastructure/calls/tests/chat/test_webrtc_consumer.py::TestWebRTCConsumer::test_a_webrtc_connect_success
+0.30s call     apps/infrastructure/calls/tests/chat/test_route.py::TestCallsRoute::test_a_create_call_returns_201
+[33m======================= [32m35 passed[0m, [33m[1m3 warnings[0m[33m in 25.32s[0m[33m =======================[0m

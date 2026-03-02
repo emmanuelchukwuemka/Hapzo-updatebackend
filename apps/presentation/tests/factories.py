@@ -79,3 +79,11 @@ class ConversationParticipantFactory(factory.django.DjangoModelFactory):
 
     conversation = factory.SubFactory(ConversationFactory)
     user = factory.SubFactory(UserFactory)
+
+class UserFollowingFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = UserFollowing
+
+    follower = factory.SubFactory(UserProfileFactory)
+    following = factory.SubFactory(UserProfileFactory)
+    status = "pending"

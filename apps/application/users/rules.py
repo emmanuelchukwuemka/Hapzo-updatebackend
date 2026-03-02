@@ -5,6 +5,10 @@ from apps.domain.users.entities import UserFollowing, UserProfile
 from .dtos import (
     FollowRequestDTO,
     FollowRequestResponseDTO,
+    HandleFollowRequestDTO,
+    PendingFollowRequestsDTO,
+    PaginatedPendingFollowRequestsResponseDTO,
+    UnfollowDTO,
     UserSearchDTO,
     FriendSearchDTO,
     SearchResponseDTO,
@@ -412,3 +416,101 @@ class SearchFriendsRule:
             previous_search_data=previous_link,
             next_search_data=next_link,
         )
+
+
+class HandleFollowRequestRule:
+    """Accept or decline a follow request."""
+
+    def __init__(
+        self,
+        user_following_repository: UserFollowingRepositoryInterface,
+    ):
+        self.user_following_repository = user_following_repository
+
+    def __call__(self, dto: HandleFollowRequestDTO) -> FollowRequestResponseDTO:
+        existing = self.user_following_repository.find_by_id(dto.request_id)
+        if not existing:
+            raise ValueError(
+                f"Follow request with id '{dto.request_id}' does not exist."
+            )
+
+        if existing.status != "pending":
+            raise ValueError(
+                f"Follow request has already been {existing.status}."
+            )
+
+        new_status = "accepted" if dto.action == "accept" else "declined"
+        updated = self.user_following_repository.update_status(
+            dto.request_id, new_status
+        )
+
+        return FollowRequestResponseDTO(
+            id=updated.id,
+            requester_id=updated.follower_id,
+            target_id=updated.following_id,
+            status=updated.status,
+            created_at=updated.created_at,
+        )
+
+
+class ListPendingFollowRequestsRule:
+    """List pending follow requests received by a user."""
+
+    def __init__(
+        self,
+        user_following_repository: UserFollowingRepositoryInterface,
+    ):
+        self.user_following_repository = user_following_repository
+
+    def __call__(
+        self, dto: PendingFollowRequestsDTO
+    ) -> PaginatedPendingFollowRequestsResponseDTO:
+        requests, previous_link, next_link = (
+            self.user_following_repository.get_received_requests(
+                user_id=dto.user_id,
+                page=dto.page,
+                page_size=dto.page_size,
+                status="pending",
+            )
+        )
+
+        requests_data = [
+            FollowRequestResponseDTO(
+                id=req.id,
+                requester_id=req.follower_id,
+                target_id=req.following_id,
+                status=req.status,
+                created_at=req.created_at,
+            )
+            for req in requests
+        ]
+
+        return PaginatedPendingFollowRequestsResponseDTO(
+            requests=requests_data,
+            previous_requests_data=previous_link,
+            next_requests_data=next_link,
+        )
+
+
+class UnfollowUserRule:
+    """Remove a follow relationship."""
+
+    def __init__(
+        self,
+        user_following_repository: UserFollowingRepositoryInterface,
+    ):
+        self.user_following_repository = user_following_repository
+
+    def __call__(self, dto: UnfollowDTO) -> bool:
+        if dto.requester_id == dto.target_id:
+            raise ValueError("Users cannot unfollow themselves.")
+
+        deleted = self.user_following_repository.delete(
+            follower_id=dto.requester_id,
+            following_id=dto.target_id,
+        )
+
+        if not deleted:
+            raise ValueError("Follow relationship does not exist.")
+
+        return True

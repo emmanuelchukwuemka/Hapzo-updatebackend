@@ -79,7 +79,34 @@ class FollowRequestResponseDTO:
     id: str
     requester_id: str
     target_id: str
-    created_at: datetime
+    status: str = "pending"
+    created_at: datetime = None
+
+
+@dataclass
+class HandleFollowRequestDTO:
+    request_id: str
+    action: str  # "accept" or "decline"
+
+
+@dataclass
+class PendingFollowRequestsDTO:
+    user_id: str
+    page: int
+    page_size: int
+
+
+@dataclass
+class PaginatedPendingFollowRequestsResponseDTO:
+    requests: List[FollowRequestResponseDTO]
+    previous_requests_data: str | None = None
+    next_requests_data: str | None = None
+
+
+@dataclass
+class UnfollowDTO:
+    requester_id: str
+    target_id: str
 
 
 @dataclass

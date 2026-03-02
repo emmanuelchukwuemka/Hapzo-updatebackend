@@ -44,6 +44,7 @@ class UserFollowing:
     follower_id: str
     following_id: str
     id: str | None = None
+    status: str = "pending"
     created_at: datetime | None = None
     updated_at: datetime | None = None
 

@@ -18,6 +18,9 @@ from apps.application.users.dtos import (
     FollowRequestDTO,
     FriendSearchDTO,
     FriendsListDTO,
+    HandleFollowRequestDTO,
+    PendingFollowRequestsDTO,
+    UnfollowDTO,
     UserDetailDTO,
     UserFollowersDTO,
     UserFollowingsDTO,
@@ -29,12 +32,15 @@ from apps.presentation.rule_registry import (
     create_user_profile_rule,
     fetch_user_profile_rule,
     fetch_user_rule,
+    handle_follow_request_rule,
+    list_pending_follow_requests_rule,
     search_users_rule,
     get_friends_list_rule,
     get_user_followers_rule,
     get_user_followings_rule,
     search_friends_rule,
     send_follow_request_rule,
+    unfollow_user_rule,
     update_user_profile_rule,
     update_user_rule,
     user_profile_list_rule,
@@ -47,7 +53,9 @@ from apps.presentation.serializers.examples import (
 from apps.presentation.serializers.users import (
     FollowRequestSerializer,
     FriendSearchSerializer,
+    HandleFollowRequestSerializer,
     PaginatedDataRequestSerializer,
+    PendingFollowRequestsSerializer,
     UserDetailSerializer,
     UserFollowersSerializer,
     UserFollowingsSerializer,
@@ -398,3 +406,79 @@ def search_friends(request: Request) -> Response:
     return StandardResponse.success(
         data=asdict(friends_data), message="Friends search completed successfully."
     )
+
+
+@extend_schema(
+    request=HandleFollowRequestSerializer,
+    responses={
+        200: SuccessResponseExampleSerializer,
+        400: ErrorResponseExampleSerializer,
+        500: ErrorResponseExampleSerializer,
+    },
+    description="Accept or decline a follow request.",
+    tags=["Users"],
+)
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@throttle_classes([UserRateThrottle])
+def handle_follow_request(request: Request, request_id: str) -> Response:
+    serializer = HandleFollowRequestSerializer(
+        data=request.data,
+        context={"request_id": request_id},
+    )
+    serializer.is_valid(raise_exception=True)
+
+    rule = handle_follow_request_rule()
+    result = rule(HandleFollowRequestDTO(**serializer.validated_data))
+
+    return StandardResponse.success(
+        data=asdict(result), message="Follow request handled successfully."
+    )
+
+
+@extend_schema(
+    responses={
+        200: SuccessResponseExampleSerializer,
+        400: ErrorResponseExampleSerializer,
+        500: ErrorResponseExampleSerializer,
+    },
+    description="List pending follow requests received by the current user.",
+    tags=["Users"],
+)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@throttle_classes([UserRateThrottle])
+def list_pending_follow_requests(
+    request: Request, page: int, page_size: int
+) -> Response:
+    serializer = PendingFollowRequestsSerializer(
+        data={"page": page, "page_size": page_size},
+        context={"user_id": str(request.user.id)},
+    )
+    serializer.is_valid(raise_exception=True)
+
+    rule = list_pending_follow_requests_rule()
+    result = rule(PendingFollowRequestsDTO(**serializer.validated_data))
+
+    return StandardResponse.success(
+        data=asdict(result), message="Pending follow requests fetched successfully."
+    )
+
+
+@extend_schema(
+    responses={
+        204: SuccessResponseExampleSerializer,
+        400: ErrorResponseExampleSerializer,
+        500: ErrorResponseExampleSerializer,
+    },
+    description="Unfollow a user.",
+    tags=["Users"],
+)
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+@throttle_classes([UserRateThrottle])
+def unfollow_user(request: Request, user_id: str) -> Response:
+    rule = unfollow_user_rule()
+    rule(UnfollowDTO(requester_id=str(request.user.id), target_id=user_id))
+
+    return StandardResponse.deleted(message="User unfollowed successfully.")
