@@ -11,7 +11,7 @@
     "PYTHONDONTWRITEBYTECODE": "1"
   },
   "functions": {
-    "api/**": {
+    "api/index.py": {
       "maxDuration": 60,
       "memory": 1024
     }
