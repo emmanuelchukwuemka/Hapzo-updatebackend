@@ -37,7 +37,12 @@ python manage.py check --deploy || echo "⚠️  Django checks completed with so
 # Run database migrations
 echo ""
 echo "Step 3: Running database migrations..."
-python manage.py migrate --noinput || echo "⚠️  Migrations completed (this is normal if no database changes)"
+if [ -n "$DATABASE_URL" ]; then
+    echo "DATABASE_URL is set, attempting migrations..."
+    python manage.py migrate --noinput || echo "⚠️  Migrations completed with some warnings (may be normal)"
+else
+    echo "⚠️  DATABASE_URL not set, skipping migrations during build (this is normal for some Vercel build stages)"
+fi
 
 # Collect static files
 echo ""

@@ -14,6 +14,12 @@ ALLOWED_HOSTS = [
     "*.vercel.app",
 ] + ALLOWED_HOSTS
 
+# CSRF trusted origins for Vercel deployment
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.vercel.app",
+    "https://*.now.sh",
+]
+
 # Security headers for HTTPS
 SECURE_SSL_REDIRECT = True
 SECURE_HSTS_SECONDS = 31536000
