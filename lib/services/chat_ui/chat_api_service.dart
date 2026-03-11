@@ -33,8 +33,8 @@ class ChatApiService {
 
     // Using ws:// for now, should be wss:// in production as per guide notes
     // Guide says: ws://localhost:8000/ws/chat/{conversation_id}/?token=<auth_token>
-    // Real URL base from HapzTextApiService is https://hapztext-v2.onrender.com
-    // So WS URL should be wss://hapztext-v2.onrender.com/ws/chat/...
+    // Real URL base from HapzTextApiService is http://72.62.4.119:8005
+    // So WS URL should be ws://72.62.4.119:8005/ws/chat/...
     
     // Extract domain from base URL for WS
     final baseUrl = HapzTextApiService.baseUrl;

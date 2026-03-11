@@ -1,4 +1,4 @@
-$baseUrl = "https://hapztext-v2.onrender.com"
+$baseUrl = "http://72.62.4.119:8005"
 $results = @()
 
 function Test-Endpoint {

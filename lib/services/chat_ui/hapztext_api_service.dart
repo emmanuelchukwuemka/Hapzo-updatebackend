@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 class HapzTextApiService {
-  static const String baseUrl = 'https://hapztext-v2.onrender.com';
+  static const String baseUrl = 'http://72.62.4.119:8005';
   String? _token;
   String? currentUserId;
 

@@ -5,9 +5,9 @@ import 'package:mime/mime.dart';
 import 'package:haptext_api/network/export_network.dart';
 
 class HomeRepo {
-  Future<Response> fetchPost({required int page}) async {
+  Future<Response> fetchPost({required int page, String? feedType}) async {
     return await ApiMethods.getMethod(
-        url: ApiConstants.fetchPostUrl(page: page, pageSize: "20"),
+        url: ApiConstants.fetchPostUrl(page: page, pageSize: "20", feedType: feedType),
         headers: ApiHeaders.aunthenticatedHeader);
   }
 

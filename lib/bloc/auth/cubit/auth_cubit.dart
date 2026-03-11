@@ -15,6 +15,8 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit(this.authRepo) : super(AuthInitial());
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
   final otpController = TextEditingController();
@@ -25,12 +27,19 @@ class AuthCubit extends Cubit<AuthState> {
       final response = await authRepo.registerUser(
           username: usernameController.text,
           email: emailController.text,
+          firstName: firstNameController.text,
+          lastName: lastNameController.text,
           password: passwordController.text,
           passwordConfirm: passwordConfirmController.text);
 
       final body = jsonDecode(response.body);
       if (response.statusCode == 201) {
-        emit(AuthRegisterState());
+        log("message${body['data']}");
+        useInfo = UserInfoModel.fromJson(body["data"]);
+        bearerToken = useInfo.tokens?.auth ?? '';
+        SessionManager.storeUser(useInfo);
+        SessionManager().storeToken(bearerToken);
+        emit(AuthLoginState());
       } else {
         ToastMessage.showErrorToast(
             message: body["errors"]["detail"].toString());

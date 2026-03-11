@@ -13,10 +13,10 @@ class HomeCubit extends Cubit<HomeState> {
 
   int page = 1;
   PostModel posts = PostModel();
-  fetchPosts() async {
+  fetchPosts({String? feedType}) async {
     emit(HomeLoading());
     try {
-      final response = await homeRepo.fetchPost(page: page);
+      final response = await homeRepo.fetchPost(page: page, feedType: feedType);
       final body = jsonDecode(response.body);
       if (response.statusCode == 200) {
         posts = PostModel.fromJson(body['data']);

@@ -1,4 +1,4 @@
-$baseUrl = "https://hapztext-v2.onrender.com"
+$baseUrl = "http://72.62.4.119:8005"
 
 Write-Host "=== HAPZO API CONNECTION VERIFICATION ===" -ForegroundColor Cyan
 Write-Host "Testing fixed endpoints at $baseUrl" -ForegroundColor Cyan

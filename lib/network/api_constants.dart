@@ -4,8 +4,8 @@ String bearerToken = '';
 
 class ApiConstants {
   static const String baseUrl = kDebugMode
-      ? 'https://hapztext-v2.onrender.com/api/v1'
-      : "https://hapztext-v2.onrender.com/api/v1";
+      ? 'http://72.62.4.119:8005/api/v1'
+      : "http://72.62.4.119:8005/api/v1";
 
   static const String authBaseUrl = "$baseUrl/authentication";
   static const String login = "$authBaseUrl/login/";
@@ -44,8 +44,8 @@ class ApiConstants {
       "$baseUrl/notifications/$page/20/";
   static String sharePostUrl({postId}) => "$postBaseUrl$postId/share/";
   static String reactPostUrl({postId}) => "$postBaseUrl$postId/react/";
-  static String fetchPostUrl({required page, required pageSize}) =>
-      "${postBaseUrl}list/$page/$pageSize/";
+  static String fetchPostUrl({required page, required pageSize, String? feedType}) =>
+      "${postBaseUrl}list/$page/$pageSize/${feedType != null ? '?feed_type=$feedType' : ''}";
   static String fetchUserPostUrl(
           {required page, required userId, required pageSize}) =>
       "${postBaseUrl}user/$userId/$page/$pageSize/";

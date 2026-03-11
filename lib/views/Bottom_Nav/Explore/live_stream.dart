@@ -26,12 +26,7 @@ class LiveStreamPage extends StatefulWidget {
 class _LiveStreamPageState extends State<LiveStreamPage>
     with SingleTickerProviderStateMixin {
   bool _isStreamer = false; // Mock toggle for streamer/viewer view
-  final List<Map<String, dynamic>> _comments = [
-    {"user": "Alex", "text": "Great stream!", "type": "text"},
-    {"user": "Sam", "text": "🔊 Voice Note 2s", "type": "voice", "duration": "2s"},
-    {"user": "Taylor", "text": "Can you show that again?", "type": "text"},
-    {"user": "Chris", "text": "Sent a Rose! 🌹", "type": "gift"},
-  ];
+  final List<Map<String, dynamic>> _comments = [];
 
   // Recording State
   bool _isRecording = false;
@@ -77,7 +72,7 @@ class _LiveStreamPageState extends State<LiveStreamPage>
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    _isStreamer ? "Your Stream" : "StreamerName",
+                    _isStreamer ? "Your Stream" : "No active stream",
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -88,7 +83,7 @@ class _LiveStreamPageState extends State<LiveStreamPage>
                   const Icon(Icons.remove_red_eye_outlined, color: Colors.white, size: 18),
                   const SizedBox(width: 4),
                   const Text(
-                    "2,543",
+                    "0",
                     style: TextStyle(color: Colors.white, fontSize: 14),
                   ),
                   if (_isStreamer) ...[

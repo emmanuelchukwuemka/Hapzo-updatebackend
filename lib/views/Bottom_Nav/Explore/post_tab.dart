@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
+import 'package:haptext_api/models/posts_model.dart';
 
 class PostTab extends StatefulWidget {
   const PostTab({Key? key}) : super(key: key);
@@ -9,36 +12,62 @@ class PostTab extends StatefulWidget {
 
 class _PostTabState extends State<PostTab> {
   @override
+  void initState() {
+    super.initState();
+    context.read<HomeCubit>().fetchPosts(feedType: 'trending');
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return ListView.builder(
-      itemBuilder: (BuildContext context, int index) {
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          child: const Padding(
-            padding: EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "This is a searched post containing the word Flutter...",
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BlocBuilder<HomeCubit, HomeState>(
+      builder: (context, state) {
+        if (state is HomeLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final posts = context.read<HomeCubit>().posts.result ?? [];
+
+        if (posts.isEmpty) {
+          return const Center(child: Text("No trending posts found."));
+        }
+
+        return ListView.builder(
+          itemCount: posts.length,
+          itemBuilder: (BuildContext context, int index) {
+            final post = posts[index];
+            return Card(
+              margin: const EdgeInsets.only(bottom: 12, left: 8, right: 8, top: 8),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _ReactionIcon(icon: Icons.favorite, label: "1.2k"),
-                    _ReactionIcon(icon: Icons.comment, label: "230"),
-                    _ReactionIcon(icon: Icons.share, label: "85"),
-                    _ReactionIcon(icon: Icons.download, label: "50"),
+                    Text(
+                      post.textContent ?? "",
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _ReactionIcon(
+                            icon: Icons.favorite,
+                            label: (post.shareCount ?? 0).toString()),
+                        _ReactionIcon(
+                            icon: Icons.comment,
+                            label: (post.replyCount ?? 0).toString()),
+                        _ReactionIcon(
+                            icon: Icons.share,
+                            label: (post.shareCount ?? 0).toString()),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
@@ -55,10 +84,10 @@ class _ReactionIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: Colors.white70),
+        Icon(icon, size: 20, color: Colors.grey),
         const SizedBox(width: 4),
         Text(label,
-            style: const TextStyle(fontSize: 13, color: Colors.white70)),
+            style: const TextStyle(fontSize: 13, color: Colors.grey)),
       ],
     );
   }

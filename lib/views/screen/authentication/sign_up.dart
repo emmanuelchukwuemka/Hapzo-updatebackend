@@ -1,6 +1,9 @@
 import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
+import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/utils/extensions.dart';
+import 'package:provider/provider.dart';
+import 'package:haptext_api/services/chat_ui/auth_provider.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -20,8 +23,15 @@ class _RegisterState extends State<Register> {
     final watchAuth = context.watch<AuthCubit>();
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthRegisterState) {
-          context.go(RouteName.otpScreen.path);
+        if (state is AuthLoginState) {
+          // Sync token to chat AuthProvider
+          final authProvider = context.read<AuthProvider>();
+          final token = watchAuth.useInfo.tokens?.auth ?? '';
+          final userId = watchAuth.useInfo.id?.toString();
+          authProvider.setTokenFromSession(token, userId);
+
+          context.go(RouteName.bottomNav.path);
+          context.read<HomeCubit>().fetchPosts();
         }
       },
       child: AbsorbPointer(
@@ -55,6 +65,22 @@ class _RegisterState extends State<Register> {
                     child: Column(
                       children: [
                         const SizedBox(height: 10),
+                        InputField(
+                          controller: watchAuth.firstNameController,
+                          keyboardType: TextInputType.text,
+                          hintText: 'First Name',
+                          prefix:
+                              const Icon(Icons.person, color: Colors.orange),
+                        ),
+                        const SizedBox(height: 20),
+                        InputField(
+                          controller: watchAuth.lastNameController,
+                          keyboardType: TextInputType.text,
+                          hintText: 'Last Name',
+                          prefix:
+                              const Icon(Icons.person, color: Colors.orange),
+                        ),
+                        const SizedBox(height: 20),
                         InputField(
                           controller: watchAuth.usernameController,
                           keyboardType: TextInputType.text,

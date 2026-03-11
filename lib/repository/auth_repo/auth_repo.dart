@@ -7,12 +7,16 @@ class AuthRepo {
       {required String username,
       required String email,
       required String password,
+      String? firstName,
+      String? lastName,
       required String passwordConfirm}) async {
     return await ApiMethods.postMethod(
         url: ApiConstants.register,
         body: {
           "username": username,
           "email": email,
+          "first_name": firstName,
+          "last_name": lastName,
           "password": password,
           "password_confirm": passwordConfirm
         },
