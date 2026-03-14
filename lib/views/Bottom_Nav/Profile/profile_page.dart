@@ -67,9 +67,10 @@ class _ProfilePageState extends State<ProfilePage>
     final size = MediaQuery.of(context).size;
     final user = context.watch<AuthCubit>().useInfo;
     final primaryGradient = const LinearGradient(colors: [Coloors.primaryStart, Coloors.primaryEnd]);
+    final theme = Theme.of(context).extension<CustomThemeExtension>();
 
     return Scaffold(
-      backgroundColor: context.theme.bgColor,
+      backgroundColor: theme?.bgColor ?? Coloors.darkBackground,
       body: BlocListener<PeopleCubit, PeopleState>(
         listener: (context, state) {
           if (state is CurrentUser) {
@@ -94,7 +95,7 @@ class _ProfilePageState extends State<ProfilePage>
                 expandedHeight: 240,
                 pinned: true,
                 stretch: true,
-                backgroundColor: context.theme.bgColor,
+                backgroundColor: theme?.bgColor ?? Coloors.darkBackground,
                 elevation: 0,
                 flexibleSpace: FlexibleSpaceBar(
                   background: Stack(
@@ -151,8 +152,11 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.settings_outlined, color: Colors.white),
-                    onPressed: () {},
+                    icon: const Icon(Icons.logout_outlined, color: Colors.white),
+                    onPressed: () {
+                      context.read<AuthCubit>().logout();
+                      context.go(RouteName.login.path);
+                    },
                   ),
                   const SizedBox(width: 8),
                 ],
@@ -174,9 +178,9 @@ class _ProfilePageState extends State<ProfilePage>
                           Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: context.theme.bgColor!, width: 4),
-                              boxShadow: [
-                                BoxShadow(color: Colors.black26, blurRadius: 10, offset: const Offset(0, 4))
+                              border: Border.all(color: theme?.bgColor ?? Coloors.darkBackground, width: 4),
+                              boxShadow: const [
+                                BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4))
                               ],
                             ),
                             child: AppNetwokImage(
@@ -232,7 +236,7 @@ class _ProfilePageState extends State<ProfilePage>
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: context.theme.surfaceColor,
+                          color: theme?.surfaceColor ?? Coloors.surface,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: Colors.white.withOpacity(0.05)),
                         ),
@@ -259,7 +263,7 @@ class _ProfilePageState extends State<ProfilePage>
                 pinned: true,
                 delegate: _SliverAppBarDelegate(
                   child: Container(
-                    color: context.theme.bgColor,
+                    color: theme?.bgColor ?? Coloors.darkBackground,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                       child: Row(
@@ -302,11 +306,10 @@ class _ProfilePageState extends State<ProfilePage>
               // 4. Content Grid
               SliverPadding(
                 padding: const EdgeInsets.only(top: 8),
-                sliver: SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: size.height * 0.6,
-                    child: _buildTabContent(user),
-                  ),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    _buildTabContent(user),
+                  ]),
                 ),
               ),
             ],
@@ -348,7 +351,7 @@ class _ProfilePageState extends State<ProfilePage>
     } else if (current == 2) {
       return ProfileTextTab(textPosts: userPosts.where((e) => e.postFormat == 'text').toList());
     } else {
-      return ProfileAudioTab(audioPosts: userPosts.where((e) => e.postFormat == 'text').toList());
+      return ProfileAudioTab(audioPosts: userPosts.where((e) => e.postFormat == 'audio').toList());
     }
   }
 }
@@ -358,15 +361,16 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
 
   @override
-  double get minExtent => 50;
+  double get minExtent => 60; // Increased slightly to provide more headroom
   @override
-  double get maxExtent => 50;
+  double get maxExtent => 60;
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return child;
+    return SizedBox.expand(child: child);
   }
 
   @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) => false;
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) => true;
 }
+

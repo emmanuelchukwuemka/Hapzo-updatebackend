@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:http/http.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:haptext_api/models/user_infor_model.dart';
 import 'package:haptext_api/network/api_constants.dart';
@@ -20,18 +22,32 @@ class AuthCubit extends Cubit<AuthState> {
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
   final otpController = TextEditingController();
+  
+  final locationController = TextEditingController();
+  final occupationController = TextEditingController();
+  final birthDateController = TextEditingController();
+  String? selectedGender;
+  String? selectedRelationshipStatus;
+  File? profileImage;
 
   registerUser() async {
     emit(AuthLoadingState());
     try {
-      final response = await authRepo.registerUser(
+      final streamedResponse = await authRepo.registerUser(
           username: usernameController.text,
           email: emailController.text,
-          firstName: firstNameController.text,
-          lastName: lastNameController.text,
+          firstName: firstNameController.text.isNotEmpty ? firstNameController.text : null,
+          lastName: lastNameController.text.isNotEmpty ? lastNameController.text : null,
+          gender: selectedGender,
+          birthDate: birthDateController.text.isNotEmpty ? birthDateController.text : null,
+          location: locationController.text.isNotEmpty ? locationController.text : null,
+          relationshipStatus: selectedRelationshipStatus,
+          occupation: occupationController.text.isNotEmpty ? occupationController.text : null,
+          profilePicture: profileImage,
           password: passwordController.text,
           passwordConfirm: passwordConfirmController.text);
 
+      final response = await Response.fromStream(streamedResponse);
       final body = jsonDecode(response.body);
       if (response.statusCode == 201) {
         log("message${body['data']}");
@@ -199,6 +215,18 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
       emit(AuthErrorState());
       log("local user $e");
+    }
+  }
+
+  logout() async {
+    try {
+      await SessionManager.deleteUser();
+      await SessionManager().deleteToken();
+      bearerToken = '';
+      useInfo = UserInfoModel();
+      emit(AuthInitial());
+    } catch (e) {
+      log("logout error $e");
     }
   }
 }

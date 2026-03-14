@@ -61,8 +61,28 @@ class ProfileCubit extends Cubit<ProfileState> {
           response.statusCode == 202) {
         emit(ProfileUpdated());
       } else {
-        ToastMessage.showErrorToast(
-            message: body["errors"]["detail"].toString());
+        String errorMessage = "Failed to update profile";
+        try {
+          if (body["errors"] != null) {
+            if (body["errors"] is Map) {
+              final errors = body["errors"] as Map;
+              // Check for 'detail' or other specific field errors
+              if (errors.containsKey("detail")) {
+                errorMessage = errors["detail"].toString();
+              } else {
+                // Combine multiple field errors if present
+                errorMessage = errors.entries
+                    .map((e) => "${e.key}: ${e.value}")
+                    .join(", ");
+              }
+            } else {
+              errorMessage = body["errors"].toString();
+            }
+          }
+        } catch (e) {
+          log("Error parsing error message: $e");
+        }
+        ToastMessage.showErrorToast(message: errorMessage);
         emit(ProfileError());
       }
     } catch (e) {

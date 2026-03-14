@@ -2,6 +2,10 @@ import 'dart:ui';
 import 'dart:async';
 import 'package:haptext_api/common/coloors.dart';
 import 'package:haptext_api/exports.dart';
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:haptext_api/services/chat_ui/agora_call_service.dart';
+import 'package:haptext_api/services/chat_ui/livestream_websocket_service.dart';
+import 'package:haptext_api/services/chat_ui/hapztext_api_service.dart';
 
 class LiveStreamApp extends StatelessWidget {
   const LiveStreamApp({super.key});
@@ -25,13 +29,66 @@ class LiveStreamPage extends StatefulWidget {
 
 class _LiveStreamPageState extends State<LiveStreamPage>
     with SingleTickerProviderStateMixin {
-  bool _isStreamer = false; // Mock toggle for streamer/viewer view
+  final bool _isStreamer = false; // Mock toggle for streamer/viewer view
+  late final AgoraCallService _agoraService;
+  late final LivestreamWebsocketService _wsService;
+  int _viewerCount = 0;
+  bool _isLive = false;
+  final String _streamId = "demo_stream_123";
   final List<Map<String, dynamic>> _comments = [];
+  final TextEditingController _commentController = TextEditingController();
 
   // Recording State
   bool _isRecording = false;
   Duration _recordDuration = Duration.zero;
   Timer? _recordTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _agoraService = AgoraCallService();
+    _wsService = LivestreamWebsocketService(HapzTextApiService());
+    
+    _agoraService.addListener(() {
+      if (mounted) setState(() {});
+    });
+
+    _wsService.streamEvents.listen((event) {
+      if (!mounted) return;
+      setState(() {
+        if (event['type'] == 'new_comment') {
+          _comments.add({
+            'user': event['username'] ?? 'User',
+            'text': event['text'] ?? '',
+            'type': event['comment_type'] ?? 'text',
+          });
+        } else if (event['type'] == 'viewer_joined' || event['type'] == 'viewer_left' || event['type'] == 'viewer_count_update') {
+          _viewerCount = event['viewer_count'] ?? _viewerCount;
+        }
+      });
+    });
+
+    _initLive();
+  }
+
+  Future<void> _initLive() async {
+    final success = await _agoraService.initialize();
+    if (success) {
+      await _agoraService.joinChannel(_streamId, isBroadcaster: false, enableVideo: false);
+      if (mounted) {
+        setState(() { _isLive = true; });
+        _wsService.connectToWebSocket(_streamId);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _wsService.dispose();
+    _agoraService.dispose();
+    _commentController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +97,25 @@ class _LiveStreamPageState extends State<LiveStreamPage>
       body: Stack(
         children: [
           // 1. Main Video Stream Placeholder
-          Positioned.fill(
-            child: Container(
-              color: Colors.black,
-              child: const Center(
-                child: Icon(Icons.videocam_off, color: Colors.white10, size: 100),
+          if (_isLive && _agoraService.engine != null && _agoraService.remoteUsers.isNotEmpty)
+            SizedBox.expand(
+              child: AgoraVideoView(
+                controller: VideoViewController.remote(
+                  rtcEngine: _agoraService.engine!,
+                  canvas: VideoCanvas(uid: _agoraService.remoteUsers.first),
+                  connection: RtcConnection(channelId: _streamId),
+                ),
+              ),
+            )
+          else
+            Positioned.fill(
+              child: Container(
+                color: Colors.black,
+                child: const Center(
+                  child: Icon(Icons.videocam_off, color: Colors.white10, size: 100),
+                ),
               ),
             ),
-          ),
 
           // 2. Top Bar (Live Badge & Viewer Count)
           SafeArea(
@@ -82,9 +150,9 @@ class _LiveStreamPageState extends State<LiveStreamPage>
                   const Spacer(),
                   const Icon(Icons.remove_red_eye_outlined, color: Colors.white, size: 18),
                   const SizedBox(width: 4),
-                  const Text(
-                    "0",
-                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  Text(
+                    "$_viewerCount",
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                   if (_isStreamer) ...[
                     const SizedBox(width: 16),
@@ -275,10 +343,11 @@ class _LiveStreamPageState extends State<LiveStreamPage>
                           ),
                         )
                       else
-                        const Expanded(
+                        Expanded(
                           child: TextField(
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
+                            controller: _commentController,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: const InputDecoration(
                               hintText: "Type message...",
                               hintStyle: TextStyle(color: Colors.white38),
                               border: InputBorder.none,
@@ -286,7 +355,17 @@ class _LiveStreamPageState extends State<LiveStreamPage>
                           ),
                         ),
                       IconButton(
-                        onPressed: _toggleRecording,
+                        onPressed: () {
+                          if (_isRecording) {
+                            _toggleRecording();
+                          } else {
+                            final text = _commentController.text.trim();
+                            if (text.isNotEmpty) {
+                              _wsService.sendComment(text);
+                              _commentController.clear();
+                            }
+                          }
+                        },
                         icon: Icon(
                           _isRecording ? Icons.send : Icons.mic,
                           color: _isRecording ? Colors.cyanAccent : Colors.white70,

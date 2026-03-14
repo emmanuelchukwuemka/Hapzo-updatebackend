@@ -295,8 +295,16 @@ class EthicityModalSheet extends StatelessWidget {
   }
 
   static List<String> items = [
-    "african", "asian", "caucasian", "hispanic", "middle eastern",
-    "mixed", "native american", " pacific islander", "prefer not say", "other"
+    "african",
+    "asian",
+    "caucasian",
+    "hispanic",
+    "middle_eastern",
+    "mixed",
+    "native_american",
+    "pacific_islander",
+    "prefer_not_say",
+    "other"
   ];
 }
 
@@ -364,7 +372,13 @@ class RelationshipModalSheet extends StatelessWidget {
   }
 
   static List<String> items = [
-    "single", "in relationship", "engaged", "married",
-    "divorced", "widowed", "complicated", "prefer not say"
+    "single",
+    "in_relationship",
+    "engaged",
+    "married",
+    "divorced",
+    "widowed",
+    "complicated",
+    "prefer_not_say"
   ];
 }

@@ -26,6 +26,7 @@ export 'package:flutter/material.dart';
 
 export 'package:haptext_api/models/posts_model.dart';
 export 'package:haptext_api/models/profileModel.dart';
+export 'package:haptext_api/models/searched_user_model.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:go_router/go_router.dart';

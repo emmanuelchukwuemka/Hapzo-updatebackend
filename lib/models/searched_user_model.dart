@@ -55,6 +55,7 @@ class SearchedUserModel {
 
 class SearchedUserProfile {
   String? userId;
+  String? username;
   String? birthDate;
   String? ethnicity;
   String? relationshipStatus;
@@ -75,6 +76,7 @@ class SearchedUserProfile {
 
   SearchedUserProfile(
       {this.userId,
+      this.username,
       this.birthDate,
       this.ethnicity,
       this.relationshipStatus,
@@ -95,6 +97,7 @@ class SearchedUserProfile {
 
   SearchedUserProfile.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
+    username = json['username'];
     birthDate = json['birth_date'];
     ethnicity = json['ethnicity'];
     postCount = json['post_count'];
@@ -117,6 +120,7 @@ class SearchedUserProfile {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['user_id'] = userId;
+    data['username'] = username;
     data['birth_date'] = birthDate;
     data['ethnicity'] = ethnicity;
     data['post_count'] = postCount;

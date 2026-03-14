@@ -26,7 +26,11 @@ class ApiConstants {
   static String pendingFollowRequestUrl({page}) =>
       "$userProfileBaseUrl/follow-requests/pending/$page/20/";
   static String getFriendsUrl({page}) =>
-      "$userProfileBaseUrl/friends/$page/30/";
+      '${ApiConstants.baseUrl}v1/users/friends/$page/10/';
+
+  static String getProfilesListUrl({page, pageSize = 10}) =>
+      '${ApiConstants.baseUrl}v1/users/profiles/$page/$pageSize/';
+
   static String getUserByIdUrl({userId}) =>
       "$userProfileBaseUrl/profile/$userId/";
   static String searchFriendsUrl({query}) =>

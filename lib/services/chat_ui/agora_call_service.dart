@@ -172,15 +172,16 @@ class AgoraCallService extends ChangeNotifier {
   /// [channelName] - Unique channel name (use conversation ID)
   /// [uid] - Local user ID (0 = auto-assign)
   /// [enableVideo] - Whether to enable video on join
+  /// [isBroadcaster] - True if streaming, false if audience
   Future<void> joinChannel(String channelName,
-      {int uid = 0, bool enableVideo = false}) async {
+      {int uid = 0, bool enableVideo = false, bool isBroadcaster = true}) async {
     if (!_isInitialized || _engine == null) {
       debugPrint('AgoraCallService: Engine not initialized');
       return;
     }
 
-    // Enable/disable video before joining
-    if (enableVideo) {
+    // Enable/disable video before joining based on broadcaster role
+    if (isBroadcaster && enableVideo) {
       await _engine!.enableVideo();
       _isVideoEnabled = true;
     } else {
@@ -189,7 +190,9 @@ class AgoraCallService extends ChangeNotifier {
     }
 
     // Enable audio
-    await _engine!.enableAudio();
+    if (isBroadcaster) {
+      await _engine!.enableAudio();
+    }
 
     // Set speaker mode
     await _engine!.setEnableSpeakerphone(_isSpeakerOn);
@@ -200,11 +203,11 @@ class AgoraCallService extends ChangeNotifier {
       channelId: channelName,
       uid: uid,
       options: ChannelMediaOptions(
+        clientRoleType: isBroadcaster ? ClientRoleType.clientRoleBroadcaster : ClientRoleType.clientRoleAudience,
         autoSubscribeAudio: true,
-        autoSubscribeVideo: enableVideo,
-        publishMicrophoneTrack: true,
-        publishCameraTrack: enableVideo,
-        clientRoleType: ClientRoleType.clientRoleBroadcaster,
+        autoSubscribeVideo: true, // Always subscribe to video
+        publishMicrophoneTrack: isBroadcaster,
+        publishCameraTrack: isBroadcaster && enableVideo,
       ),
     );
 

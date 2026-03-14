@@ -14,6 +14,7 @@ class PeopleCubit extends Cubit<PeopleState> {
     fetchFollowings();
     fetchFriends();
     fetchFollowers();
+    fetchProfiles();
   }
 
   List<SearchedUserProfile> friends = [];
@@ -87,6 +88,29 @@ class PeopleCubit extends Cubit<PeopleState> {
     } catch (e) {
       emit(PeopleError());
       log("get Users $e");
+    }
+  }
+
+  List<SearchedUserProfile> profiles = [];
+  fetchProfiles() async {
+    emit(PeopleLoading());
+    try {
+      final response = await peopleRepo.fetchProfiles(page: 1, pageSize: 20);
+      final body = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        profiles.clear();
+        for (var profile in body['data']['result']) {
+          profiles.add(SearchedUserProfile.fromJson(profile));
+        }
+        emit(PeopleLoaded());
+      } else {
+        ToastMessage.showErrorToast(
+            message: body["errors"]["detail"].toString());
+        emit(PeopleError());
+      }
+    } catch (e) {
+      emit(PeopleError());
+      log("get all profiles $e");
     }
   }
 

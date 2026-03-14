@@ -8,6 +8,8 @@ class ProfileVideoTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         childAspectRatio: 1,
@@ -16,10 +18,11 @@ class ProfileVideoTab extends StatelessWidget {
       ),
       itemCount: videposts.length,
       itemBuilder: (BuildContext context, int index) => Container(
-          // height: 185,
-          // width: 158,
-
-          ),
+        color: Colors.black12,
+        child: const Center(
+          child: Icon(Icons.play_circle_outline, color: Colors.white54, size: 30),
+        ),
+      ),
     );
   }
 }

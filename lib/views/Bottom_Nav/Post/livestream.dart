@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart'; 
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
-
 import '../../../common/custom_dialog_option.dart';
-// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:haptext_api/services/chat_ui/agora_call_service.dart';
+import 'package:haptext_api/services/chat_ui/livestream_websocket_service.dart';
+import 'package:haptext_api/services/chat_ui/hapztext_api_service.dart';
 
 class Live extends StatefulWidget {
   const Live({Key? key}) : super(key: key);
@@ -12,8 +14,46 @@ class Live extends StatefulWidget {
 }
 
 class _LiveState extends State<Live> {
+  late final AgoraCallService _agoraService;
+  late final LivestreamWebsocketService _wsService;
+  late final String _streamId;
+  bool _isLive = false;
 
-  // Future<dynamic> _showOptionsDialog(BuildContext context) async {
+  @override
+  void initState() {
+    super.initState();
+    _agoraService = AgoraCallService();
+    _wsService = LivestreamWebsocketService(HapzTextApiService());
+    _streamId = "live_${DateTime.now().millisecondsSinceEpoch}";
+    
+    _agoraService.addListener(() {
+      if (mounted) setState(() {});
+    });
+
+    _initLive();
+  }
+
+  Future<void> _initLive() async {
+    final success = await _agoraService.initialize();
+    if (success) {
+      await _agoraService.joinChannel(_streamId, isBroadcaster: true, enableVideo: true);
+      if (mounted) {
+        setState(() { _isLive = true; });
+        _wsService.connectToWebSocket(_streamId);
+        _wsService.startStream("My Livestream");
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_isLive) {
+      _wsService.endStream();
+    }
+    _wsService.dispose();
+    _agoraService.dispose();
+    super.dispose();
+  }
   //   // setState(() {
   //   return showDialog(
   //     context: context,
@@ -96,11 +136,20 @@ class _LiveState extends State<Live> {
           leading: Center(child: Text(' LIVE', style: TextStyle(fontWeight: FontWeight.bold, color: context.theme.titleTextColor,),)),
         ),
       ),
-      body: Container(
+      body: SizedBox(
         height: double.infinity,
         width: double.infinity,
         child: Stack(
           children: [
+            if (_isLive && _agoraService.engine != null && _agoraService.isVideoEnabled)
+              SizedBox.expand(
+                child: AgoraVideoView(
+                  controller: VideoViewController(
+                    rtcEngine: _agoraService.engine!,
+                    canvas: const VideoCanvas(uid: 0),
+                  ),
+                ),
+              ),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -159,54 +208,66 @@ class _LiveState extends State<Live> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            color: context.theme.greyColor,
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          child: Icon(
-                            Icons.videocam,
-                          ),
-                        ),
-                        SizedBox(height: 15.0),
-                        Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            color: context.theme.greyColor,
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          child: Icon(
-                            Icons.cameraswitch,
+                        GestureDetector(
+                          onTap: () => _agoraService.toggleVideo(),
+                          child: Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              color: _agoraService.isVideoEnabled ? Colors.green : context.theme.greyColor,
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            child: Icon(
+                              _agoraService.isVideoEnabled ? Icons.videocam : Icons.videocam_off,
+                            ),
                           ),
                         ),
-                        SizedBox(height: 15.0),
-                        Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            color: context.theme.greyColor,
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          child: Icon(
-                            Icons.volume_up,
-                          ),
-                        ),
-                        SizedBox(height: 15.0),
-                        Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            color: context.theme.greyColor,
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          child: Icon(
-                            Icons.mic,
+                        const SizedBox(height: 15.0),
+                        GestureDetector(
+                          onTap: () => _agoraService.switchCamera(),
+                          child: Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              color: context.theme.greyColor,
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            child: const Icon(
+                              Icons.cameraswitch,
+                            ),
                           ),
                         ),
-                        SizedBox(height: 15.0),
+                        const SizedBox(height: 15.0),
+                        GestureDetector(
+                          onTap: () => _agoraService.toggleSpeaker(),
+                          child: Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              color: _agoraService.isSpeakerOn ? Colors.green : context.theme.greyColor,
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            child: Icon(
+                              _agoraService.isSpeakerOn ? Icons.volume_up : Icons.volume_off,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 15.0),
+                        GestureDetector(
+                          onTap: () => _agoraService.toggleMute(),
+                          child: Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              color: _agoraService.isMuted ? Colors.red : context.theme.greyColor,
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            child: Icon(
+                              _agoraService.isMuted ? Icons.mic_off : Icons.mic,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 15.0),
                         Container(
                           height: 50,
                           width: 50,
@@ -214,7 +275,7 @@ class _LiveState extends State<Live> {
                             color: context.theme.greyColor,
                             borderRadius: BorderRadius.circular(25.0),
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.message,
                           ),
                         ),

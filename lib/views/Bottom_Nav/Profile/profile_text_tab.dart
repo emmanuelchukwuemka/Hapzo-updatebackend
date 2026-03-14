@@ -8,6 +8,8 @@ class ProfileTextTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: textPosts.length,
         itemBuilder: (context, index) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),

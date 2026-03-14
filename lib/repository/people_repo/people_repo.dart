@@ -37,6 +37,12 @@ class PeopleRepo {
         headers: ApiHeaders.aunthenticatedHeader);
   }
 
+  Future<Response> fetchProfiles({page, pageSize}) async {
+    return await ApiMethods.getMethod(
+        url: ApiConstants.getProfilesListUrl(page: page, pageSize: pageSize),
+        headers: ApiHeaders.aunthenticatedHeader);
+  }
+
   Future<Response> followUser({userId}) async {
     return await ApiMethods.postMethod(
         url: ApiConstants.followUserUrl(userId: userId),

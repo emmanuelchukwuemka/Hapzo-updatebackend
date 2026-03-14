@@ -1,26 +1,52 @@
+import 'dart:io';
 import 'package:haptext_api/network/api_constants.dart';
 import 'package:haptext_api/network/api_helper.dart';
 import 'package:http/http.dart';
 
 class AuthRepo {
-  Future<Response> registerUser(
+  Future<StreamedResponse> registerUser(
       {required String username,
       required String email,
       required String password,
       String? firstName,
       String? lastName,
+      String? gender,
+      String? birthDate,
+      String? location,
+      String? relationshipStatus,
+      String? occupation,
+      File? profilePicture,
       required String passwordConfirm}) async {
-    return await ApiMethods.postMethod(
-        url: ApiConstants.register,
-        body: {
-          "username": username,
-          "email": email,
-          "first_name": firstName,
-          "last_name": lastName,
-          "password": password,
-          "password_confirm": passwordConfirm
-        },
-        headers: ApiHeaders.unaunthenticatedHeader);
+    
+    var request = MultipartRequest('POST', Uri.parse(ApiConstants.register));
+
+    if (profilePicture != null && await profilePicture.exists()) {
+      request.files.add(await MultipartFile.fromPath(
+        'profile_picture',
+        profilePicture.path,
+        filename: profilePicture.path.split('/').last,
+      ));
+    }
+
+    final Map<String, String> fields = {
+      "username": username,
+      "email": email,
+      "password": password,
+      "password_confirm": passwordConfirm
+    };
+
+    if (firstName != null) fields["first_name"] = firstName;
+    if (lastName != null) fields["last_name"] = lastName;
+    if (gender != null) fields["gender"] = gender;
+    if (birthDate != null) fields["birth_date"] = birthDate.replaceAll('/', '-');
+    if (location != null) fields["location"] = location;
+    if (relationshipStatus != null) fields["relationship_status"] = relationshipStatus;
+    if (occupation != null) fields["occupation"] = occupation;
+
+    request.fields.addAll(fields);
+    request.headers.addAll(ApiHeaders.unaunthenticatedHeader);
+
+    return await request.send();
   }
 
   Future<Response> verifyUserEmail(
