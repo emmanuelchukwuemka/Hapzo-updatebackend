@@ -28,7 +28,11 @@ class _TrendingState extends State<Trending> {
               fontWeight: FontWeight.bold)),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
-          final posts = context.read<HomeCubit>().posts.result ?? [];
+          final rawPosts = context.read<HomeCubit>().posts.result ?? [];
+          final posts = rawPosts
+              .where((post) => post.mediaFiles != null && post.mediaFiles!.isNotEmpty)
+              .toList();
+          
           if (posts.isEmpty && state is HomeLoading) {
             return const Center(child: CircularProgressIndicator());
           }

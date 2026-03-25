@@ -78,7 +78,7 @@ class ChatItemTile extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        "12:45 PM", // Mock time for now
+                        "now", 
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.4),
                           fontSize: 12,

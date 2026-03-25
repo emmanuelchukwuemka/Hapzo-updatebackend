@@ -42,6 +42,7 @@ class _ChatScreenState extends State<ChatScreen> {
   StreamSubscription<Map<String, dynamic>>? _readSubscription;
   String? _typingUser;
   Timer? _typingDebounce;
+  Message? _replyMessage;
 
   @override
   void initState() {
@@ -186,15 +187,14 @@ class _ChatScreenState extends State<ChatScreen> {
       _sendMessageToApi(message);
     }
 
-    if (message.disappearing) {
-      // Demo logic: remove after 5 seconds
-      Future.delayed(const Duration(seconds: 5), () {
-        if (mounted) {
-          setState(() {
-            _messages.removeWhere((m) => m.id == message.id);
-          });
-        }
+    if (_replyMessage != null) {
+      setState(() {
+        _replyMessage = null;
       });
+    }
+
+    if (message.disappearing) {
+      // TODO: Handle disappearing messages on the server side
     }
   }
 
@@ -207,9 +207,16 @@ class _ChatScreenState extends State<ChatScreen> {
           message.text, // "Voice Note" usually
           file: File(message.audioPath!),
           messageType: 'audio',
+          isReply: message.isReply,
+          previousMessageId: message.previousMessageId,
         );
       } else {
-        await _chatApiService.sendMessage(_chat.id, message.text);
+        await _chatApiService.sendMessage(
+          _chat.id, 
+          message.text,
+          isReply: message.isReply,
+          previousMessageId: message.previousMessageId,
+        );
       }
     } catch (e) {
       print('Error sending message to API: $e');
@@ -356,6 +363,11 @@ class _ChatScreenState extends State<ChatScreen> {
                       message: message,
                       themeIndex: _chat.themeIndex,
                       onTap: () => _handleMessageTap(message),
+                      onReply: () {
+                        setState(() {
+                          _replyMessage = message;
+                        });
+                      },
                     );
                   },
                 ),
@@ -385,6 +397,12 @@ class _ChatScreenState extends State<ChatScreen> {
               InputArea(
                 chatMode: _chat.chatMode,
                 autoClearActive: _isWithinAutoClearWindow(),
+                replyMessage: _replyMessage,
+                onCancelReply: () {
+                  setState(() {
+                    _replyMessage = null;
+                  });
+                },
                 onSendText: (text, {isEmoji = false}) {
                   _chatApiService.sendTyping(false); // Stop typing immediately on send
                   final bool willViewOnce = _isWithinAutoClearWindow();
@@ -398,6 +416,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     viewOnce: willViewOnce,
                     disappearing: willDisappear,
                     isEmoji: isEmoji,
+                    isReply: _replyMessage != null,
+                    previousMessageId: _replyMessage?.id,
+                    previousMessageContent: _replyMessage?.text,
+                    previousMessageSenderId: _replyMessage?.me == true ? "You" : "Someone",
                   ));
                 },
                 onStartVoice: _startVoiceRecording,
@@ -435,9 +457,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       );
     } else if (message.isFeedLink) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Simulating navigation to Feed Post...")),
-      );
+      // TODO: Implement navigation to Feed Post
     }
   }
 
@@ -498,6 +518,16 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _startVoiceRecording() async {
     try {
+      final status = await Permission.microphone.request();
+      if (status != PermissionStatus.granted) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Microphone permission is required to record voice notes')),
+          );
+        }
+        return;
+      }
+
       if (await _audioRecorder.hasPermission()) {
         String? filePath;
         
@@ -546,6 +576,10 @@ class _ChatScreenState extends State<ChatScreen> {
           viewOnce: willViewOnce,
           disappearing: willDisappear,
           audioPath: path,
+          isReply: _replyMessage != null,
+          previousMessageId: _replyMessage?.id,
+          previousMessageContent: _replyMessage?.isVoice == true ? "Voice Note" : _replyMessage?.text,
+          previousMessageSenderId: _replyMessage?.me == true ? "You" : "Someone",
         ));
       }
     } catch (e) {

@@ -11,12 +11,14 @@ class MessageBubble extends StatefulWidget {
   final Message message;
   final int themeIndex;
   final VoidCallback? onTap;
+  final VoidCallback? onReply;
 
   const MessageBubble({
     super.key,
     required this.message,
     required this.themeIndex,
     this.onTap,
+    this.onReply,
   });
 
   @override
@@ -194,7 +196,12 @@ class _MessageBubbleState extends State<MessageBubble> {
             ListTile(
               leading: const Icon(Icons.reply),
               title: const Text("Reply"),
-              onTap: () => Navigator.pop(context),
+              onTap: () {
+                Navigator.pop(context);
+                if (widget.onReply != null) {
+                  widget.onReply!();
+                }
+              },
             ),
             ListTile(
               leading: const Icon(Icons.copy),

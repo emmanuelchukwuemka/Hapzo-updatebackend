@@ -8,8 +8,12 @@ class PicsChange extends StatefulWidget {
   const PicsChange(
       {super.key,
       required this.onchangeProfile,
-      required this.onchangeCoverPhoto});
+      required this.onchangeCoverPhoto,
+      this.currentProfileUrl,
+      this.currentCoverUrl});
   final Function(File profile) onchangeProfile, onchangeCoverPhoto;
+  final String? currentProfileUrl;
+  final String? currentCoverUrl;
   @override
   State<PicsChange> createState() => _PicsChangeState();
 }
@@ -95,7 +99,9 @@ class _PicsChangeState extends State<PicsChange> {
                 borderRadius: BorderRadius.circular(16),
                 image: selectedBgImage != null
                     ? DecorationImage(image: FileImage(File(selectedBgImage!)), fit: BoxFit.cover)
-                    : const DecorationImage(image: AssetImage("assets/images/landscape3.jpg"), fit: BoxFit.cover),
+                    : (widget.currentCoverUrl?.isNotEmpty == true)
+                        ? DecorationImage(image: NetworkImage(widget.currentCoverUrl!), fit: BoxFit.cover)
+                        : const DecorationImage(image: AssetImage("assets/images/hapz_logo.png"), fit: BoxFit.cover),
               ),
               child: Container(
                 decoration: BoxDecoration(
@@ -137,10 +143,10 @@ class _PicsChangeState extends State<PicsChange> {
                     child: ClipOval(
                       child: selectedProfileImage != null
                           ? Image.file(File(selectedProfileImage!), fit: BoxFit.cover)
-                          : const AppNetwokImage(
+                          : AppNetwokImage(
                               height: 90,
                               width: 90,
-                              imageUrl: "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740&q=80",
+                              imageUrl: widget.currentProfileUrl ?? "",
                               fit: BoxFit.cover,
                             ),
                     ),

@@ -3,6 +3,7 @@
 import 'package:haptext_api/bloc/auth/cubit/auth_cubit.dart';
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/bloc/people/cubit/people_cubit.dart';
+import 'package:haptext_api/bloc/profile/cubit/profile_cubit.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 import 'package:haptext_api/common/coloors.dart';
 import 'package:haptext_api/exports.dart';
@@ -31,10 +32,9 @@ class _ProfilePageState extends State<ProfilePage>
         children: [
           SimpleDialogOption(
             onPressed: () {},
-            child: const Center(
+            child: Center(
               child: AppText(
-                  text:
-                      'This is what you need to know about me... A Mobile Developer with an enthusiasm for knowledge and inventions',
+                  text: context.read<AuthCubit>().useInfo.profile?.bio ?? 'No bio available',
                   fontSize: 15,
                   textAlign: TextAlign.center),
             ),
@@ -71,14 +71,27 @@ class _ProfilePageState extends State<ProfilePage>
 
     return Scaffold(
       backgroundColor: theme?.bgColor ?? Coloors.darkBackground,
-      body: BlocListener<PeopleCubit, PeopleState>(
-        listener: (context, state) {
-          if (state is CurrentUser) {
-            setState(() {
-              user.profile = state.user;
-            });
-          }
-        },
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<PeopleCubit, PeopleState>(
+            listener: (context, state) {
+              if (state is CurrentUser) {
+                setState(() {
+                  user.profile = state.user;
+                });
+              }
+            },
+          ),
+          BlocListener<ProfileCubit, ProfileState>(
+            listener: (context, state) {
+              if (state is ProfileUpdated) {
+                // Refresh profile data when updated
+                context.read<PeopleCubit>().fetchUserProfileById(
+                    userId: user.id ?? '', loggedInUser: true);
+              }
+            },
+          ),
+        ],
         child: RefreshIndicator(
           onRefresh: () async {
             await context.read<PeopleCubit>().fetchUserProfileById(
@@ -115,16 +128,25 @@ class _ProfilePageState extends State<ProfilePage>
                           ),
                         ),
                       ),
-                      // Backdrop image if available (using profile pic as placeholder)
-                      Opacity(
-                        opacity: 0.3,
-                        child: AppNetwokImage(
-                          height: 240,
-                          width: size.width,
-                          imageUrl: user.profile?.profilePicture ?? "",
-                          fit: BoxFit.cover,
+                      // Cover picture
+                      if (user.profile?.coverPicture != null && user.profile!.coverPicture!.isNotEmpty)
+                        Positioned.fill(
+                          child: Image.network(
+                            user.profile!.coverPicture!,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      else
+                        // Backdrop image if available (using profile pic as placeholder)
+                        Opacity(
+                          opacity: 0.3,
+                          child: AppNetwokImage(
+                            height: 240,
+                            width: size.width,
+                            imageUrl: user.profile?.profilePicture ?? "",
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      ),
                       // Overlay for name/username inside flexible space
                       Positioned(
                         bottom: 40,
@@ -226,7 +248,9 @@ class _ProfilePageState extends State<ProfilePage>
                         children: [
                           _infoBadge(Icons.location_on_outlined, user.profile?.location ?? "Global"),
                           const SizedBox(width: 16),
-                          _infoBadge(Icons.calendar_month_outlined, "Joined Jan 2024"),
+                          _infoBadge(Icons.calendar_month_outlined, 
+                            "Joined ${user.profile?.createdAt != null ? user.profile!.createdAt!.split('T')[0] : 'Recently'}"
+                          ),
                         ],
                       ),
 

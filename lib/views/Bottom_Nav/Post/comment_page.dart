@@ -1,8 +1,15 @@
 import 'dart:math';
 import 'dart:async';
+import 'dart:io';
 import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/exports.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:record/record.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:video_player/video_player.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CommentScreen extends StatefulWidget {
   final ResultPostModel post;
@@ -16,6 +23,128 @@ class _CommentScreenState extends State<CommentScreen>
     with SingleTickerProviderStateMixin {
   // Caption & comments
   bool _showFullCaption = false;
+
+  // Video & Audio
+  VideoPlayerController? _videoController;
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  bool _isVideoInitialized = false;
+  bool _isAudioPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomeCubit>().fetchPostComents(post: widget.post);
+    _initMedia();
+  }
+
+  void _initMedia() async {
+    if (widget.post.postFormat == 'video' && widget.post.videoContent != null) {
+      _videoController = VideoPlayerController.networkUrl(Uri.parse(widget.post.videoContent!))
+        ..initialize().then((_) {
+          if (mounted) {
+            setState(() {
+              _isVideoInitialized = true;
+            });
+          }
+        });
+    } else if (widget.post.postFormat == 'audio' && widget.post.audioContent != null) {
+      await _audioPlayer.setUrl(widget.post.audioContent!);
+    }
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    _inputFocus.dispose();
+    _scrollController.dispose();
+    _recordTimer?.cancel();
+    _audioRecorder.dispose();
+    _videoController?.dispose();
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+
+  Widget _buildPostMedia() {
+    final size = MediaQuery.sizeOf(context);
+    if (widget.post.postFormat == 'image' && widget.post.imageContent != null) {
+      return Container(
+        width: double.infinity,
+        constraints: BoxConstraints(maxHeight: size.height * 0.4),
+        child: AppNetwokImage(
+          height: size.height * 0.4,
+          width: double.infinity,
+          imageUrl: widget.post.imageContent!,
+          fit: BoxFit.contain,
+        ),
+      );
+    } else if (widget.post.postFormat == 'video' && _videoController != null) {
+      return Container(
+        width: double.infinity,
+        height: size.height * 0.4,
+        color: Colors.black,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            if (_isVideoInitialized)
+              AspectRatio(
+                aspectRatio: _videoController!.value.aspectRatio,
+                child: VideoPlayer(_videoController!),
+              )
+            else
+              const CircularProgressIndicator(color: Colors.cyanAccent),
+            if (_isVideoInitialized)
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _videoController!.value.isPlaying
+                        ? _videoController!.pause()
+                        : _videoController!.play();
+                  });
+                },
+                child: Icon(
+                  _videoController!.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                  size: 50,
+                  color: Colors.white.withValues(alpha: 0.5),
+                ),
+              ),
+          ],
+        ),
+      );
+    } else if (widget.post.postFormat == 'audio') {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            const Icon(Icons.voice_chat, size: 40, color: Colors.cyanAccent),
+            const SizedBox(height: 12),
+            IconButton(
+              icon: Icon(
+                _isAudioPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
+                size: 48,
+                color: Colors.cyanAccent,
+              ),
+              onPressed: () async {
+                if (_isAudioPlaying) {
+                  await _audioPlayer.pause();
+                } else {
+                  await _audioPlayer.play();
+                }
+                setState(() => _isAudioPlaying = !_isAudioPlaying);
+              },
+            ),
+          ],
+        ),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  // Toggle reaction for a comment by current user
 
   // Reply tracking: which comment we're replying to (may be nested)
   CommentModel? _replyTo;
@@ -34,42 +163,20 @@ class _CommentScreenState extends State<CommentScreen>
   final ScrollController _scrollController = ScrollController();
 
   // Recording State
+  final AudioRecorder _audioRecorder = AudioRecorder();
+  String? _currentRecordingPath;
   bool _isRecording = false;
   Duration _recordDuration = Duration.zero;
   Timer? _recordTimer;
 
-  @override
-  void initState() {
-    super.initState();
-    context.read<HomeCubit>().fetchPostComents(post: widget.post);
-  }
-
-  @override
-  void dispose() {
-    _textController.dispose();
-    _inputFocus.dispose();
-    _scrollController.dispose();
-    _recordTimer?.cancel();
-    super.dispose();
-  }
 
   // Toggle reaction for a comment by current user
-  // void _toggleReaction(CommentModel comment, String emoji) {
-  //   final list = comment.reactions[emoji] ?? [];
-  //   setState(() {
-  //     if (list.contains(_meId)) {
-  //       list.remove(_meId);
-  //     } else {
-  //       list.add(_meId);
-  //       _spawnFloatingEmoji(emoji);
-  //     }
-  //     if (list.isEmpty) {
-  //       comment.reactions.remove(emoji);
-  //     } else {
-  //       comment.reactions[emoji] = list;
-  //     }
-  //   });
-  // }
+  void _toggleReaction(CommentModel comment, String reaction) {
+    context.read<HomeCubit>().reactToPost(
+      postId: comment.id,
+      reaction: reaction,
+    );
+  }
 
   void _toggleBookmark(CommentModel c) {
     setState(() {});
@@ -99,16 +206,16 @@ class _CommentScreenState extends State<CommentScreen>
                   separatorBuilder: (BuildContext context, _) =>
                       const Divider(color: Colors.white10),
                   itemBuilder: (ctx, i) {
-                    return ListTile(
-                      leading: CircleAvatar(
-                          backgroundColor: _avatarColorFor('name'),
-                          child: const AppText(
-                              text: "who['name']![0]", color: Colors.white)),
-                      title: const AppText(
-                          text: "who['name']!", color: Colors.white),
-                      trailing:
-                          const AppText(text: "who['emoji']!", fontSize: 20),
-                    );
+                        return ListTile(
+                          leading: CircleAvatar(
+                              backgroundColor: _avatarColorFor("${i}"),
+                              child: AppText(
+                                  text: "U", color: Colors.white)),
+                          title: const AppText(
+                              text: "User", color: Colors.white),
+                          trailing:
+                              const AppText(text: "👍", fontSize: 20),
+                        );
                   },
                 ),
               )
@@ -151,35 +258,87 @@ class _CommentScreenState extends State<CommentScreen>
     }
   }
 
-  void _startRecording() {
-    setState(() {
-      _isRecording = true;
-      _recordDuration = Duration.zero;
-    });
-    _recordTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+  Future<void> _startRecording() async {
+    try {
+      final status = await Permission.microphone.request();
+      if (status != PermissionStatus.granted) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Microphone permission is required to record voice notes')),
+          );
+        }
+        return;
+      }
+
+      if (await _audioRecorder.hasPermission()) {
+        String? filePath;
+        
+        final Directory appDir = await getApplicationDocumentsDirectory();
+        filePath = '${appDir.path}/comment_vn_${DateTime.now().millisecondsSinceEpoch}.m4a';
+        
+        _currentRecordingPath = filePath;
+        
+        await _audioRecorder.start(const RecordConfig(), path: filePath);
+        
+        setState(() {
+          _isRecording = true;
+          _recordDuration = Duration.zero;
+        });
+
+        _recordTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+          setState(() {
+            _recordDuration += const Duration(seconds: 1);
+          });
+        });
+      }
+    } catch (e) {
+      print('Error starting recording: $e');
+    }
+  }
+
+  Future<void> _stopAndSendRecording() async {
+    try {
+      _recordTimer?.cancel();
+      final String? path = await _audioRecorder.stop();
+      
       setState(() {
-        _recordDuration += const Duration(seconds: 1);
+        _isRecording = false;
+        _recordDuration = Duration.zero;
       });
-    });
+
+      if (path != null) {
+        // Send the recording
+        if (mounted) {
+          context.read<HomeCubit>().commentOnPost(
+            postId: _replyTo?.id ?? "",
+            post: _replyTo != null ? null : widget.post,
+            audioFile: File(path),
+          );
+        }
+      }
+    } catch (e) {
+      print('Error stopping recording: $e');
+    }
   }
 
-  void _stopAndSendRecording() {
-    _recordTimer?.cancel();
-    setState(() {
-      _isRecording = false;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Voice note sent (simulated)')));
-  }
-
-  void _cancelRecording() {
-    _recordTimer?.cancel();
-    setState(() {
-      _isRecording = false;
-      _recordDuration = Duration.zero;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Recording cancelled')));
+  Future<void> _cancelRecording() async {
+    try {
+      _recordTimer?.cancel();
+      await _audioRecorder.stop();
+      
+      setState(() {
+        _isRecording = false;
+        _recordDuration = Duration.zero;
+      });
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Recording cancelled')),
+        );
+      }
+    } catch (e) {
+      print('Error cancelling recording: $e');
+    }
   }
 
   String _formatDuration(Duration d) {
@@ -285,15 +444,15 @@ class _CommentScreenState extends State<CommentScreen>
           padding: const EdgeInsets.only(left: 44.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            // if (!showAllReplies && replyCount > 2)
+            if (comment.replies.isNotEmpty)
             GestureDetector(
               onTap: () => setState(() {
                 // _expandedReplyParents.add(c.id);
               }),
-              child: const Padding(
-                padding: EdgeInsets.only(bottom: 8),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8),
                 child:
-                    AppText(text: 'View all 5 replies', color: Colors.white54),
+                    AppText(text: 'View all ${comment.replies.length} replies', color: Colors.white54),
               ),
             ),
             // shown replies
@@ -396,6 +555,10 @@ class _CommentScreenState extends State<CommentScreen>
         if (state is PostCommented) {
           _textController.clear();
           _replyTo = null;
+          readHome.fetchPostComents(post: widget.post);
+        }
+        if (state is PostReact) {
+           readHome.fetchPostComents(post: widget.post);
         }
       },
       child: Scaffold(
@@ -408,6 +571,7 @@ class _CommentScreenState extends State<CommentScreen>
             elevation: 0.5),
         body: SafeArea(
           child: Column(children: [
+            _buildPostMedia(),
             // Caption card (poster avatar, caption, See more toggle, comment count)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -455,8 +619,8 @@ class _CommentScreenState extends State<CommentScreen>
                             ]),
                         const SizedBox(height: 10),
                         Row(children: [
-                          const AppText(
-                              text: '0 comments', color: Colors.white54),
+                          AppText(
+                              text: '${widget.post.comments.length} comments', color: Colors.white54),
                           const SizedBox(width: 12),
                           InkWell(
                               onTap: () => setState(
@@ -658,8 +822,8 @@ class _CommentScreenState extends State<CommentScreen>
                 return GestureDetector(
                   onTap: () {
                     if (_replyTo != null) {
+                      _toggleReaction(_replyTo!, e);
                       Navigator.pop(context);
-                      // _toggleReaction(_replyTo!, e);
                     } else {
                       setState(() =>
                           _textController.text = _textController.text + e);

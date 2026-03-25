@@ -19,16 +19,12 @@ class _ChatsHomeState extends State<ChatsHome> {
   bool _isPinnedExpanded = true;
   final HapzTextApiService _apiService = HapzTextApiService();
   late ChatApiService _chatApiService;
-
-  // Mock Data
   List<ChatItem> _chats = [];
-
+  
   @override
   void initState() {
     super.initState();
     _chatApiService = ChatApiService(_apiService);
-    
-    // Initialize with empty list
     _chats = [];
 
     // Inject auth token and load real data
@@ -50,7 +46,7 @@ class _ChatsHomeState extends State<ChatsHome> {
       if (mounted) {
         setState(() {
           // Merge or replace. For simplicity, we can append specific API chats
-          // preventing duplicates if IDs clash with mocks
+          // preventing duplicates if IDs clash
           for (var conv in conversations) {
              final index = _chats.indexWhere((c) => c.id == conv.id);
              if (index != -1) {

@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Let’s Plan - Find trusted event vendors in Abia State, Nigeria">
+    <title>Let’s Plan • Event Vendors in Abia State</title>
+    
+    <!-- Bootstrap 5.3.3 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        :root {
+            --lavender: #a78bfa;
+            --earth: #8d6e63;
+            --soft-brown: #d7b8a8;
+        }
+        
+        * {
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f8f1eb;
+        }
+        
+        .navbar {
+            background: rgba(255,255,255,0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.75rem;
+            color: var(--lavender);
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #a78bfa 0%, #d7b8a8 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .btn-primary {
+            background: var(--lavender);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 32px;
+            font-weight: 600;
+        }
+        
+        .btn-primary:hover {
+            background: #8b6cf5;
+            transform: translateY(-2px);
+        }
+        
+        .category-card {
+            border-radius: 20px;
+            text-align: center;
+            padding: 2rem 1rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        }
+        
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #3f2a1e;
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            background: var(--lavender);
+            bottom: -8px;
+            left: 0;
+            border-radius: 50px;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: #3f2a1e !important;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--lavender) !important;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .filter-badge {
+            cursor: pointer;
+        }
+        
+        .vendor-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .vendor-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 30px rgba(167, 139, 250, 0.2) !important;
+        }
+        
+        .portfolio-img {
+            transition: transform 0.3s ease;
+        }
+        
+        .portfolio-img:hover {
+            transform: scale(1.08);
+        }
+        
+        footer {
+            background: #3f2a1e;
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                min-height: 90vh;
+            }
+            .logo-text {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#" onclick="showPage('home')">
+                <i class="bi bi-calendar-heart fs-3 text-lavender"></i>
+                <span class="logo-text">Let’s Plan</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-3">
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="#" onclick="showPage('home')">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="#" onclick="showPage('listing')">Find Vendors</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="#" onclick="showPage('registration')">Register as Vendor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="#" onclick="showPage('quote')">Request Quote</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="#" onclick="showPage('consultation')">Consultation</a>
+                    </li>
+                    
+                    <!-- Mobile-only divider -->
+                    <div class="d-lg-none my-2 border-top"></div>
+                    
+                    <li class="nav-item ms-lg-3">
+                        <button onclick="showPage('listing')" class="btn btn-primary d-flex align-items-center gap-2">
+                            <i class="bi bi-search"></i>
+                            <span>Browse Vendors</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HOME PAGE -->
+    <div id="home" class="page active">
+        
+        <!-- HERO -->
+        <section class="hero py-5">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6">
+                        <h1 class="display-3 fw-bold mb-4">
+                            Find trusted and affordable vendors<br>for any event in Abia State
+                        </h1>
+                        <p class="lead mb-5 fs-4 opacity-90">
+                            Cakes • Decorators • Photographers • Caterers • Makeup Artists • DJs<br>
+                            <span class="text-white-50">Umuahia • Aba • Ohafia</span>
+                        </p>
+                        
+                        <!-- Search Bar -->
+                        <div class="bg-white rounded-4 p-2 shadow-lg">
+                            <form onsubmit="handleHomeSearch(event)" class="row g-2 align-items-center">
+                                <div class="col-md-4">
+                                    <select id="home-category" class="form-select border-0 py-3 fs-5">
+                                        <option value="">All Categories</option>
+                                        <option value="Cakes">Cakes</option>
+                                        <option value="Decorators">Decorators</option>
+                                        <option value="Photographers">Photographers</option>
+                                        <option value="Caterers">Caterers</option>
+                                        <option value="Makeup Artists">Makeup Artists</option>
+                                        <option value="DJs">DJs</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <select id="home-location" class="form-select border-0 py-3 fs-5">
+                                        <option value="">Any Location</option>
+                                        <option value="Umuahia">Umuahia</option>
+                                        <option value="Aba">Aba</option>
+                                        <option value="Ohafia">Ohafia</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="home-keyword" class="form-control border-0 py-3 fs-5" placeholder="Event type or keyword">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100 py-3 fs-5">
+                                        <i class="bi bi-search me-2"></i>Search
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="mt-4 d-flex gap-3 flex-wrap">
+                            <span class="badge bg-white text-dark px-4 py-3 fs-6 rounded-pill shadow-sm">Over 120 vendors</span>
+                            <span class="badge bg-white text-dark px-4 py-3 fs-6 rounded-pill shadow-sm">100% verified</span>
+                            <span class="badge bg-white text-dark px-4 py-3 fs-6 rounded-pill shadow-sm">Abia State only</span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6 text-center">
+                        <img src="https://picsum.photos/id/1015/600/520" alt="Happy couple with event vendors" class="img-fluid rounded-4 shadow-lg" style="max-height: 520px; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CATEGORIES -->
+        <section class="py-5 bg-white">
+            <div class="container">
+                <h2 class="section-title mb-5">Popular Categories</h2>
+                <div class="row g-4" id="categories-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- FEATURED VENDORS -->
+        <section class="py-5">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-end mb-4">
+                    <h2 class="section-title">Featured Vendors</h2>
+                    <a href="#" onclick="showPage('listing')" class="text-decoration-none fw-semibold d-flex align-items-center gap-2 text-lavender">
+                        See all vendors <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <div class="row g-4" id="featured-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- CONSULT CTA -->
+        <section class="py-5 bg-gradient" style="background: linear-gradient(90deg, #d7b8a8, #a78bfa); color: white;">
+            <div class="container text-center">
+                <div class="max-w-2xl mx-auto">
+                    <h2 class="display-5 fw-bold mb-3">Need help planning your big day?</h2>
+                    <p class="lead mb-4">Talk to our expert planners for free. We’ll connect you with the perfect team in Abia State.</p>
+                    <button onclick="showPage('consultation')" class="btn btn-light btn-lg px-5 py-3 rounded-pill fs-5 fw-semibold">
+                        Get Free Consultation
+                        <i class="bi bi-arrow-right-circle ms-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- VENDOR LISTING PAGE -->
+    <div id="listing" class="page">
+        <div class="container py-5">
+            <div class="row">
+                
+                <!-- Filters -->
+                <div class="col-lg-3">
+                    <div class="sticky-top" style="top: 90px;">
+                        <h4 class="mb-4">Filters</h4>
+                        
+                        <!-- Category Filter -->
+                        <div class="mb-4">
+                            <h6 class="fw-semibold mb-3">Category</h6>
+                            <div class="d-flex flex-wrap gap-2" id="category-filters">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                        
+                        <!-- Location Filter -->
+                        <div class="mb-4">
+                            <h6 class="fw-semibold mb-3">Location</h6>
+                            <select id="filter-location" class="form-select mb-3" onchange="applyFilters()">
+                                <option value="">All Locations</option>
+                                <option value="Umuahia">Umuahia</option>
+                                <option value="Aba">Aba</option>
+                                <option value="Ohafia">Ohafia</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Price Range -->
+                        <div class="mb-4">
+                            <h6 class="fw-semibold mb-3">Price Range (₦)</h6>
+                            <div class="d-flex gap-2">
+                                <button onclick="setPriceFilter(0)" class="flex-fill btn btn-outline-secondary btn-sm price-btn active" data-price="0">Any</button>
+                                <button onclick="setPriceFilter(50000)" class="flex-fill btn btn-outline-secondary btn-sm price-btn" data-price="50000">Under 50k</button>
+                                <button onclick="setPriceFilter(100000)" class="flex-fill btn btn-outline-secondary btn-sm price-btn" data-price="100000">50k - 100k</button>
+                                <button onclick="setPriceFilter(150000)" class="flex-fill btn btn-outline-secondary btn-sm price-btn" data-price="150000">100k+</button>
+                            </div>
+                        </div>
+                        
+                        <button onclick="resetFilters()" class="btn btn-outline-secondary w-100">Reset Filters</button>
+                    </div>
+                </div>
+                
+                <!-- Results -->
+                <div class="col-lg-9">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 id="results-count" class="mb-0">All Vendors <span class="text-muted fs-5">(120)</span></h2>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="text-muted">Sort by:</span>
+                            <select id="sort-select" class="form-select form-select-sm" style="width: 180px;" onchange="applyFilters()">
+                                <option value="rating">Highest Rated</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Vendor Grid -->
+                    <div class="row g-4" id="vendor-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VENDOR PROFILE PAGE -->
+    <div id="profile" class="page">
+        <div class="container py-5">
+            <button onclick="showPage('listing')" class="btn btn-link text-decoration-none mb-3">
+                ← Back to vendors
+            </button>
+            
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="d-flex align-items-start gap-4 mb-4">
+                        <div id="profile-image" class="rounded-4 shadow" style="width: 160px; height: 160px; background-size: cover;"></div>
+                        
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h1 id="profile-name" class="display-6 fw-bold"></h1>
+                                    <p id="profile-category" class="fs-4 text-muted mb-1"></p>
+                                </div>
+                                <div class="text-end">
+                                    <div class="badge bg-success px-4 py-2 fs-6 rounded-pill">Verified</div>
+                                    <div id="profile-rating" class="mt-2 fs-3 fw-bold text-warning"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex gap-4 text-muted">
+                                <div><i class="bi bi-geo-alt"></i> <span id="profile-location"></span></div>
+                                <div><i class="bi bi-currency-naira"></i> <span id="profile-price"></span></div>
+                            </div>
+                            
+                            <!-- Social -->
+                            <div class="mt-4 d-flex gap-3">
+                                <a id="profile-instagram" href="#" target="_blank" class="btn btn-outline-dark rounded-pill px-4">
+                                    <i class="bi bi-instagram"></i> Instagram
+                                </a>
+                                <a id="profile-whatsapp" href="#" target="_blank" class="btn btn-success rounded-pill px-4">
+                                    <i class="bi bi-whatsapp"></i> WhatsApp
+                                </a>
+                                <button onclick="contactVendor()" class="btn btn-primary rounded-pill px-5">Contact Vendor</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bio -->
+                    <div class="mb-5">
+                        <h5 class="fw-semibold">About this vendor</h5>
+                        <p id="profile-bio" class="lead text-muted"></p>
+                    </div>
+                    
+                    <!-- Portfolio Gallery -->
+                    <h5 class="fw-semibold mb-3">Portfolio</h5>
+                    <div class="row g-3" id="portfolio-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                    
+                    <!-- Reviews -->
+                    <h5 class="fw-semibold mt-5 mb-3">Reviews (4)</h5>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-person-circle fs-1 text-lavender"></i>
+                                </div>
+                                <div class="ms-3 flex-grow-1">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Chinonso Okoro</strong>
+                                        <div class="text-warning">★★★★☆</div>
+                                    </div>
+                                    <small class="text-muted">Wedding • 12 Mar 2026</small>
+                                    <p class="mb-0 mt-2">"Amazing work! My wedding cake was the highlight of the day. Highly recommend!"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-person-circle fs-1 text-lavender"></i>
+                                </div>
+                                <div class="ms-3 flex-grow-1">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Adaeze Nwosu</strong>
+                                        <div class="text-warning">★★★★★</div>
+                                    </div>
+                                    <small class="text-muted">Birthday • 5 Feb 2026</small>
+                                    <p class="mb-0 mt-2">"Best decorators in Abia! Transformed our hall into a dream."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar Info -->
+                <div class="col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Quick Facts</h5>
+                            <ul class="list-unstyled">
+                                <li class="d-flex justify-content-between py-3 border-bottom">
+                                    <span>Response time</span>
+                                    <strong class="text-success">Within 1 hour</strong>
+                                </li>
+                                <li class="d-flex justify-content-between py-3 border-bottom">
+                                    <span>Completed events</span>
+                                    <strong>87</strong>
+                                </li>
+                                <li class="d-flex justify-content-between py-3 border-bottom">
+                                    <span>Years in business</span>
+                                    <strong>6</strong>
+                                </li>
+                                <li class="d-flex justify-content-between py-3">
+                                    <span>Service areas</span>
+                                    <strong>Abia State</strong>
+                                </li>
+                            </ul>
+                            
+                            <button onclick="contactVendor()" class="btn btn-primary w-100 mt-4 rounded-pill py-3">Send Message via WhatsApp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VENDOR REGISTRATION PAGE -->
+    <div id="registration" class="page">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow">
+                        <div class="card-body p-5">
+                            <h2 class="mb-4 text-center">Join Let’s Plan as a Vendor</h2>
+                            <p class="text-center text-muted mb-5">Reach thousands of customers in Abia State. Get booked today.</p>
+                            
+                            <form id="reg-form" onsubmit="handleRegistration(event)">
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Business Name</label>
+                                        <input type="text" id="reg-name" class="form-control form-control-lg" placeholder="e.g. Sweet Cravings Bakery" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Category</label>
+                                        <select id="reg-category" class="form-select form-select-lg" required>
+                                            <option value="">Choose category</option>
+                                            <option value="Cakes">Cakes</option>
+                                            <option value="Decorators">Decorators</option>
+                                            <option value="Photographers">Photographers</option>
+                                            <option value="Caterers">Caterers</option>
+                                            <option value="Makeup Artists">Makeup Artists</option>
+                                            <option value="DJs">DJs</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">Location</label>
+                                        <select id="reg-location" class="form-select form-select-lg" required>
+                                            <option value="">Select location</option>
+                                            <option value="Umuahia">Umuahia</option>
+                                            <option value="Aba">Aba</option>
+                                            <option value="Ohafia">Ohafia</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="tel" id="reg-phone" class="form-control form-control-lg" placeholder="0801 234 5678" required>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">Instagram Handle</label>
+                                        <input type="text" id="reg-instagram" class="form-control form-control-lg" placeholder="@yourhandle" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Price Range (₦)</label>
+                                        <input type="text" id="reg-price" class="form-control form-control-lg" placeholder="40,000 - 80,000" required>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <label class="form-label">Upload Portfolio Images (max 4)</label>
+                                        <input type="file" id="reg-images" class="form-control form-control-lg" multiple accept="image/*">
+                                        <small class="text-muted">Images will be shown in your profile</small>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary w-100 mt-5 py-3 fs-5 rounded-pill">Submit &amp; Join Marketplace</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUOTE REQUEST PAGE -->
+    <div id="quote" class="page">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="text-center mb-2">Request a Quote</h2>
+                    <p class="text-center text-muted mb-5">Tell us about your event and get instant quotes from top vendors in Abia State.</p>
+                    
+                    <form id="quote-form" onsubmit="handleQuoteRequest(event)" class="card shadow p-5">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Event Type</label>
+                                <select id="quote-event-type" class="form-select" required>
+                                    <option value="">Select event</option>
+                                    <option value="Wedding">Wedding</option>
+                                    <option value="Birthday">Birthday</option>
+                                    <option value="Corporate">Corporate Event</option>
+                                    <option value="Traditional">Traditional Ceremony</option>
+                                    <option value="Graduation">Graduation</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Your Budget (₦)</label>
+                                <input type="text" id="quote-budget" class="form-control" placeholder="e.g. 250000" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Location</label>
+                                <select id="quote-location" class="form-select" required>
+                                    <option value="">Choose location</option>
+                                    <option value="Umuahia">Umuahia</option>
+                                    <option value="Aba">Aba</option>
+                                    <option value="Ohafia">Ohafia</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Describe your event</label>
+                                <textarea id="quote-description" rows="4" class="form-control" placeholder="I need a full wedding package: cake, decor, photography, catering..." required></textarea>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 mt-4 py-3 fs-5 rounded-pill">Get Quotes Now</button>
+                    </form>
+                    
+                    <!-- Mock responses appear here -->
+                    <div id="quote-responses" class="mt-5 d-none">
+                        <h5 class="mb-4">Here are sample quotes from vendors who match your request:</h5>
+                        <div class="row g-4" id="mock-quotes">
+                            <!-- Populated by JS after submit -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONSULTATION PAGE -->
+    <div id="consultation" class="page">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="text-center mb-5">
+                        <h2 class="display-6">Talk to a Let’s Plan Expert</h2>
+                        <p class="lead text-muted">Our team will create a complete vendor package tailored for your event in Abia State.</p>
+                    </div>
+                    
+                    <form id="consult-form" onsubmit="handleConsultation(event)" class="card shadow p-5">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Event Type</label>
+                                <select id="consult-event" class="form-select form-select-lg" required>
+                                    <option value="">Select one</option>
+                                    <option value="Wedding">Wedding</option>
+                                    <option value="Birthday Party">Birthday Party</option>
+                                    <option value="Corporate">Corporate Event</option>
+                                    <option value="Traditional Wedding">Traditional Wedding</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Budget Range (₦)</label>
+                                <input type="text" id="consult-budget" class="form-control form-control-lg" placeholder="150,000 - 500,000" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Number of Guests</label>
+                                <input type="number" id="consult-guests" class="form-control form-control-lg" placeholder="150" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Event Date</label>
+                                <input type="date" id="consult-date" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Tell us more about your vision</label>
+                                <textarea id="consult-desc" rows="5" class="form-control form-control-lg" placeholder="I want a lavender-themed wedding with live music..." required></textarea>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 mt-5 py-4 fs-4 rounded-pill">
+                            Request Free Consultation
+                        </button>
+                    </form>
+                    
+                    <div id="consult-success" class="mt-5 d-none text-center bg-light rounded-4 p-5">
+                        <i class="bi bi-check-circle-fill text-success fs-1"></i>
+                        <h4 class="mt-4">Thank you!</h4>
+                        <p class="lead">Our planner will contact you within 24 hours via WhatsApp.<br>Here are a few quick planning tips while you wait:</p>
+                        <ul class="list-group list-group-flush text-start">
+                            <li class="list-group-item">Book your photographer first — they get booked fast in Abia!</li>
+                            <li class="list-group-item">Consider seasonal flowers for lower decor costs</li>
+                            <li class="list-group-item">Ask vendors about bundle discounts</li>
+                        </ul>
+                        <button onclick="showPage('home')" class="btn btn-outline-dark mt-4">Back to Home</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-calendar-heart fs-2"></i>
+                        <span class="logo-text text-white">Let’s Plan</span>
+                    </div>
+                    <p class="text-white-50">Abia State’s #1 marketplace for trusted event vendors.<br>Making your celebrations unforgettable since 2024.</p>
+                    <div class="mt-4">
+                        <a href="#" class="text-white me-3"><i class="bi bi-instagram fs-4"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-whatsapp fs-4"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-facebook fs-4"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <h6 class="fw-semibold mb-3">Platform</h6>
+                    <a href="#" onclick="showPage('home')" class="d-block text-white-50 mb-2">Home</a>
+                    <a href="#" onclick="showPage('listing')" class="d-block text-white-50 mb-2">Browse Vendors</a>
+                    <a href="#" onclick="showPage('quote')" class="d-block text-white-50 mb-2">Request Quote</a>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <h6 class="fw-semibold mb-3">For Vendors</h6>
+                    <a href="#" onclick="showPage('registration')" class="d-block text-white-50 mb-2">Register</a>
+                    <a href="#" class="d-block text-white-50 mb-2">Vendor Dashboard</a>
+                    <a href="#" class="d-block text-white-50 mb-2">Success Stories</a>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <h6 class="fw-semibold mb-3">Company</h6>
+                    <a href="#" class="d-block text-white-50 mb-2">About Us</a>
+                    <a href="#" class="d-block text-white-50 mb-2">Blog</a>
+                    <a href="#" class="d-block text-white-50">Contact</a>
+                </div>
+                <div class="col-lg-2 col-6 text-lg-end">
+                    <p class="text-white-50 small">© 2026 Let’s Plan Nigeria</p>
+                    <p class="text-white-50 small">Umuahia, Abia State</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast for success messages -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+        <div id="toast" class="toast" role="alert">
+            <div class="toast-body bg-white rounded-3 shadow d-flex align-items-center">
+                <i class="bi bi-check-circle text-success me-3 fs-4"></i>
+                <span id="toast-text" class="flex-grow-1"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        // ==================== MOCK DATA ====================
+        const vendors = [
+            {
+                id: 1,
+                name: "Sweet Cravings Bakery",
+                category: "Cakes",
+                location: "Umuahia",
+                priceRange: "₦40,000 - ₦80,000",
+                rating: 4.9,
+                img: "https://picsum.photos/id/1015/600/400",
+                bio: "We create stunning custom cakes for weddings, birthdays & anniversaries. 100% fresh ingredients and beautiful designs.",
+                portfolio: [
+                    "https://picsum.photos/id/1015/600/400",
+                    "https://picsum.photos/id/133/600/400",
+                    "https://picsum.photos/id/201/600/400",
+                    "https://picsum.photos/id/292/600/400"
+                ],
+                instagram: "https://instagram.com/sweetcravingsabia",
+                whatsapp: "https://wa.me/2348012345678"
+            },
+            {
+                id: 2,
+                name: "Elegant Decor Hub",
+                category: "Decorators",
+                location: "Aba",
+                priceRange: "₦30,000 - ₦65,000",
+                rating: 4.8,
+                img: "https://picsum.photos/id/133/600/400",
+                bio: "Transforming spaces into magical memories. From intimate dinners to grand weddings — we handle it all.",
+                portfolio: [
+                    "https://picsum.photos/id/133/600/400",
+                    "https://picsum.photos/id/160/600/400",
+                    "https://picsum.photos/id/201/600/400",
+                    "https://picsum.photos/id/1005/600/400"
+                ],
+                instagram: "https://instagram.com/elegantdecorabia",
+                whatsapp: "https://wa.me/2348098765432"
+            },
+            {
+                id: 3,
+                name: "Capture Moments Studio",
+                category: "Photographers",
+                location: "Ohafia",
+                priceRange: "₦55,000 - ₦130,000",
+                rating: 5.0,
+                img: "https://picsum.photos/id/201/600/400",
+                bio: "Professional photography & videography. We tell your story through timeless images.",
+                portfolio: [
+                    "https://picsum.photos/id/201/600/400",
+                    "https://picsum.photos/id/1009/600/400",
+                    "https://picsum.photos/id/1016/600/400",
+                    "https://picsum.photos/id/292/600/400"
+                ],
+                instagram: "https://instagram.com/capturemomentsabia",
+                whatsapp: "https://wa.me/2348034567890"
+            },
+            {
+                id: 4,
+                name: "Tasty Delights Catering",
+                category: "Caterers",
+                location: "Umuahia",
+                priceRange: "₦85,000 - ₦160,000",
+                rating: 4.7,
+                img: "https://picsum.photos/id/292/600/400",
+                bio: "Finger-licking local & continental dishes. We serve love on every plate.",
+                portfolio: [
+                    "https://picsum.photos/id/292/600/400",
+                    "https://picsum.photos/id/133/600/400",
+                    "https://picsum.photos/id/1005/600/400",
+                    "https://picsum.photos/id/160/600/400"
+                ],
+                instagram: "https://instagram.com/tastydelightsabia",
+                whatsapp: "https://wa.me/2348056789012"
+            },
+            {
+                id: 5,
+                name: "Glamour Touch Makeup",
+                category: "Makeup Artists",
+                location: "Aba",
+                priceRange: "₦25,000 - ₦50,000",
+                rating: 4.9,
+                img: "https://picsum.photos/id/1009/600/400",
+                bio: "Bridal & everyday glam that lasts all day. Makeup artist to the stars of Abia.",
+                portfolio: [
+                    "https://picsum.photos/id/1009/600/400",
+                    "https://picsum.photos/id/1015/600/400",
+                    "https://picsum.photos/id/201/600/400",
+                    "https://picsum.photos/id/292/600/400"
+                ],
+                instagram: "https://instagram.com/glamourtouchabia",
+                whatsapp: "https://wa.me/2348078901234"
+            },
+            {
+                id: 6,
+                name: "Vibe Masters DJ",
+                category: "DJs",
+                location: "Umuahia",
+                priceRange: "₦35,000 - ₦75,000",
+                rating: 4.6,
+                img: "https://picsum.photos/id/160/600/400",
+                bio: "Bringing the energy to every celebration. Sound, lights & unforgettable playlists.",
+                portfolio: [
+                    "https://picsum.photos/id/160/600/400",
+                    "https://picsum.photos/id/133/600/400",
+                    "https://picsum.photos/id/1005/600/400",
+                    "https://picsum.photos/id/201/600/400"
+                ],
+                instagram: "https://instagram.com/vibemastersabia",
+                whatsapp: "https://wa.me/2348011122334"
+            }
+        ]
+
+        const categories = [
+            { name: "Cakes", icon: "🍰", color: "#a78bfa" },
+            { name: "Decorators", icon: "🎉", color: "#d7b8a8" },
+            { name: "Photographers", icon: "📸", color: "#8d6e63" },
+            { name: "Caterers", icon: "🍽️", color: "#a78bfa" },
+            { name: "Makeup Artists", icon: "💄", color: "#d7b8a8" },
+            { name: "DJs", icon: "🎧", color: "#8d6e63" }
+        ]
+
+        let selectedVendor = null
+        let currentPriceFilter = 0
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'))
+            const target = document.getElementById(pageId)
+            if (target) target.classList.add('active')
+            
+            // Special case: if listing is opened, refresh vendors
+            if (pageId === 'listing') {
+                renderVendorListing(vendors)
+            }
+        }
+
+        function showToast(message) {
+            const toastEl = document.getElementById('toast')
+            document.getElementById('toast-text').innerHTML = message
+            const toast = new bootstrap.Toast(toastEl)
+            toast.show()
+        }
+
+        // ==================== HOME PAGE FUNCTIONS ====================
+        function renderCategories() {
+            const container = document.getElementById('categories-grid')
+            container.innerHTML = categories.map(cat => `
+                <div class="col-6 col-sm-4 col-md-2">
+                    <div onclick="categoryClicked('${cat.name}')" class="category-card" style="background: white; border: 3px solid ${cat.color};">
+                        <div class="fs-1 mb-3">${cat.icon}</div>
+                        <h6 class="fw-semibold mb-0">${cat.name}</h6>
+                    </div>
+                </div>
+            `).join('')
+        }
+
+        function renderFeatured() {
+            const container = document.getElementById('featured-grid')
+            const featured = vendors.slice(0, 4)
+            
+            container.innerHTML = featured.map(v => createVendorCardHTML(v)).join('')
+        }
+
+        function categoryClicked(category) {
+            showPage('listing')
+            // Pre-filter the listing
+            setTimeout(() => {
+                const activeFilters = document.querySelectorAll('.filter-badge')
+                activeFilters.forEach(b => b.classList.remove('bg-lavender', 'text-white'))
+                
+                // Simulate selecting the category filter
+                const catFilterContainer = document.getElementById('category-filters')
+                const buttons = catFilterContainer.querySelectorAll('button')
+                buttons.forEach(btn => {
+                    if (btn.textContent.trim() === category) {
+                        btn.classList.add('bg-lavender', 'text-white')
+                    }
+                })
+                applyFilters()
+            }, 400)
+        }
+
+        function handleHomeSearch(e) {
+            e.preventDefault()
+            
+            const category = document.getElementById('home-category').value
+            const location = document.getElementById('home-location').value
+            const keyword = document.getElementById('home-keyword').value.trim()
+            
+            showPage('listing')
+            
+            setTimeout(() => {
+                let filtered = vendors
+                
+                if (category) {
+                    filtered = filtered.filter(v => v.category === category)
+                }
+                if (location) {
+                    filtered = filtered.filter(v => v.location === location)
+                }
+                if (keyword) {
+                    filtered = filtered.filter(v => 
+                        v.name.toLowerCase().includes(keyword.toLowerCase()) ||
+                        v.bio.toLowerCase().includes(keyword.toLowerCase())
+                    )
+                }
+                
+                renderVendorListing(filtered)
+            }, 300)
+        }
+
+        // ==================== VENDOR CARD REUSABLE ====================
+        function createVendorCardHTML(vendor) {
+            return `
+            <div class="col-md-6 col-lg-3 vendor-card">
+                <div class="card h-100" onclick="showProfile(${vendor.id})" style="cursor: pointer;">
+                    <img src="${vendor.img}" class="card-img-top" alt="${vendor.name}">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <span class="badge bg-light text-dark">${vendor.category}</span>
+                            </div>
+                            <div class="text-warning">★ ${vendor.rating}</div>
+                        </div>
+                        <h5 class="card-title mt-3 mb-1">${vendor.name}</h5>
+                        <p class="text-muted small mb-3">
+                            <i class="bi bi-geo-alt"></i> ${vendor.location}
+                        </p>
+                        <div class="mt-auto">
+                            <p class="mb-2 fw-semibold">${vendor.priceRange}</p>
+                            <button onclick="event.stopImmediatePropagation();showProfile(${vendor.id});" class="btn btn-primary w-100 rounded-pill">View Profile</button>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        }
+
+        function renderVendorListing(filteredVendors) {
+            const container = document.getElementById('vendor-grid')
+            container.innerHTML = filteredVendors.length 
+                ? filteredVendors.map(v => createVendorCardHTML(v)).join('')
+                : `<div class="col-12 text-center py-5"><h4>No vendors found 😢</h4><p>Try different filters</p></div>`
+            
+            document.getElementById('results-count').innerHTML = `
+                All Vendors 
+                <span class="text-muted fs-5">(${filteredVendors.length})</span>
+            `
+        }
+
+        // ==================== FILTERS ====================
+        function renderCategoryFilters() {
+            const container = document.getElementById('category-filters')
+            let html = `<button onclick="toggleCategoryFilter(this)" class="btn btn-outline-secondary filter-badge px-4 py-2 rounded-pill active">All</button>`
+            
+            categories.forEach(cat => {
+                html += `<button onclick="toggleCategoryFilter(this)" class="btn btn-outline-secondary filter-badge px-4 py-2 rounded-pill">${cat.name}</button>`
+            })
+            container.innerHTML = html
+        }
+
+        function toggleCategoryFilter(el) {
+            // Toggle active state
+            if (el.textContent === 'All') {
+                document.querySelectorAll('#category-filters button').forEach(b => b.classList.remove('bg-lavender', 'text-white'))
+                el.classList.add('bg-lavender', 'text-white')
+            } else {
+                const allBtn = Array.from(document.querySelectorAll('#category-filters button')).find(b => b.textContent === 'All')
+                if (allBtn) allBtn.classList.remove('bg-lavender', 'text-white')
+                el.classList.toggle('bg-lavender')
+                el.classList.toggle('text-white')
+            }
+            applyFilters()
+        }
+
+        function setPriceFilter(max) {
+            currentPriceFilter = max
+            document.querySelectorAll('.price-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.price) === max)
+            })
+            applyFilters()
+        }
+
+        function applyFilters() {
+            let filtered = [...vendors]
+            
+            // Category filters
+            const activeCategories = Array.from(document.querySelectorAll('#category-filters .bg-lavender'))
+                .map(btn => btn.textContent.trim())
+                .filter(t => t !== 'All')
+            
+            if (activeCategories.length > 0) {
+                filtered = filtered.filter(v => activeCategories.includes(v.category))
+            }
+            
+            // Location
+            const locationFilter = document.getElementById('filter-location').value
+            if (locationFilter) {
+                filtered = filtered.filter(v => v.location === locationFilter)
+            }
+            
+            // Price
+            if (currentPriceFilter > 0) {
+                filtered = filtered.filter(v => {
+                    const priceNum = parseInt(v.priceRange.split('-')[0].replace(/[^0-9]/g, ''))
+                    return priceNum <= currentPriceFilter
+                })
+            }
+            
+            // Sort
+            const sortMode = document.getElementById('sort-select').value
+            if (sortMode === 'price-low') {
+                filtered.sort((a, b) => {
+                    const pa = parseInt(a.priceRange.split('-')[0].replace(/[^0-9]/g, ''))
+                    const pb = parseInt(b.priceRange.split('-')[0].replace(/[^0-9]/g, ''))
+                    return pa - pb
+                })
+            } else if (sortMode === 'price-high') {
+                filtered.sort((a, b) => {
+                    const pa = parseInt(a.priceRange.split('-')[0].replace(/[^0-9]/g, ''))
+                    const pb = parseInt(b.priceRange.split('-')[0].replace(/[^0-9]/g, ''))
+                    return pb - pa
+                })
+            } else {
+                // Highest rated
+                filtered.sort((a, b) => b.rating - a.rating)
+            }
+            
+            renderVendorListing(filtered)
+        }
+
+        function resetFilters() {
+            currentPriceFilter = 0
+            document.getElementById('filter-location').value = ''
+            document.getElementById('sort-select').value = 'rating'
+            
+            const buttons = document.querySelectorAll('#category-filters button')
+            buttons.forEach(b => b.classList.remove('bg-lavender', 'text-white'))
+            buttons[0].classList.add('bg-lavender', 'text-white') // All
+            
+            document.querySelectorAll('.price-btn').forEach(b => b.classList.remove('active'))
+            document.querySelectorAll('.price-btn')[0].classList.add('active')
+            
+            renderVendorListing(vendors)
+        }
+
+        // ==================== PROFILE ====================
+        function showProfile(id) {
+            selectedVendor = vendors.find(v => v.id === id)
+            if (!selectedVendor) return
+            
+            // Fill profile
+            document.getElementById('profile-image').style.backgroundImage = `url(${selectedVendor.img})`
+            document.getElementById('profile-name').textContent = selectedVendor.name
+            document.getElementById('profile-category').textContent = selectedVendor.category
+            document.getElementById('profile-location').innerHTML = `<i class="bi bi-geo-alt"></i> ${selectedVendor.location}`
+            document.getElementById('profile-price').innerHTML = `<i class="bi bi-currency-naira"></i> ${selectedVendor.priceRange}`
+            document.getElementById('profile-rating').innerHTML = `★ ${selectedVendor.rating}`
+            document.getElementById('profile-bio').textContent = selectedVendor.bio
+            
+            // Social links
+            document.getElementById('profile-instagram').href = selectedVendor.instagram
+            document.getElementById('profile-whatsapp').href = selectedVendor.whatsapp
+            
+            // Portfolio
+            const portfolioHTML = selectedVendor.portfolio.map(url => `
+                <div class="col-6 col-md-3">
+                    <img src="${url}" class="img-fluid rounded-3 portfolio-img shadow-sm" alt="portfolio">
+                </div>
+            `).join('')
+            document.getElementById('portfolio-grid').innerHTML = portfolioHTML
+            
+            showPage('profile')
+        }
+
+        function contactVendor() {
+            if (!selectedVendor) return
+            showToast(`✅ Message sent to <strong>${selectedVendor.name}</strong> via WhatsApp!`)
+            // Simulate WhatsApp open
+            setTimeout(() => {
+                window.open(selectedVendor.whatsapp, '_blank')
+            }, 800)
+        }
+
+        // ==================== REGISTRATION ====================
+        function handleRegistration(e) {
+            e.preventDefault()
+            
+            const formData = {
+                name: document.getElementById('reg-name').value,
+                category: document.getElementById('reg-category').value,
+                location: document.getElementById('reg-location').value,
+                phone: document.getElementById('reg-phone').value,
+                instagram: document.getElementById('reg-instagram').value,
+                price: document.getElementById('reg-price').value
+            }
+            
+            console.log('%c✅ Vendor Registration Submitted:', 'color:#a78bfa; font-weight:700', formData)
+            showToast(`🎉 <strong>${formData.name}</strong> has been registered!<br>You are now live on Let’s Plan.`)
+            
+            // Reset form
+            e.target.reset()
+            // Go back to home
+            setTimeout(() => showPage('home'), 1200)
+        }
+
+        // ==================== QUOTE REQUEST ====================
+        function handleQuoteRequest(e) {
+            e.preventDefault()
+            
+            // Show responses
+            const container = document.getElementById('mock-quotes')
+            container.innerHTML = `
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h6>Sweet Cravings Bakery</h6>
+                        <p class="text-success fw-semibold">₦65,000</p>
+                        <small>Wedding cake + 2 tiers of cupcakes • 3 days delivery</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h6>Elegant Decor Hub</h6>
+                        <p class="text-success fw-semibold">₦95,000</p>
+                        <small>Full decoration package • Lavender theme</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h6>Capture Moments Studio</h6>
+                        <p class="text-success fw-semibold">₦110,000</p>
+                        <small>Photography + videography • 8 hours coverage</small>
+                    </div>
+                </div>
+            </div>`
+            
+            document.getElementById('quote-responses').classList.remove('d-none')
+            showToast('Quotes received! Vendors will reach out shortly.')
+            
+            // Scroll to results
+            document.getElementById('quote-responses').scrollIntoView({ behavior: 'smooth' })
+        }
+
+        // ==================== CONSULTATION ====================
+        function handleConsultation(e) {
+            e.preventDefault()
+            
+            // Hide form, show success
+            document.getElementById('consult-form').classList.add('d-none')
+            document.getElementById('consult-success').classList.remove('d-none')
+            
+            showToast('📅 Consultation request received!')
+        }
+
+        // ==================== INITIALIZE APP ====================
+        function initializeApp() {
+            console.log('%c🚀 Let’s Plan single-file marketplace ready!', 'background:#a78bfa;color:white;padding:4px 8px;border-radius:4px;font-size:13px')
+            
+            // Render home components
+            renderCategories()
+            renderFeatured()
+            
+            // Render listing filters
+            renderCategoryFilters()
+            
+            // Make all nav links active on current page (optional visual)
+            console.log('✅ Fully responsive, mobile-first, Bootstrap 5 + clean modern design loaded.')
+            
+            // Keyboard shortcut hint (for fun)
+            console.log('%cTip: Press "/" on any page to open the vendor search', 'font-size:10px;color:#8d6e63')
+        }
+        
+        // Start the app
+        window.onload = initializeApp
+    </script>
+</body>
+</html>

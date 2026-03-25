@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:haptext_api/bloc/people/cubit/people_cubit.dart';
 import 'package:haptext_api/common/text_input_field.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
+import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
+import 'package:haptext_api/config/page_route/route_name.dart';
+import 'package:haptext_api/exports.dart';
+import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 
 import '../views/Bottom_Nav/Explore/search_option_tab.dart';
 
@@ -45,6 +49,7 @@ class _SearchState extends State<Search> with SingleTickerProviderStateMixin {
                   onChanged: (value) {
                     if (value.isNotEmpty) {
                       context.read<PeopleCubit>().searchFriends(query: value);
+                      context.read<HomeCubit>().fetchPosts(query: value);
                     }
                   },
                   icon: Icons.search)),

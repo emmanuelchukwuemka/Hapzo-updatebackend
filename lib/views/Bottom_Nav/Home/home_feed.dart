@@ -46,20 +46,12 @@ class HomePage extends StatelessWidget {
 // ---------- POST WRAPPER ----------
 class PostWrapper extends StatefulWidget {
   final Widget content;
-  final String caption;
-  final String username;
-  final int viewCount;
-  final int tagCount;
   final bool overlayHideEnabled;
   final ResultPostModel post;
 
   const PostWrapper({
     super.key,
     required this.content,
-    required this.caption,
-    this.username = "@roman",
-    this.viewCount = 1000,
-    this.tagCount = 13,
     this.overlayHideEnabled = true,
     required this.post,
   });
@@ -130,43 +122,20 @@ class _PostWrapperState extends State<PostWrapper>
               );
             },
           ),
-          // show corner counts only in fullScreenMode
-          if (fullScreenMode)
-            Positioned(
-              top: 40,
-              left: 16,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                color: Colors.black54,
-                child: Text('${widget.tagCount} tagged',
-                    style: const TextStyle(color: Colors.white)),
-              ),
-            ),
-          if (fullScreenMode)
-            Positioned(
-              top: 40,
-              right: 16,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                color: Colors.black54,
-                child: Text('${widget.viewCount} views',
-                    style: const TextStyle(color: Colors.white)),
-              ),
-            ),
+          // removed tagCount and viewCount overlays as they were mock data
           if (overlayVisible)
             _PostOverlay(
               post: widget.post,
-              caption: widget.caption,
-              username: widget.username,
-              viewCount: widget.viewCount,
-              tagCount: widget.tagCount,
               onCommentTap: toggleComments,
               onFullScreenTap: toggleFullScreen,
             ),
           if (showComments)
             Align(
               alignment: Alignment.bottomCenter,
-              child: CommentSection(onClose: toggleComments),
+              child: CommentSection(
+                onClose: toggleComments,
+                comments: widget.post.comments,
+              ),
             ),
         ],
       ),
@@ -183,8 +152,9 @@ class _PostWrapperState extends State<PostWrapper>
 // ---------- COMMENT SECTION ----------
 class CommentSection extends StatelessWidget {
   final VoidCallback onClose;
+  final List<CommentModel> comments;
 
-  const CommentSection({super.key, required this.onClose});
+  const CommentSection({super.key, required this.onClose, required this.comments});
 
   @override
   Widget build(BuildContext context) {
@@ -212,8 +182,8 @@ class CommentSection extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const AppText(
-                  text: 'Comments',
+                AppText(
+                  text: 'Comments (${comments.length})',
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -227,60 +197,63 @@ class CommentSection extends StatelessWidget {
           ),
           Divider(color: Colors.white.withValues(alpha: 0.05)),
           Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              itemCount: 12,
-              separatorBuilder: (context, index) => const SizedBox(height: 16),
-              itemBuilder: (context, i) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                        radius: 18,
-                        backgroundColor: Colors.primaries[i % Colors.primaries.length].withValues(alpha: 0.2),
-                        child: Text(
-                          'U${i + 1}',
-                          style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)
-                        ),
+            child: comments.isEmpty 
+              ? const Center(child: Text("No comments yet", style: TextStyle(color: Colors.white54)))
+              : ListView.separated(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  itemCount: comments.length,
+                  separatorBuilder: (context, index) => const SizedBox(height: 16),
+                  itemBuilder: (context, i) {
+                    final comment = comments[i];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CircleAvatar(
+                            radius: 18,
+                            backgroundColor: Colors.primaries[i % Colors.primaries.length].withValues(alpha: 0.2),
+                            child: Text(
+                              (comment.senderUsername?.isNotEmpty == true ? comment.senderUsername![0] : 'U').toUpperCase(),
+                              style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '@${comment.senderUsername ?? 'user'}',
+                                  style: GoogleFonts.roboto(
+                                    color: Colors.white70,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600
+                                  )
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  comment.textContent ?? '',
+                                  style: GoogleFonts.roboto(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    height: 1.4
+                                  )
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  comment.createdAt != null ? 'on ${comment.createdAt!.split('T')[0]}' : '',
+                                  style: const TextStyle(color: Colors.white24, fontSize: 11)
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Icon(Icons.favorite_border, color: Colors.white24, size: 16),
+                        ],
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'user_${i + 1}',
-                              style: GoogleFonts.roboto(
-                                color: Colors.white70,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600
-                              )
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'This is a modern comment on the post! Looks amazing.',
-                              style: GoogleFonts.roboto(
-                                color: Colors.white,
-                                fontSize: 14,
-                                height: 1.4
-                              )
-                            ),
-                            const SizedBox(height: 4),
-                            const Text(
-                              '2h ago',
-                              style: TextStyle(color: Colors.white24, fontSize: 11)
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Icon(Icons.favorite_border, color: Colors.white24, size: 16),
-                    ],
-                  ),
-                );
-              },
-            ),
+                    );
+                  },
+                ),
           ),
           // COMMENT INPUTBAR
           Container(
@@ -330,19 +303,11 @@ class CommentSection extends StatelessWidget {
 
 // ---------- POST OVERLAY ----------
 class _PostOverlay extends StatelessWidget {
-  final String caption;
-  final String username;
-  final int viewCount;
-  final int tagCount;
+  final ResultPostModel post;
   final VoidCallback? onCommentTap;
   final VoidCallback? onFullScreenTap;
-  final ResultPostModel post;
   
   const _PostOverlay({
-    required this.caption,
-    this.username = "@roman",
-    this.viewCount = 1000,
-    this.tagCount = 13,
     this.onCommentTap,
     this.onFullScreenTap,
     required this.post,
@@ -391,7 +356,7 @@ class _PostOverlay extends StatelessWidget {
                               ),
                               child: Center(
                                 child: Text(
-                                  username.replaceFirst('@', '')[0].toUpperCase(),
+                                  ((post.senderUsername?.isNotEmpty == true) ? post.senderUsername! : (post.senderName?.isNotEmpty == true ? post.senderName! : 'U'))[0].toUpperCase(),
                                   style: const TextStyle(
                                       color: Colors.white, fontWeight: FontWeight.bold),
                                 ),
@@ -402,7 +367,7 @@ class _PostOverlay extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  username,
+                                  (post.senderUsername?.isNotEmpty == true) ? post.senderUsername! : (post.senderName?.isNotEmpty == true ? post.senderName! : 'user'),
                                   style: GoogleFonts.roboto(
                                       color: Colors.white,
                                       fontSize: 15,
@@ -414,7 +379,7 @@ class _PostOverlay extends StatelessWidget {
                                     Icon(Icons.remove_red_eye_outlined, color: Colors.white54, size: 12),
                                     const SizedBox(width: 4),
                                     Text(
-                                      '${viewCount} views',
+                                      '${post.replyCount ?? 0} comments',
                                       style: GoogleFonts.roboto(
                                           color: Colors.white54,
                                           fontSize: 12),
@@ -441,11 +406,11 @@ class _PostOverlay extends StatelessWidget {
                             ),
                           ],
                         ),
-                        if (caption.isNotEmpty)
+                        if (post.textContent?.isNotEmpty == true)
                           Padding(
                             padding: const EdgeInsets.only(top: 16, bottom: 8),
                             child: AppText(
-                              text: caption,
+                              text: post.textContent!,
                               color: Colors.white,
                               maxLines: 3,
                               fontSize: 15,
@@ -459,20 +424,30 @@ class _PostOverlay extends StatelessWidget {
                   // VERTICAL ACTIONS
                   Column(
                     children: [
-                      _buildVerticalAction(Icons.favorite, '3.5K', true),
+                      GestureDetector(
+                        onTap: () {
+                          context.read<HomeCubit>().reactToPost(
+                            postId: post.id,
+                            reaction: 'like', // Default to like for now
+                          );
+                        },
+                        child: _buildVerticalAction(
+                          post.currentUserReaction == 'like' ? Icons.favorite : Icons.favorite_border,
+                          '${post.likeCount ?? 0}',
+                          post.currentUserReaction == 'like'
+                        ),
+                      ),
                       const SizedBox(height: 20),
                       GestureDetector(
                         onTap: () {
-                          // onCommentTap?.call(); 
-                          // Or push to comment page as before
                            context.push(RouteName.commentpage.path, extra: post);
                         },
-                        child: _buildVerticalAction(Icons.chat_bubble, '789', false),
+                        child: _buildVerticalAction(Icons.chat_bubble, '${post.replyCount ?? 0}', false),
                       ),
                       const SizedBox(height: 20),
                       _buildVerticalAction(Icons.bookmark, 'SAVE', false),
                       const SizedBox(height: 20),
-                      _buildVerticalAction(Icons.send, 'SHARE', false),
+                      _buildVerticalAction(Icons.send, '${post.shareCount ?? 0}', false),
                     ],
                   ),
                 ],
@@ -504,14 +479,7 @@ class _PostOverlay extends StatelessWidget {
 
 // ---------- REACTION DIALOG ----------
 class ReactionDialog extends StatelessWidget {
-  final List<Map<String, String>> reactions = [
-    {'user': 'Alice', 'reaction': '❤️'},
-    {'user': 'Bob', 'reaction': '😂'},
-    {'user': 'Charlie', 'reaction': '🔥'},
-    {'user': 'Diana', 'reaction': '👍'},
-    {'user': 'Eve', 'reaction': '👏'},
-    {'user': 'Frank', 'reaction': '😮'},
-  ];
+  final List<Map<String, String>> reactions = [];
 
   ReactionDialog({super.key});
 
@@ -611,7 +579,6 @@ class _VideoPostState extends State<VideoPost> {
   Widget build(BuildContext context) {
     return PostWrapper(
         post: widget.post,
-        caption: widget.post.textContent ?? '',
         content: Container(
           color: Colors.black,
           child: Stack(
@@ -646,9 +613,7 @@ class _VideoPostState extends State<VideoPost> {
             ],
           ),
         ),
-        username: "@${widget.post.senderName ?? 'user'}",
-        viewCount: 1245,
-        tagCount: 5);
+    );
   }
 }
 
@@ -662,7 +627,6 @@ class ImagePost extends StatelessWidget {
     final size = MediaQuery.sizeOf(context);
     return PostWrapper(
       post: post,
-      caption: post.textContent ?? '',
       content: Container(
         color: context.theme.bgColor,
         child: Stack(
@@ -685,8 +649,8 @@ class ImagePost extends StatelessWidget {
                   color: Colors.black45,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const AppText(
-                  text: '1/3',
+                child: AppText(
+                  text: '1/${(post.mediaFiles?.isNotEmpty == true) ? post.mediaFiles!.length : 1}',
                   fontSize: 12,
                   color: Colors.white,
                 ),
@@ -695,9 +659,6 @@ class ImagePost extends StatelessWidget {
           ],
         ),
       ),
-      username: "@${post.senderName ?? 'user'}",
-      viewCount: 852,
-      tagCount: 3,
     );
   }
 }
@@ -757,7 +718,6 @@ class AudioPostState extends State<AudioPost>
   Widget build(BuildContext context) {
     return PostWrapper(
       post: widget.post,
-      caption: widget.post.textContent ?? '',
       content: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -834,9 +794,6 @@ class AudioPostState extends State<AudioPost>
           ],
         ),
       ),
-      username: "@${widget.post.senderName ?? 'user'}",
-      viewCount: 450,
-      tagCount: 2,
     );
   }
 }
@@ -921,14 +878,14 @@ class TextPost extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppText(
-                      text: '@${post.senderName}',
+                      text: '@${(post.senderUsername?.isNotEmpty == true) ? post.senderUsername : (post.senderName?.isNotEmpty == true ? post.senderName : 'user')}',
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                     const SizedBox(height: 4),
                     AppText(
-                      text: '1.2k views',
+                      text: '${post.replyCount ?? 0} comments',
                       color: Colors.white54,
                       fontSize: 12,
                     ),
@@ -943,14 +900,14 @@ class TextPost extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildActionItem(Icons.favorite_border, '3.5K', () {
+                _buildActionItem(Icons.favorite_border, 'LIKE', () {
                    showDialog(context: context, builder: (_) => ReactionDialog());
                 }),
-                _buildActionItem(Icons.chat_bubble_outline, '789', () {
+                _buildActionItem(Icons.chat_bubble_outline, '${post.replyCount ?? 0}', () {
                    context.push(RouteName.commentpage.path, extra: post);
                 }),
                 _buildActionItem(Icons.bookmark_border, 'Save', () {}),
-                _buildActionItem(Icons.send_outlined, 'Share', () {}),
+                _buildActionItem(Icons.send_outlined, '${post.shareCount ?? 0}', () {}),
               ],
             ),
           ],

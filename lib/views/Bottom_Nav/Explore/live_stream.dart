@@ -29,12 +29,12 @@ class LiveStreamPage extends StatefulWidget {
 
 class _LiveStreamPageState extends State<LiveStreamPage>
     with SingleTickerProviderStateMixin {
-  final bool _isStreamer = false; // Mock toggle for streamer/viewer view
+  final bool _isStreamer = false; 
   late final AgoraCallService _agoraService;
   late final LivestreamWebsocketService _wsService;
   int _viewerCount = 0;
   bool _isLive = false;
-  final String _streamId = "demo_stream_123";
+  final String _streamId = "live_stream_${DateTime.now().millisecondsSinceEpoch}";
   final List<Map<String, dynamic>> _comments = [];
   final TextEditingController _commentController = TextEditingController();
 

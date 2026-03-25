@@ -46,7 +46,7 @@ class ApiMethods {
 
       return response;
     } on SocketException {
-      ToastMessage.showErrorToast(message: 'No Internet check Connection 🌐');
+      ToastMessage.showErrorToast(message: 'Unable to connect to server 🌐');
       rethrow;
     } on FormatException {
       ToastMessage.showErrorToast(message: 'Unable to process request');

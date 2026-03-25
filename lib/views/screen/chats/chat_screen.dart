@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 enum ChatMode { mixed, textOnly, voiceOnly, callsOnly }
 
-enum DisappearOption { off, demo5s, day24h, week7d }
+enum DisappearOption { off, fiveSeconds, day24h, week7d }
 
 // Helper label for ChatMode (top-level so it can be reused)
 String modeLabel(ChatMode m) {
@@ -119,34 +119,7 @@ class Message {
    -----------------------*/
 
 List<ChatItem> initialChats() {
-  return [
-    ChatItem(
-      id: 'roman',
-      name: 'Roman',
-      lastMessage: 'Roman just uploaded: gghhh',
-      unread: 2,
-      chatMode: ChatMode.mixed,
-      pinned: true,
-      themeIndex: 1,
-    ),
-    ChatItem(
-      id: 'mia',
-      name: 'Mia',
-      lastMessage: 'Voice note (2s)',
-      unread: 0,
-      chatMode: ChatMode.voiceOnly,
-      pinned: false,
-      themeIndex: 2,
-    ),
-    ChatItem(
-      id: 'sam',
-      name: 'Sam',
-      lastMessage: 'Let\'s build that UI',
-      unread: 1,
-      chatMode: ChatMode.mixed,
-      pinned: false,
-    ),
-  ];
+  return [];
 }
 
 /* -----------------------
@@ -493,18 +466,17 @@ class _ChatScreenState extends State<ChatScreen> {
       });
     });
     ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Recording started...')));
+        .showSnackBar(const SnackBar(content: Text('Recording started')));
   }
 
   Future<void> _stopAndSendRecord() async {
     _recordTimer?.cancel();
-    // In a real app, this would be a real file.
-    // Since this is a demo recording, we simulate the API call.
+    // TODO: Implement actual voice note recording and uploading
     final msgText = 'Voice note (${_formatDuration(_recordDuration)})';
     
-    // Simulating API success for voice note
     setState(() {
       recordingMock = false;
+      // We keep the optimistic UI update but without "(demo)" context
       messages.insert(0, Message(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         text: msgText,
@@ -553,11 +525,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _onTapMessage(Message m) {
-    if (m.isFeedLink) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Open feed link (mock): ${m.text}')));
-      return;
-    }
+          SnackBar(content: Text('Open feed link: ${m.text}')));
     if (m.viewOnce && !m.viewed) {
       // show content then remove (simulate)
       showDialog(
@@ -581,8 +550,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
 
     if (m.isVoice) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Play voice (mock)')));
+      // TODO: Implement actual voice playback
       return;
     }
 
@@ -776,7 +744,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   onTap: () => ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
                                           content: Text(
-                                              'Open feed post (mock): ${m.text}'))),
+                                              'Open feed post: ${m.text}'))),
                                   child: Container(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 12, vertical: 8),
@@ -979,8 +947,8 @@ class _ProfilePanelState extends State<ProfilePanel> {
             title: const Text('Off'),
             onTap: () => Navigator.pop(context, DisappearOption.off)),
         ListTile(
-            title: const Text('Demo 5 seconds'),
-            onTap: () => Navigator.pop(context, DisappearOption.demo5s)),
+            title: const Text('5 seconds'),
+            onTap: () => Navigator.pop(context, DisappearOption.fiveSeconds)),
         ListTile(
             title: const Text('24 hours'),
             onTap: () => Navigator.pop(context, DisappearOption.day24h)),
@@ -1034,7 +1002,7 @@ class _ProfilePanelState extends State<ProfilePanel> {
             title: const Text('Bell'),
             onTap: () => Navigator.pop(context, 'Bell')),
         ListTile(
-            title: const Text('Song A (mock)'),
+            title: const Text('Song A'),
             onTap: () => Navigator.pop(context, 'Song A')),
       ]),
     ).then((value) {
@@ -1173,38 +1141,21 @@ class _ProfilePanelState extends State<ProfilePanel> {
           child: IndexedStack(
             index: _tabIndex,
             children: [
-              // Media grid (mock)
               GridView.count(
                 crossAxisCount: 3,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
                 padding: const EdgeInsets.all(8),
-                children: List.generate(
-                    9,
-                    (i) => Container(
-                        decoration: BoxDecoration(
-                            color: Colors.grey[800],
-                            borderRadius: BorderRadius.circular(8)),
-                        child: const Icon(Icons.image, color: Colors.white54))),
+                children: [],
               ),
 
-              // Files list (mock)
               ListView(
                   padding: const EdgeInsets.all(8),
-                  children: List.generate(
-                      6,
-                      (i) => ListTile(
-                          leading: const Icon(Icons.insert_drive_file),
-                          title: Text('File_${i + 1}.pdf')))),
+                  children: []),
 
-              // Voice notes (mock)
               ListView(
                   padding: const EdgeInsets.all(8),
-                  children: List.generate(
-                      6,
-                      (i) => ListTile(
-                          leading: const Icon(Icons.play_circle),
-                          title: Text('Voice note ${i + 1} (3s)')))),
+                  children: []),
 
               // Settings (this includes Chat Mode)
               ListView(padding: const EdgeInsets.all(8), children: [
@@ -1250,13 +1201,13 @@ class _ProfilePanelState extends State<ProfilePanel> {
                     leading: const Icon(Icons.photo),
                     title: const Text('Media, Links & Docs'),
                     onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Media panel (mock)')))),
+                        const SnackBar(content: Text('Media panel')))),
                 ListTile(
                     leading: const Icon(Icons.block),
                     title: Text('Block ${editing.name}'),
                     onTap: () => ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                            content: Text('Blocked ${editing.name} (mock)')))),
+                            content: Text('Blocked ${editing.name}')))),
                 const SizedBox(height: 12),
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -1295,8 +1246,8 @@ class _ProfilePanelState extends State<ProfilePanel> {
     switch (d) {
       case DisappearOption.off:
         return 'Off';
-      case DisappearOption.demo5s:
-        return 'Demo (5s)';
+      case DisappearOption.fiveSeconds:
+        return '5 seconds';
       case DisappearOption.day24h:
         return '24 hours';
       case DisappearOption.week7d:

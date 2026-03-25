@@ -83,9 +83,10 @@ class CommentModel {
   String? id;
   String? createdAt;
   String? updatedAt;
-  // ReactionCounts? reactionCounts;
+  int? reactionsCount;
   int? shareCount;
-  // Null? currentUserReaction;
+  String? currentUserReaction;
+  List<CommentModel> replies = [];
 
   CommentModel({
     this.senderId,
@@ -99,14 +100,13 @@ class CommentModel {
     this.previousPostId,
     this.senderUsername,
     this.isPublished,
-    // this.scheduledAt,
-    // this.taggedUserIds,
     this.id,
     this.createdAt,
     this.updatedAt,
-    // this.reactionCounts,
+    this.reactionsCount,
     this.shareCount,
-    // this.currentUserReaction
+    this.replies = const [],
+    this.currentUserReaction
   });
 
   CommentModel.fromJson(Map<String, dynamic> json) {
@@ -121,17 +121,18 @@ class CommentModel {
     previousPostId = json['previous_post_id'];
     senderUsername = json['sender_username'];
     isPublished = json['is_published'];
-    // scheduledAt = json['scheduled_at'];
-    // if (json['tagged_user_ids'] != null) {
-    // 	taggedUserIds = <Null>[];
-    // 	json['tagged_user_ids'].forEach((v) { taggedUserIds!.add(new Null.fromJson(v)); });
-    // }
     id = json['id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    // reactionCounts = json['reaction_counts'] != null ? new ReactionCounts.fromJson(json['reaction_counts']) : null;
+    reactionsCount = json['reaction_count'] ?? json['reactions_count'];
     shareCount = json['share_count'];
-    // currentUserReaction = json['current_user_reaction'];
+    if (json['replies'] != null) {
+      replies = <CommentModel>[];
+      json['replies'].forEach((v) {
+        replies.add(CommentModel.fromJson(v));
+      });
+    }
+    currentUserReaction = json['current_user_reaction'];
   }
 }
 
@@ -157,6 +158,7 @@ class ResultPostModel {
   String? updatedAt;
   // ReactionCounts? reactionCounts;
   int? shareCount;
+  int? likeCount;
   String? currentUserReaction;
   List<MediaFiles>? mediaFiles;
   List<CommentModel> comments = [];
@@ -182,6 +184,7 @@ class ResultPostModel {
       this.createdAt,
       this.updatedAt,
       this.shareCount,
+      this.likeCount,
       this.currentUserReaction,
       this.mediaFiles,
       this.comments = const []});
@@ -210,6 +213,7 @@ class ResultPostModel {
     updatedAt = json['updated_at'];
     // reactionCounts = json['reaction_counts'] != null ? ReactionCounts.fromJson(json['reaction_counts']) : null;
     shareCount = json['share_count'];
+    likeCount = json['like_count'] ?? json['reaction_count'];
     // currentUserReaction = json['current_user_reaction'];
     if (json['media_files'] != null) {
       mediaFiles = <MediaFiles>[];

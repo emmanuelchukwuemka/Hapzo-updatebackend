@@ -13,13 +13,23 @@ class HomeCubit extends Cubit<HomeState> {
 
   int page = 1;
   PostModel posts = PostModel();
-  fetchPosts({String? feedType}) async {
+  PostModel trendingPosts = PostModel();
+  PostModel popularPosts = PostModel();
+
+  fetchPosts({String? feedType, String? query}) async {
     emit(HomeLoading());
     try {
-      final response = await homeRepo.fetchPost(page: page, feedType: feedType);
+      final response = await homeRepo.fetchPost(page: page, feedType: feedType, query: query);
       final body = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        posts = PostModel.fromJson(body['data']);
+        final newPosts = PostModel.fromJson(body['data']);
+        if (feedType == "trending") {
+          trendingPosts = newPosts;
+        } else if (feedType == "popular") {
+          popularPosts = newPosts;
+        } else {
+          posts = newPosts;
+        }
         emit(HomeLoaded());
       } else {
         ToastMessage.showErrorToast(
@@ -32,11 +42,11 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  commentOnPost({ResultPostModel? post, postId, comment}) async {
+  commentOnPost({ResultPostModel? post, postId, comment, File? audioFile}) async {
     emit(PostCommenting());
     try {
       final response = await homeRepo.commentOnPost(
-          postId: post?.id ?? postId, comment: comment);
+          postId: post?.id ?? postId, comment: comment, audioFile: audioFile);
       final body = jsonDecode(response.body);
       if (response.statusCode == 201) {
         if (post != null) {
@@ -247,7 +257,7 @@ class HomeCubit extends Cubit<HomeState> {
           caption: caption,
           taggedUser: taggedUser,
           scheduledAt: scheduledAt);
-      if (response.statusCode == 201) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         emit(HomePostCreated());
         fetchPosts();
       } else {
@@ -258,7 +268,7 @@ class HomeCubit extends Cubit<HomeState> {
       }
     } catch (e) {
       emit(HomeError());
-      log("create audio post $e");
+      log("create video post $e");
     }
   }
 }

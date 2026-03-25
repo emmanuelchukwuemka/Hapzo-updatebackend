@@ -209,7 +209,8 @@ class ChatApiService {
   }
 
   // Send a message (Text or Media)
-  Future<bool> sendMessage(String conversationId, String text, {File? file, String messageType = 'text'}) async {
+  Future<bool> sendMessage(String conversationId, String text,
+      {File? file, String messageType = 'text', bool isReply = false, String? previousMessageId}) async {
     try {
       String? mediaUrl;
       
@@ -230,6 +231,8 @@ class ChatApiService {
         text, 
         type: messageType,
         mediaUrl: mediaUrl,
+        isReply: isReply,
+        previousMessageId: previousMessageId,
       );
       
       return result != null && result['success'] == true;

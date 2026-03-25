@@ -46,11 +46,11 @@ class _PeopleTabState extends State<PeopleTab> {
                 itemBuilder: (context, index) {
                   final person = displayPeople[index];
                   // Handle both SearchedUserModel (from search) and SearchedUserProfile (from discover)
-                  final String username = (person is SearchedUserModel
+                  final String username = ((person is SearchedUserModel
                           ? person.username
                           : (person is SearchedUserProfile
                               ? person.username
-                              : person.firstName))
+                              : (person as dynamic).firstName)) as String?)
                       ?.capitalizeFirstChar() ??
                       'User';
                   final String profilePic = person.profilePicture ?? "";

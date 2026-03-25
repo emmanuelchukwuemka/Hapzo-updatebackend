@@ -48,8 +48,8 @@ class ApiConstants {
       "$baseUrl/notifications/$page/20/";
   static String sharePostUrl({postId}) => "$postBaseUrl$postId/share/";
   static String reactPostUrl({postId}) => "$postBaseUrl$postId/react/";
-  static String fetchPostUrl({required page, required pageSize, String? feedType}) =>
-      "${postBaseUrl}list/$page/$pageSize/${feedType != null ? '?feed_type=$feedType' : ''}";
+  static String fetchPostUrl({required page, required pageSize, String? feedType, String? query}) =>
+      "${postBaseUrl}list/$page/$pageSize/${feedType != null ? '?feed_type=$feedType' : ''}${query != null ? '${feedType != null ? '&' : '?'}query=$query' : ''}";
   static String fetchUserPostUrl(
           {required page, required userId, required pageSize}) =>
       "${postBaseUrl}user/$userId/$page/$pageSize/";

@@ -21,6 +21,7 @@ class ProfileRepo {
     String? bio,
     String? occupation,
     File? profilePicture,
+    File? coverPicture,
     String? location,
     String? height,
     String? weight,
@@ -28,12 +29,21 @@ class ProfileRepo {
     var request =
         MultipartRequest('POST', Uri.parse(ApiConstants.createProfileUrl));
 
-    // 1. Only add the file if it's not null and exists
+    // Add profile picture if provided
     if (profilePicture != null && await profilePicture.exists()) {
       request.files.add(await MultipartFile.fromPath(
         'profile_picture',
         profilePicture.path,
         filename: profilePicture.path.split('/').last,
+      ));
+    }
+
+    // Add cover picture if provided
+    if (coverPicture != null && await coverPicture.exists()) {
+      request.files.add(await MultipartFile.fromPath(
+        'cover_picture',
+        coverPicture.path,
+        filename: coverPicture.path.split('/').last,
       ));
     }
 
@@ -78,16 +88,27 @@ class ProfileRepo {
       String? bio,
       String? occupation,
       File? profilePicture,
+      File? coverPicture,
       String? location,
       String? height,
       String? weight}) async {
     var request =
         MultipartRequest('PUT', Uri.parse(ApiConstants.updateProfileUrl));
+    // Add profile picture if provided
     if (profilePicture != null && await profilePicture.exists()) {
       request.files.add(await MultipartFile.fromPath(
         'profile_picture',
         profilePicture.path,
         filename: profilePicture.path.split('/').last,
+      ));
+    }
+
+    // Add cover picture if provided
+    if (coverPicture != null && await coverPicture.exists()) {
+      request.files.add(await MultipartFile.fromPath(
+        'cover_picture',
+        coverPicture.path,
+        filename: coverPicture.path.split('/').last,
       ));
     }
     final Map<String, String> fields = {};

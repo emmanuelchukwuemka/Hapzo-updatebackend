@@ -84,16 +84,21 @@ class HapzTextApiService {
   }
 
   // 3. Send Message
-  Future<Map<String, dynamic>?> sendMessage(String conversationId, String text, {String type = 'text', String? mediaUrl}) async {
+  Future<Map<String, dynamic>?> sendMessage(String conversationId, String text,
+      {String type = 'text', String? mediaUrl, bool isReply = false, String? previousMessageId}) async {
     try {
       final Map<String, dynamic> body = {
         'message_type': type,
         'text_content': text,
-        'is_reply': false,
+        'is_reply': isReply,
       };
 
       if (mediaUrl != null) {
         body['media_url'] = mediaUrl;
+      }
+
+      if (isReply && previousMessageId != null) {
+        body['previous_message_id'] = previousMessageId;
       }
 
       final response = await http.post(

@@ -75,6 +75,8 @@ class _EditProfileState extends State<EditProfile> {
                   child: Column(children: [
                     const SizedBox(height: 10),
                     PicsChange(
+                      currentProfileUrl: context.read<AuthCubit>().useInfo.profile?.profilePicture,
+                      currentCoverUrl: context.read<AuthCubit>().useInfo.profile?.coverPicture,
                       onchangeProfile: (profile) {
                         log("message$profile");
                         setState(() {
@@ -216,6 +218,7 @@ class _EditProfileState extends State<EditProfile> {
                                     bio: biographyController.text,
                                     occupation: ocupationController.text,
                                     profilePicture: profilePhoto,
+                                    coverPicture: coverPhoto,
                                     location: locationController.text,
                                     height: heightController.text,
                                     weight: weightController.text);

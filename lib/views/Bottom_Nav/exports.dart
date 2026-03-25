@@ -11,7 +11,7 @@ export 'package:haptext_api/views/Bottom_Nav/Explore/explore_view.dart';
 export 'package:haptext_api/views/Bottom_Nav/Explore/live_stream.dart';
 export 'package:haptext_api/views/Bottom_Nav/Explore/discover.dart';
 export 'package:haptext_api/views/Bottom_Nav/Explore/explore_carousel.dart';
-export 'package:haptext_api/views/Bottom_Nav/Explore/trending_content.dart';
+
 export 'package:haptext_api/views/Bottom_Nav/Explore/search_option_tab.dart';
 
 // CREATE POST

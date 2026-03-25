@@ -18,58 +18,76 @@ class ExploreCarousel extends StatefulWidget {
 class _ExploreCarouselState extends State<ExploreCarousel> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(
-      builder: (context, state) {
-        final posts = context.read<HomeCubit>().posts.result ?? [];
-        if (posts.isEmpty) {
-          return const SizedBox();
-        }
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                AppText(
-                    text: widget.title,
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
-                GestureDetector(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => const Trending()));
-                    },
-                    child: AppText(
-                        text: "See more",
-                        color: context.theme.primaryColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600))
-              ]),
-              const SizedBox(height: 12),
-              MasonryGridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 3,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                itemCount: posts.length > 9 ? 9 : posts.length,
-                itemBuilder: (context, index) {
-                  // Simulate different heights for masonry effect
-                  double height = (index % 3 == 0) ? 180 : (index % 3 == 1) ? 240 : 150;
-                  return SocialPostCard(
-                    height: height,
-                    isTrending: index == 0,
-                    post: posts[index],
-                  );
+    final watchHome = context.watch<HomeCubit>();
+    Iterable<ResultPostModel> rawPosts = [];
+    
+    if (widget.title == "Trending") {
+      rawPosts = watchHome.trendingPosts.result ?? [];
+    } else if (widget.title == "Most Liked") {
+      rawPosts = watchHome.popularPosts.result ?? [];
+    } else {
+      rawPosts = watchHome.posts.result ?? [];
+    }
+
+    // Only show posts that have an actual media upload (image or video)
+    final List<ResultPostModel> posts = rawPosts
+        .where((post) => post.mediaFiles != null && post.mediaFiles!.isNotEmpty)
+        .toList();
+
+    if (posts.isEmpty && watchHome.state is HomeLoading) {
+      return const Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (posts.isEmpty) {
+      return const SizedBox();
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            AppText(
+                text: widget.title,
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold),
+            GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const Trending()));
                 },
-              ),
-              const SizedBox(height: 24)
-            ],
+                child: AppText(
+                    text: "See more",
+                    color: context.theme.primaryColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600))
+          ]),
+          const SizedBox(height: 12),
+          MasonryGridView.count(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisCount: 3,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            itemCount: posts.length > 9 ? 9 : posts.length,
+            itemBuilder: (context, index) {
+              // Simulate different heights for masonry effect
+              double height = (index % 3 == 0) ? 180 : (index % 3 == 1) ? 240 : 150;
+              return SocialPostCard(
+                height: height,
+                isTrending: index == 0,
+                post: posts[index],
+              );
+            },
           ),
-        );
-      },
+          const SizedBox(height: 24)
+        ],
+      ),
     );
   }
 }

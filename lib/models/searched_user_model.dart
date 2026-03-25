@@ -64,6 +64,7 @@ class SearchedUserProfile {
   String? bio;
   String? occupation;
   String? profilePicture;
+  String? coverPicture;
   String? location;
   dynamic height;
   dynamic postCount;
@@ -85,6 +86,7 @@ class SearchedUserProfile {
       this.bio,
       this.occupation,
       this.profilePicture,
+      this.coverPicture,
       this.location,
       this.height,
       this.weight,
@@ -109,6 +111,7 @@ class SearchedUserProfile {
     bio = json['bio'];
     occupation = json['occupation'];
     profilePicture = json['profile_picture'];
+    coverPicture = json['cover_picture'];
     location = json['location'];
     height = json['height'];
     weight = json['weight'];
@@ -132,6 +135,7 @@ class SearchedUserProfile {
     data['bio'] = bio;
     data['occupation'] = occupation;
     data['profile_picture'] = profilePicture;
+    data['cover_picture'] = coverPicture;
     data['location'] = location;
     data['height'] = height;
     data['weight'] = weight;

@@ -5,9 +5,9 @@ import 'package:mime/mime.dart';
 import 'package:haptext_api/network/export_network.dart';
 
 class HomeRepo {
-  Future<Response> fetchPost({required int page, String? feedType}) async {
+  Future<Response> fetchPost({required int page, String? feedType, String? query}) async {
     return await ApiMethods.getMethod(
-        url: ApiConstants.fetchPostUrl(page: page, pageSize: "20", feedType: feedType),
+        url: ApiConstants.fetchPostUrl(page: page, pageSize: "20", feedType: feedType, query: query),
         headers: ApiHeaders.aunthenticatedHeader);
   }
 
@@ -19,16 +19,32 @@ class HomeRepo {
   }
 
   Future<Response> commentOnPost(
-      {required String postId, required String comment}) async {
-    return await ApiMethods.postMethod(
-        url: ApiConstants.postBaseUrl,
-        body: {
-          "is_reply": true,
-          "previous_post_id": postId,
-          "post_format": "text",
-          "text_content": comment
-        },
-        headers: ApiHeaders.aunthenticatedHeader);
+      {required String postId, String? comment, File? audioFile}) async {
+    if (audioFile != null) {
+      var request = MultipartRequest('POST', Uri.parse(ApiConstants.postBaseUrl));
+      request.files.add(await MultipartFile.fromPath(
+          'audio_files', audioFile.path,
+          contentType: MediaType.parse(lookupMimeType(audioFile.path) ?? 'audio/m4a')));
+      request.fields.addAll({
+        "is_reply": "true",
+        "previous_post_id": postId,
+        "post_format": "audio",
+        if (comment != null) "text_content": comment,
+      });
+      request.headers.addAll(ApiHeaders.aunthenticatedHeader);
+      final streamedResponse = await request.send();
+      return await Response.fromStream(streamedResponse);
+    } else {
+      return await ApiMethods.postMethod(
+          url: ApiConstants.postBaseUrl,
+          body: {
+            "is_reply": true,
+            "previous_post_id": postId,
+            "post_format": "text",
+            "text_content": comment ?? ""
+          },
+          headers: ApiHeaders.aunthenticatedHeader);
+    }
   }
 
   Future<Response> fetchPostComment({required String postId}) async {
@@ -80,9 +96,9 @@ class HomeRepo {
     var request = MultipartRequest('POST', Uri.parse(ApiConstants.postBaseUrl));
     log("${lookupMimeType(audioFile.path)} ${audioFile.path}");
     request.files.add(await MultipartFile.fromPath(
-        'audio_content', audioFile.path,
+        'audio_files', audioFile.path,
         contentType:
-            MediaType.parse(lookupMimeType(audioFile.path) ?? 'video/mp4')));
+            MediaType.parse(lookupMimeType(audioFile.path) ?? 'audio/m4a')));
     request.fields.addAll({
       "post_format": "audio",
       if (scheduledAt != null) "scheduled_at": scheduledAt,
@@ -147,7 +163,7 @@ class HomeRepo {
     log("reselt${lookupMimeType(videoFile.path)} ${videoFile.path}");
     var request = MultipartRequest('POST', Uri.parse(ApiConstants.postBaseUrl));
     request.files.add(await MultipartFile.fromPath(
-        'video_content', videoFile.path,
+        'video_files', videoFile.path,
         contentType:
             MediaType.parse(lookupMimeType(videoFile.path) ?? 'video/mp4')));
     request.fields.addAll({

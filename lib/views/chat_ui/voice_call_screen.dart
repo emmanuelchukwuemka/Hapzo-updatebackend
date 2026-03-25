@@ -52,7 +52,7 @@ class _VoiceCallScreenState extends State<VoiceCallScreen>
 
   // Animation controller for pulses
   late final AnimationController _pulseController;
-  double _simulatedLevel = 0.0;
+  double _audioLevel = 0.0;
 
   @override
   void initState() {
@@ -160,7 +160,7 @@ class _VoiceCallScreenState extends State<VoiceCallScreen>
           }
         }
         setState(() {
-          _simulatedLevel = (maxVol / 255).clamp(0.0, 1.0);
+          _audioLevel = (maxVol / 255).clamp(0.0, 1.0);
         });
       }
     };
@@ -869,7 +869,7 @@ class _VoiceCallScreenState extends State<VoiceCallScreen>
                           final t = _pulseController.value;
                           final phase = (i / 3 + t) % 1.0;
                           final base = 1.0 +
-                              ((_isMuted ? 0.0 : _simulatedLevel) *
+                              ((_isMuted ? 0.0 : _audioLevel) *
                                   0.35);
                           final scale =
                               base + phase * (0.9 + i * 0.2);

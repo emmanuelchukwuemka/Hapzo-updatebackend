@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:haptext_api/bloc/home/cubit/home_cubit.dart';
 import 'package:haptext_api/common/coloors.dart';
 import 'package:haptext_api/common/theme/custom_theme_extension.dart';
 import 'package:haptext_api/views/Bottom_Nav/exports.dart';
 
-class XploreTab1 extends StatelessWidget {
+class XploreTab1 extends StatefulWidget {
   const XploreTab1({Key? key}) : super(key: key);
 
-  // final TextEditingController _searchController = TextEditingController();
+  @override
+  State<XploreTab1> createState() => _XploreTab1State();
+}
+
+class _XploreTab1State extends State<XploreTab1> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomeCubit>().fetchPosts(feedType: "trending");
+      context.read<HomeCubit>().fetchPosts(feedType: "popular");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,22 +47,6 @@ class XploreTab1 extends StatelessWidget {
             ),
           ),
 
-          // 2. Trending Hashtags
-          SizedBox(
-            height: 40,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              children: [
-                _hashtagChip("#home", "2k"),
-                _hashtagChip("#viral", "1.5k"),
-                _hashtagChip("#trending", "1.2k"),
-                _hashtagChip("#flutter", "800"),
-                _hashtagChip("#social", "500"),
-              ],
-            ),
-          ),
-
           const SizedBox(height: 16),
 
           // 3. Content Grid
@@ -59,28 +57,6 @@ class XploreTab1 extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 return ExploreCarousel(tabIndex: index, title: sections[index]);
               }),
-        ],
-      ),
-    );
-  }
-
-  Widget _hashtagChip(String tag, String count) {
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1A1A),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Row(
-        children: [
-          Text(tag,
-              style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold)),
-          const SizedBox(width: 4),
-          Text("($count)",
-              style: const TextStyle(color: Colors.white38, fontSize: 12)),
         ],
       ),
     );

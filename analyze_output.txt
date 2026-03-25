@@ -1,0 +1,7 @@
+Analyzing profile_text_tab.dart...                              
+
+   info - Use 'const' with the constructor to improve performance - lib\views\bottom_nav\profile\profile_text_tab.dart:42:27 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\views\bottom_nav\profile\profile_text_tab.dart:51:27 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\views\bottom_nav\profile\profile_text_tab.dart:60:27 - prefer_const_constructors
+
+3 issues found. (ran in 5.6s)

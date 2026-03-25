@@ -44,8 +44,8 @@ class _XploreTab3State extends State<XploreTab3> with SingleTickerProviderStateM
 
   void _startSearching() async {
     setState(() => _state = DiscoverState.searching);
-    await Future.delayed(const Duration(seconds: 3));
-    if (mounted) setState(() => _state = DiscoverState.connected);
+    // TODO: Implement real random matching backend integration
+    // For now, we stay in searching state as there are no other real users online
   }
 
   void _cancelSearching() {
@@ -202,10 +202,10 @@ class _XploreTab3State extends State<XploreTab3> with SingleTickerProviderStateM
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(radius: 60, backgroundColor: Colors.white10, child: Icon(Icons.person, size: 60, color: Colors.white24)),
+                  CircleAvatar(radius: 60, backgroundColor: Colors.white10, child: Icon(Icons.person_search, size: 60, color: Colors.white24)),
                   SizedBox(height: 16),
-                  Text("Alex", style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                  Text("New York, USA", style: TextStyle(color: Colors.white70, fontSize: 16)),
+                  Text("Looking for someone...", style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                  Text("Random discovery is active", style: TextStyle(color: Colors.white70, fontSize: 16)),
                 ],
               ),
             ),
@@ -219,9 +219,10 @@ class _XploreTab3State extends State<XploreTab3> with SingleTickerProviderStateM
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildOverlayTag("Timer: 04:32", Colors.black54),
-              const SizedBox(height: 8),
-              _buildOverlayTag("Common: ?? Gaming, ?? Music", const Color(0xFF8B5CF6).withOpacity(0.7)),
+              _buildOverlayTag("Waiting...", Colors.black54),
+              // Common interests tag removed until real matching is implemented
+              // const SizedBox(height: 8),
+              // _buildOverlayTag("Common: ?? Gaming, ?? Music", const Color(0xFF8B5CF6).withOpacity(0.7)),
             ],
           ),
         ),

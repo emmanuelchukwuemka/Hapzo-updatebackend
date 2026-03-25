@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:haptext_api/utils/chat_ui/enums.dart';
 import 'package:haptext_api/utils/chat_ui/emoji_list.dart';
+import 'package:haptext_api/models/chat_ui/message.dart';
 
 class InputArea extends StatefulWidget {
   final ChatMode chatMode;
@@ -9,6 +10,8 @@ class InputArea extends StatefulWidget {
   final VoidCallback onStartVoice;
   final VoidCallback onStopVoice;
   final ValueChanged<String>? onChanged;
+  final Message? replyMessage;
+  final VoidCallback? onCancelReply;
 
   const InputArea({
     super.key,
@@ -18,6 +21,8 @@ class InputArea extends StatefulWidget {
     required this.onStartVoice,
     required this.onStopVoice,
     this.onChanged,
+    this.replyMessage,
+    this.onCancelReply,
   });
 
   @override
@@ -38,11 +43,14 @@ class _InputAreaState extends State<InputArea> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (widget.replyMessage != null) _buildReplyPreview(),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            borderRadius: BorderRadius.vertical(
+              top: widget.replyMessage == null ? const Radius.circular(24) : Radius.zero,
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.3),
@@ -211,40 +219,63 @@ class _InputAreaState extends State<InputArea> {
     return Container(
       padding: const EdgeInsets.all(20),
       color: Theme.of(context).cardColor,
-      child: SafeArea(
-        child: Row(
-          children: [
-            Expanded(
-              child: ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.phone_rounded),
-                label: const Text("Voice Call"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal.shade700,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  elevation: 4,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.videocam_rounded),
-                label: const Text("Video Call"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade700,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  elevation: 4,
-                ),
-              ),
-            ),
-          ],
+      child: const SafeArea(
+        child: Center(
+          child: Text(
+            "Use the call icons in the app bar to start a call",
+            style: TextStyle(color: Colors.white54, fontSize: 14),
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildReplyPreview() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.white.withValues(alpha: 0.05),
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.reply, color: Colors.tealAccent, size: 18),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.replyMessage!.me ? "Replying to yourself" : "Replying to someone",
+                  style: const TextStyle(
+                    color: Colors.tealAccent,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  widget.replyMessage!.isVoice ? "Voice Note" : widget.replyMessage!.text,
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 12,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  maxLines: 1,
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.white54, size: 18),
+            onPressed: widget.onCancelReply,
+          ),
+        ],
       ),
     );
   }
